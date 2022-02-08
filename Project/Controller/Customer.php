@@ -1,5 +1,6 @@
-
+<?php require_once("Model/Core/Adapter.php");?>
 <?php
+
 class Controller_Customer{
 
 	public function gridAction()
@@ -17,58 +18,97 @@ class Controller_Customer{
 		require_once('view/customer/add.php');
 	}
 
-	public function saveAction()
+	protected function saveCustomer()
 	{
 		$adapter = new Model_Core_Adapter();
-
 		date_default_timezone_set("Asia/Kolkata");
 		$date = date('Y-m-d H:i:s');
 		
-			$id=$_POST['customer']['id'];
-			$firstName=$_POST['customer']['firstName'];
-			$lastName=$_POST['customer']['lastName'];
-			$email=$_POST['customer']['email'];
-			$mobile=$_POST['customer']['mobile'];
-			$status = $_POST['customer']['status'];
-			$createdAt = $date;
-			$updatedAt = $date;
-			$address = $_POST['address']['address'];
-			$postalCode = $_POST['address']['postalCode'];
-			$city = $_POST['address']['city'];
-			$state = $_POST['address']['state'];
-			$country = $_POST['address']['country'];
-			$billingAddress = $_POST['address']['billingAddress'];
-			$shippingAddress = $_POST['address']['shippingAddress'];
-			
-		try{	
-			if($id == NULL):
-				$query1 = "INSERT INTO `customer`(`firstName`,`lastName`,`mobile`,`email`,`status`,`createdAt`) VALUES ('$firstName','$lastName','$mobile','$email','$status','$date')";
-				$result1 = $adapter->insert($query1);
-				if(!$result1){
-					throw new Exception("System is unable to insert customer info.",1);
-				}
-				$query2 = "INSERT INTO `address`( `customerId`, `address`, `postalCode`, `city`, `state`, `country`, `billingAddress`,`shippingAddress`) VALUES ('$result1','$address','$postalCode','$city','$state','country','$billingAddress' ,'$shippingAddress')";
-				$result2 = $adapter->insert($query2);
-				if(!$result2){
-					throw new Exception("System is unable to insert address info.",1);
-				}
-				$this->redirect('index.php?c=customer&a=grid');
-			else:
-				$query ="UPDATE customer c INNER JOIN address a ON c.customerId = a.customerId SET c.firstName='$firstName' , c.lastName='$lastName' ,  c.mobile='$mobile' , c.email='$email' , c.status='$status' , c.updatedAt='$date' , a.address='$address' , a.postalCode='$postalCode' ,  a.city='$city' , a.state='$state' , a.country='$country' , a.billingAddress='$billingAddress' , a.shippingAddress='$shippingAddress' WHERE c.customerID = '$id'";
-				$result = $adapter->update($query);
-				if(!$result){
-					throw new Exception("System is unable to update information.",1);
-				}
-				$this->redirect('index.php?c=customer&a=grid');
+		$id=$_POST['customer']['id'];
+		$firstName=$_POST['customer']['firstName'];
+		$lastName=$_POST['customer']['lastName'];
+		$email=$_POST['customer']['email'];
+		$mobile=$_POST['customer']['mobile'];
+		$status = $_POST['customer']['status'];
+		$createdAt = $date;
+		$updatedAt = $date;
+
+		if(!$id):
+			$query = "INSERT INTO `customer`(`firstName`,`lastName`,`mobile`,`email`,`status`,`createdAt`) VALUES ('$firstName','$lastName','$mobile','$email','$status','$date')";
+			$result = $adapter->insert($query);
+			if(!$result):
+				throw new Exception("System is unable to insert customer info.",1);
 			endif;
-		}
+			return $result;
+		else:
+
+			$query ="UPDATE customer 
+			SET firstName='$firstName' ,
+				lastName='$lastName' ,  
+				mobile='$mobile' , 
+				email='$email' ,
+				status='$status' , 
+				updatedAt='$date' 
+			WHERE customerId = '$id'";
+			$result = $adapter->update($query);
+			if(!$result){
+				throw new Exception("System is unable to update information.",1);
+			}
+			return $id;
+		endif;
+		
+		
+	}
+
+	protected function saveAddress($customerId)	
+	{
+		$adapter = new Model_Core_Adapter();
+		$address = $_POST['address']['address'];
+		$postalCode = $_POST['address']['postalCode'];
+		$city = $_POST['address']['city'];
+		$state = $_POST['address']['state'];
+		$country = $_POST['address']['country'];
+		$billingAddress = $_POST['address']['billingAddress'];
+		$shippingAddress = $_POST['address']['shippingAddress'];
+		$addressData = $adapter->fetchRow("SELECT * FROM address WHERE customerId = '$customerId'");
+		if(!$addressData):
+			$query = "INSERT INTO `address`( `customerId`, `address`, `postalCode`, `city`, `state`, `country`, `billingAddress`,`shippingAddress`) VALUES ('$customerId','$address','$postalCode','$city','$state','$country','$billingAddress' ,'$shippingAddress')";
+			$result = $adapter->insert($query);
+			if(!$result):
+				throw new Exception("System is unable to insert address info.",1);
+			endif;
+		else:
+			$query ="UPDATE address 
+			SET address='$address' , 
+				postalCode='$postalCode' ,  
+				city='$city' , 
+				state='$state' , 
+				country='$country' , 
+				billingAddress='$billingAddress' , 
+				shippingAddress='$shippingAddress'
+			WHERE customerId = '$customerId'";
+			$result = $adapter->update($query);
+			if(!$result):
+				throw new Exception("System is unable to update information.",1);
+			endif;
+			
+		endif;
+			
+	}
+
+	public function saveAction()
+	{
+		try
+		{
+			$customerId = $this->saveCustomer();
+			$this->saveAddress($customerId);
+			$this->redirect('index.php?c=customer&a=grid');
+		} 
 		
 		catch (Exception $e) {
 			echo $e->getMessage();
 		}
 	}
-
-	
 
 	public function deleteAction()
 	{
@@ -83,11 +123,10 @@ class Controller_Customer{
 			if(!$result){
 				throw new Exception("System is unable to delete record.", 1);	
 			}
-				//var_dump($result);
 			$this->redirect('index.php?c=customer&a=grid');
 		}
 		catch (Exception $e) {
-			$this->redirect('index.php?c=customer&a=grid');	
+			echo $e->getMessage(); 	
 		}
 	}
 

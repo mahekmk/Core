@@ -72,6 +72,12 @@ class Model_Core_Adapter{
 		return $result;
 	}
 
+	public function select($query)
+	{
+		$result = $this->query($query);
+		return $result;
+	}
+
 	public function fetchRow($query)
 	{
 		$result = $this->query($query);
