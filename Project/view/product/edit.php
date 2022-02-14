@@ -1,6 +1,6 @@
 <?php
 require_once('Model/Core/Adapter.php');
-$adapter = new Model_Core_Adapter();
+/*$adapter = new Model_Core_Adapter();
 if($_GET['id'])
 {
 $id = $_GET['id'];
@@ -11,7 +11,8 @@ $data = $adapter->fetchRow("Select * FROM product WHERE productID = '$id'");
  		$quantity = $data['quantity'];
  		$status = $data['status'];
 
-}
+}*/
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -30,30 +31,30 @@ $data = $adapter->fetchRow("Select * FROM product WHERE productID = '$id'");
 
 			<tr>
 				<td width="10%">Product Id</td>
-				<td><input type="hidden" name="product[id]" value="<?php echo $id ; ?>"></td>
+				<td><input type="text" name="product[id]" value="<?php echo $data['productRow']['productId'] ; ?>" readonly></td>
 			</tr>
 
 			<tr>
 				<td width="10%">Name</td>
-				<td><input type="text" name="product[name]" value="<?php echo $name ; ?>" ></td>
+				<td><input type="text" name="product[name]" value="<?php echo $data['productRow']['name'];?>" ></td>
 			</tr>
 
 			<tr>
 				<td width="10%">Price</td>
-				<td><input type="text" name="product[price]" value="<?php echo $price ;?>"></td>
+				<td><input type="text" name="product[price]" value="<?php echo  $data['productRow']['price'] ;?>"></td>
 			</tr>
 
 			<tr>
 				<td width="10%">Quantity</td>
-				<td><input type="text" name="product[quantity]" value="<?php echo $quantity ; ?>"></td>
+				<td><input type="text" name="product[quantity]" value="<?php echo $data['productRow']['quantity'] ; ?>"></td>
 			</tr>
 
 			<tr>
 				<td width="10%">Status</td>
 				<td>
-					<select name="product[status]" value="<?php echo $status; ?>">
-						<option value="1" <?php if($status== 1):?>  selected="selected" <?php endif; ?>>Active</option>
-						<option value="2" <?php if($status== 2):?>  selected="selected" <?php endif; ?>>Inactive</option>
+					<select name="product[status]" value="<?php $data['productRow']['status']; ?>">
+						<option value="1" <?php if($data['productRow']['status']== 1):?>  selected="selected" <?php endif; ?>>Active</option>
+						<option value="2" <?php if($data['productRow']['status']== 2):?>  selected="selected" <?php endif; ?>>Inactive</option>
 					</select>
 				</td>
 			</tr>

@@ -1,12 +1,17 @@
-<?php require_once('Model/Core/Adapter.php') ?>
+<?php// require_once('Model/Core/Adapter.php') ?>
 <?php 
-$adapter = new Model_Core_Adapter();
-$products = $adapter->fetchAll("SELECT * FROM product");
+
+//$products = $this->getData('products');
+
 ?>
 
 <html>
 <head>
 	<body>
+		<button name='Admin'><a href="index.php?c=admin&a=grid">Admin</a></button>
+		<button name='Customer'><a href="index.php?c=customer&a=grid">Customer</a></button>
+		<button name='Category'><a href="index.php?c=category&a=grid">Category</a></button>
+		<button name='Product'><a href="">Product</a></button>
 		<button name='Add'><a href="index.php?c=product&a=add">Add</a></button>
 		<table border="1" width="100%" cellspacing="4">
 			<tr>
@@ -20,12 +25,12 @@ $products = $adapter->fetchAll("SELECT * FROM product");
 				<th>Edit</th>
 				<th>Delete</th>
 			</tr>
-			<?php if(!$products): ?>
+			<?php if(!$data['products']): ?>
 				<tr>
 					<td colspan="10">No Record available.</td>
 				</tr>
 			<?php else : ?>
-				<?php foreach ($products as $product): ?>
+				<?php foreach ($data['products'] as $product): ?>
 				<tr>
 					<td><?php echo $product['productId']?></td>
 					<td><?php echo $product['name']?></td>

@@ -1,19 +1,47 @@
+<?php 
+Ccc::loadClass('Controller_Core_Action');
+?>
+
+
 <?php
-class Controller_Product{
+class Controller_Product extends Controller_Core_Action{
 
 	public function gridAction()
 	{
-		require_once('view/product/grid.php');
+		$adapter = new Model_Core_Adapter();
+		$products = $adapter->fetchAll("SELECT * FROM product");
+		echo "<pre>";
+		$view = $this->getView();
+		$view->addData('products',$products);
+		$view->setTemplate('view/product/grid.php'); 
+		$view->toHtml();
+		
+		/*require_once('view/product/grid.php');*/
 	}
 
 	public function editAction()
 	{
-		require_once('view/product/edit.php');
+		$adapter = new Model_Core_Adapter();
+		if($_GET['id'])
+		{
+			$id = $_GET['id'];
+			$productRow = $adapter->fetchRow("SELECT * FROM product WHERE productID = '$id'");
+		}
+		$view = $this->getView();
+		$view->addData('productRow',$productRow);
+		$view->setTemplate('view/product/edit.php'); 
+		$view->toHtml();
+
+		//require_once('view/product/edit.php');
 	}
 
 	public function addAction()
 	{
-		require_once('view/product/add.php');
+		$adapter = new Model_Core_Adapter();
+		$view = $this->getView();
+		$view->setTemplate('view/product/add.php'); 
+		$view->toHtml();
+		//require_once('view/product/add.php');
 	}
 
 	public function saveAction()
@@ -39,8 +67,9 @@ class Controller_Product{
 				}
 				$this->redirect('index.php?c=product&a=grid');
 			else:
-				$query = "UPDATE product SET productId='$id' , name='$name' , price='$price' , quantity='$quantity' , status='$status' , updatedAt='$date' WHERE productID = '$id' ";
+				$query = "UPDATE product SET productId='$id' , name='$name' , price='$price' , quantity='$quantity' , status='$status' , updatedAt='$date' WHERE productId = '$id' ";
 				$result = $adapter->update($query);
+
 				if(!$result){
 					throw new Exception("System is unable to update information.",1);
 				}

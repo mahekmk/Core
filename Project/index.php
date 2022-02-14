@@ -1,6 +1,5 @@
 <?php require_once('Model/Core/Adapter.php');  ?>
 <?php
-
 class Ccc
 {
 	public static function loadFile($path)
@@ -24,9 +23,6 @@ class Ccc
 		$controller = new $controllerClassName();
 		$controller->$actionName();
 	}
-
 }
-
 Ccc::init();
-
 ?>

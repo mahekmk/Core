@@ -1,13 +1,13 @@
-<?php require_once('Model/Core/Adapter.php') ?>
-<?php 
-$adapter = new Model_Core_Adapter();
-$customers = $adapter->fetchAll("SELECT c.*, a.* FROM customer c LEFT JOIN address a ON c.customerId = a.customerId");
-//$customers = $adapter->fetchAll("SELECT c.* , a.* FROM customer c  ");
+<?php
+$controllerCategory = new Controller_category();
 ?>
-
 <html>
 <head>
 	<body>
+		<button name='Admin'><a href="index.php?c=admin&a=grid">Admin</a></button>
+		<button name='Customer'><a href="">Customer</a></button>
+		<button name='Category'><a href="index.php?c=category&a=grid">Category</a></button>
+		<button name='Product'><a href="index.php?c=product&a=grid">Product</a></button>
 		<button name='Add'><a href="index.php?c=customer&a=add">Add</a></button>
 		<table border="1" width="100%" cellspacing="4">
 			<tr>
@@ -30,12 +30,12 @@ $customers = $adapter->fetchAll("SELECT c.*, a.* FROM customer c LEFT JOIN addre
 				<th>Edit</th>
 				<th>Delete</th>
 			</tr>
-			<?php if(!$customers): ?>
+			<?php if(!$data['customers']): ?>
 				<tr>
 					<td colspan="17">No Record available.</td>
 				</tr>
 			<?php else : ?>
-				<?php foreach ($customers as $customer): ?>
+				<?php foreach ($data['customers'] as $customer): ?>
 				<tr>
 					<td><?php echo $customer['customerId']?></td>
 					<td><?php echo $customer['firstName']?></td>

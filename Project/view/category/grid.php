@@ -1,12 +1,16 @@
-<?php require_once('Model/Core/Adapter.php') ?>
-<?php 
-$adapter = new Model_Core_Adapter();
-$categories = $adapter->fetchAll("SELECT * FROM category");
+<?php
+/*$categories = $this->getData('categories');*/
+$controllerCategory = new Controller_Category();
+
 ?>
 
 <html>
 <head>
 	<body>
+		<button name='Admin'><a href="index.php?c=admin&a=grid">Admin</a></button>
+		<button name='Customer'><a href="index.php?c=customer&a=grid">Customer</a></button>
+		<button name='Category'><a href="">Category</a></button>
+		<button name='Product'><a href="index.php?c=product&a=grid">Product</a></button>
 		<button name='Add'><a href="index.php?c=category&a=add">Add</a></button>
 		<table border="1" width="100%" cellspacing="4">
 			<tr>
@@ -18,15 +22,19 @@ $categories = $adapter->fetchAll("SELECT * FROM category");
 				<th>Edit</th>
 				<th>Delete</th>
 			</tr>
-			<?php if(!$categories): ?>
+			<?php if(!$data['categories']): ?>
 				<tr>
 					<td colspan="9">No Record available.</td>
 				</tr>
 			<?php else : ?>
-				<?php foreach ($categories as $category): ?>
+				<?php foreach ($data['categories'] as $category): ?>
 				<tr>
 					<td><?php echo $category['categoryId']?></td>
-					<td><?php echo $category['name']?></td>
+					<td>
+						<?php $result = $controllerCategory->getCategoryWithPath();
+		    				echo $result[$category['categoryId']];
+			    		?>
+					</td>
 					<td><?php echo $category['status']?></td>
 					<td><?php echo $category['createdAt']?></td>
 					<td><?php echo $category['updatedAt']?></td>

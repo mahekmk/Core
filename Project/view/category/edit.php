@@ -1,5 +1,6 @@
 <?php
 require_once('Model/Core/Adapter.php');
+$controllerCategory = new Controller_Category();
 $adapter = new Model_Core_Adapter();
 if($_GET['id'])
 {
@@ -28,7 +29,26 @@ $data = $adapter->fetchRow("Select * FROM category WHERE categoryID = '$id'");
 
 			<tr>
 				<td width="10%">Category Id</td>
-				<td><input type="hidden" name="category[id]" value="<?php echo $id ; ?>"></td>
+				<td><input type="text" name="category[id]" value="<?php echo $id ; ?>" readonly></td>
+			</tr>
+
+			<tr>
+				<td width="10%">Select category</td>
+				<td><select name="category[parentId]">
+					<option value="">Main category </option>
+						<?php
+							$result = $controllerCategory->getCategoryWithPath();			
+							foreach($result as $key => $value):
+						?>		<option value=<?php echo $key; ?> >
+						<?php
+								echo($value);
+						?>
+					</option>
+						<?php
+							endforeach;
+						?>							
+				</select>
+			</td>
 			</tr>
 
 			<tr>

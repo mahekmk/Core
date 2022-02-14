@@ -1,21 +1,41 @@
 <?php require_once("Model/Core/Adapter.php");?>
 <?php
-
-class Controller_Customer{
-
+Ccc::loadClass('Controller_Core_Action');
+class Controller_Customer extends Controller_Core_Action
+{
 	public function gridAction()
 	{
-		require_once('view/customer/grid.php');
+		$adapter = new Model_Core_Adapter();
+		$customers = $adapter->fetchAll("SELECT c.*, a.* FROM customer c LEFT JOIN address a ON c.customerId = a.customerId");
+		$view=$this->getView();
+		$view->addData('customers',$customers);
+		$view->setTemplate('view/customer/grid.php');
+		$view->toHtml();
+
+		//require_once('view/customer/grid.php');
 	}
 
 	public function editAction()
 	{
-		require_once('view/customer/edit.php');
+		$adapter = new Model_Core_Adapter();
+		if($_GET['id'])
+		{
+			$id = $_GET['id'];
+			$customerAddresses = $adapter->fetchRow("SELECT c.*, a.* FROM customer c LEFT JOIN address a ON c.customerId = a.customerId WHERE c.customerID = '$id'");
+		}
+		$view=$this->getView();
+		$view->addData('customerAddresses',$customerAddresses);
+		$view->setTemplate('view/customer/edit.php');
+		$view->toHtml();
+		//require_once('view/customer/edit.php');
 	}
 
 	public function addAction()
 	{
-		require_once('view/customer/add.php');
+		$view=$this->getView();
+		$view->setTemplate('view/customer/add.php');
+		$view->toHtml();
+		//require_once('view/customer/add.php');
 	}
 
 	protected function saveCustomer()
