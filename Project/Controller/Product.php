@@ -1,5 +1,6 @@
 <?php 
 Ccc::loadClass('Controller_Core_Action');
+Ccc::loadClass('Model_Core_Request');
 ?>
 
 
@@ -21,10 +22,12 @@ class Controller_Product extends Controller_Core_Action{
 
 	public function editAction()
 	{
-		$adapter = new Model_Core_Adapter();
-		if($_GET['id'])
+		global $adapter;
+		$request = new Model_Core_Request();
+        $getId = $request->getRequest('id');
+		if($getId)
 		{
-			$id = $_GET['id'];
+			$id = $getId;
 			$productRow = $adapter->fetchRow("SELECT * FROM product WHERE productID = '$id'");
 		}
 		$view = $this->getView();
@@ -46,16 +49,16 @@ class Controller_Product extends Controller_Core_Action{
 
 	public function saveAction()
 	{
-		$adapter = new Model_Core_Adapter();
-
+		global $adapter;
+        $request = new Model_Core_Request();
 		date_default_timezone_set("Asia/Kolkata");
 		$date = date('Y-m-d H:i:s');
-
-		$id =$_POST['product']['id'];
-		$name=$_POST['product']['name'];
-		$price=$_POST['product']['price'];
-		$quantity=$_POST['product']['quantity'];
-		$status = $_POST['product']['status'];
+		$row = $request->getPost('product');
+		$id =$row['id'];
+		$name=$row['name'];
+		$price=$row['price'];
+		$quantity=$row['quantity'];
+		$status = $row['status'];
 		$createdAt = $date;
 		$updatedAt = $date;
 		try{
@@ -85,13 +88,15 @@ class Controller_Product extends Controller_Core_Action{
 
 	public function deleteAction()
 	{
+		$request = new Model_Core_Request();
+        $getId = $request->getRequest('id');
 		try {
 			
-			if (!isset($_GET['id'])) {
+			if (!isset($getId)) {
 				throw new Exception("Invalid Request.", 1);
 			}
 			$adapter = new Model_Core_Adapter();
-			$pid = $_GET['id'];
+			$pid = $getId;
 			$result= $adapter->delete("DELETE FROM product WHERE productId = '$pid' ");
 			if(!$result){
 				throw new Exception("System is unable to delete record.", 1);

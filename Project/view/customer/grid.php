@@ -1,6 +1,3 @@
-<?php
-$controllerCategory = new Controller_category();
-?>
 <html>
 <head>
 	<body>

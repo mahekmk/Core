@@ -1,5 +1,6 @@
 <?php
 Ccc::loadClass('Controller_Core_Action');
+Ccc::loadClass('Model_Core_Request');
 ?>
 <?php
 class Controller_Category extends Controller_Core_Action
@@ -8,7 +9,7 @@ class Controller_Category extends Controller_Core_Action
     {
         $adapter = new Model_Core_Adapter();
         $categories = $adapter->fetchAll("SELECT * FROM category ORDER BY path");
-        echo "<pre>";
+        //echo "<pre>";
         $view = $this->getView();
         $view->addData('categories', $categories);
         $view->setTemplate('view/category/grid.php');
@@ -19,7 +20,19 @@ class Controller_Category extends Controller_Core_Action
 
     public function editAction()
     {
-        require_once ('view/category/edit.php');
+        $adapter = new Model_Core_Adapter();
+        if ($_GET["id"])
+        {
+            $id = $_GET["id"];
+            $categories = $adapter->fetchRow("SELECT * FROM `category` WHERE `categoryId` = $id");
+        }
+        $view = $this->getView();
+        $view->addData("categories", $categories);
+        $view->setTemplate("view/category/edit.php");
+        $view->toHtml();
+    
+
+        //require_once ('view/category/edit.php');
     }
 
     public function addAction()
@@ -45,7 +58,6 @@ class Controller_Category extends Controller_Core_Action
             $status = $_POST['category']['status'];
             $createdAt = $date;
             $updatedAt = $date;
-            echo $parentId;
             if (!$id)
             {
                 if (!$parentId)
@@ -89,15 +101,22 @@ class Controller_Category extends Controller_Core_Action
                 }
                 $this->redirect('index.php?c=category&a=grid');
             }
-            else{
-            $path = 1/2;
-            $path = mysqli_real_escape_string($path);
-            $query = "SELECT * FROM category WHERE path LIKE '{$path}%' ";
-            $result = $adapter->fetchAll($query);
-            print_r($result);
-            exit(); 
+
+            else
+            {
+
+                if(!$parentId)
+                {
+                    $parentId = NULL;
+                    $this->updatePathIntoCategory($id,$parentId);
+                }
+                else
+                {
+                    $this->updatePathIntoCategory($id,$parentId);
+                }
+            }          	
         }
-        }
+    
         catch(Exception $e)
         {
             echo $e->getMessage();
@@ -106,15 +125,17 @@ class Controller_Category extends Controller_Core_Action
 
     public function deleteAction()
     {
+        $request = new Model_Core_Request();
+        $getId = $request->getRequest('id');
         try
         {
-            if (!isset($_GET['id']))
+            if (!isset($getId))
             {
                 throw new Exception("Invalid Request.", 1);
             }
 
             $adapter = new Model_Core_Adapter();
-            $pid = $_GET['id'];
+            $pid = $getId;
             $query = "DELETE FROM category WHERE categoryId = '$pid' ";
             $result = $adapter->delete($query);
             if (!$result)
@@ -151,6 +172,54 @@ class Controller_Category extends Controller_Core_Action
         }
         return ($category);
     }
+
+    public function updatePathIntoCategory($id,$parentId)
+    {
+        
+        $adapter = new Model_Core_Adapter();
+        $query = "SELECT path FROM category WHERE categoryId = '$id'";
+        $result = $adapter->fetchOne($query);
+        $output = $result . '/%';
+        $pathQuery="SELECT path FROM category WHERE categoryId = '$parentId'";
+        $path = $adapter->fetchOne($pathQuery);
+        $newPath = $path . '/' . $id;
+        $updatePath = $adapter->update("UPDATE category SET path = '$newPath' WHERE categoryId = '$id'");
+        $categories = $adapter->fetchAll("SELECT * FROM category WHERE `path` LIKE('$output') ORDER BY `path`");
+        print_r($categories);
+        exit();
+        if(!$categories) 
+        { 
+            echo 'No others paths found....';
+        }
+        else {
+
+            foreach ($categories as $id => $category) {
+                $newParentId = $category['parentId'];
+                $newCategoryId = $category['categoryId'];
+                $getParentPath = $adapter->fetchOne("SELECT path FROM category WHERE categoryId='$newParentId'");
+                $updatedPath = $getParentPath . '/' . $category['categoryId'];
+                $updateResult = $adapter->update("UPDATE category
+                                                    SET path = '$updatedPath'
+                                                    WHERE categoryId = '$newCategoryId'");
+            }
+        }
+    }
+            /*$query1 = "SELECT parentId FROM category WHERE categoryId = ' $id '";
+                $result1 = $adapter->fetchOne($query1);
+                
+                $query2 = "SELECT path FROM category WHERE categoryId = '$result1' ";
+                $result2 = $adapter->fetchOne($query2);
+
+                $path = $result2 . '/%';
+                $newpath = $result2 . '/' . $id;
+
+                $query3 = "SELECT * FROM category WHERE path LIKE '$path'";
+                $categories = $adapter->fetchAll($query3);
+
+                foreach($categories as $id => $category ){
+                    $newCategoryId = $category['categoryId'];
+                    $newParentId = $category['parentId'];*/
+    
 
     public function redirect($url)
     {

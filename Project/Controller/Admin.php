@@ -1,9 +1,29 @@
-<?php //require_once("Model/Core/Adapter.php");
- ?>
 <?php
 Ccc::loadClass('Controller_Core_Action');
-class Controller_admin extends Controller_Core_Action
+Ccc::loadClass('Model_Core_Request');
+Ccc::loadClass('Model_Admin');
+
+class Controller_Admin extends Controller_Core_Action
 {
+    public function testAction()
+    { 
+        $adminTable = new Model_Admin(); //Model_Core_Table
+        echo '<pre>';
+        //echo $adminTable->getTableName();
+
+        $adminTable->setTableName('admin');
+        $adminTable->setPrimaryKey('adminId');
+       // $adminTable->insert(['firstName' => 'M' , 'lastName' => 'k' , 'email' => 'a@b.com' ,'password' => 'abc' , 'status' => '1' ]);
+        
+
+        $adminTable->update(['firstName' => 'R' , 'lastName' => 'K' ], ['adminId'=>9]); // array or id
+
+        //$adminTable->delete(['adminId' => 6]); // array or id 
+    
+        $adminTable->fetchRow("SELECT * FROM admin WHERE adminId = 9");
+        $adminTable->fetchAll("SELECT * FROM admin ");
+    }
+
     public function gridAction()
     {
         $adapter = new Model_Core_Adapter();
@@ -18,10 +38,12 @@ class Controller_admin extends Controller_Core_Action
 
     public function editAction()
     {
-        $adapter = new Model_Core_Adapter();
-        if ($_GET['id'])
+        global $adapter; 
+        $request = new Model_Core_Request();
+        $getId = $request->getRequest('id');
+        if ($getId)
         {
-            $id = $_GET['id'];
+            $id = $getId;
             $admins = $adapter->fetchRow("SELECT * FROM admin  WHERE adminId = '$id'");
         }
         $view = $this->getView();
@@ -43,16 +65,17 @@ class Controller_admin extends Controller_Core_Action
     {
         try
         {
-
-            $adapter = new Model_Core_Adapter();
+            global $adapter;
+            $request = new Model_Core_Request();
             date_default_timezone_set("Asia/Kolkata");
             $date = date('Y-m-d H:i:s');
-            $id = $_POST['admin']['id'];
-            $firstName = $_POST['admin']['firstName'];
-            $lastName = $_POST['admin']['lastName'];
-            $email = $_POST['admin']['email'];
-            $password = $_POST['admin']['password'];
-            $status = $_POST['admin']['status'];
+            $row = $request->getPost('admin');
+            $id = $row['id'];
+            $firstName = $row['firstName'];
+            $lastName = $row['lastName'];
+            $email = $row['email'];
+            $password = $row['password'];
+            $status = $row['status'];
             $createdAt = $date;
             $updatedAt = $date;
 
@@ -91,14 +114,16 @@ class Controller_admin extends Controller_Core_Action
 
     public function deleteAction()
     {
+        $request = new Model_Core_Request();
+        $getId = $request->getRequest('id');
         try
         {
-            if (!isset($_GET['id']))
+            if (!isset($getId))
             {
                 throw new Exception("Invalid Request.", 1);
             }
             $adapter = new Model_Core_Adapter();
-            $id = $_GET['id'];
+            $id = $getId;
             $result = $adapter->delete("DELETE FROM admin WHERE adminId = '$id'  ");
             if (!$result)
             {

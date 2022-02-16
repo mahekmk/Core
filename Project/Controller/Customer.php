@@ -1,6 +1,7 @@
 <?php require_once("Model/Core/Adapter.php");?>
 <?php
 Ccc::loadClass('Controller_Core_Action');
+Ccc::loadClass('Model_Core_Request');
 class Controller_Customer extends Controller_Core_Action
 {
 	public function gridAction()
@@ -17,10 +18,12 @@ class Controller_Customer extends Controller_Core_Action
 
 	public function editAction()
 	{
-		$adapter = new Model_Core_Adapter();
-		if($_GET['id'])
+		global $adapter; 
+        $request = new Model_Core_Request();
+        $getId = $request->getRequest('id');
+        if ($getId)
 		{
-			$id = $_GET['id'];
+			$id = $getId;
 			$customerAddresses = $adapter->fetchRow("SELECT c.*, a.* FROM customer c LEFT JOIN address a ON c.customerId = a.customerId WHERE c.customerID = '$id'");
 		}
 		$view=$this->getView();
@@ -40,16 +43,17 @@ class Controller_Customer extends Controller_Core_Action
 
 	protected function saveCustomer()
 	{
-		$adapter = new Model_Core_Adapter();
+		global $adapter;
+		$request = new Model_Core_Request();
 		date_default_timezone_set("Asia/Kolkata");
 		$date = date('Y-m-d H:i:s');
-		
-		$id=$_POST['customer']['id'];
-		$firstName=$_POST['customer']['firstName'];
-		$lastName=$_POST['customer']['lastName'];
-		$email=$_POST['customer']['email'];
-		$mobile=$_POST['customer']['mobile'];
-		$status = $_POST['customer']['status'];
+		$row = $request->getPost('customer');
+		$id=$row['id'];
+		$firstName=$row['firstName'];
+		$lastName=$row['lastName'];
+		$email=$row['email'];
+		$mobile=$row['mobile'];
+		$status = $row['status'];
 		$createdAt = $date;
 		$updatedAt = $date;
 
@@ -83,13 +87,15 @@ class Controller_Customer extends Controller_Core_Action
 	protected function saveAddress($customerId)	
 	{
 		$adapter = new Model_Core_Adapter();
-		$address = $_POST['address']['address'];
-		$postalCode = $_POST['address']['postalCode'];
-		$city = $_POST['address']['city'];
-		$state = $_POST['address']['state'];
-		$country = $_POST['address']['country'];
-		$billingAddress = $_POST['address']['billingAddress'];
-		$shippingAddress = $_POST['address']['shippingAddress'];
+		$request = new Model_Core_Request();
+		$row = $request->getPost('address');
+		$address = $row['address'];
+		$postalCode = $row['postalCode'];
+		$city = $row['city'];
+		$state = $row['state'];
+		$country = $row['country'];
+		$billingAddress = $row['billingAddress'];
+		$shippingAddress = $row['shippingAddress'];
 		$addressData = $adapter->fetchRow("SELECT * FROM address WHERE customerId = '$customerId'");
 		if(!$addressData):
 			$query = "INSERT INTO `address`( `customerId`, `address`, `postalCode`, `city`, `state`, `country`, `billingAddress`,`shippingAddress`) VALUES ('$customerId','$address','$postalCode','$city','$state','$country','$billingAddress' ,'$shippingAddress')";
@@ -132,13 +138,15 @@ class Controller_Customer extends Controller_Core_Action
 
 	public function deleteAction()
 	{
+		$request = new Model_Core_Request();
+        $getId = $request->getRequest('id');
 		try {
 			
-			if (!isset($_GET['id'])) {
+			if (!isset($getId)) {
 				throw new Exception("Invalid Request.", 1);
 			}
 			$adapter = new Model_Core_Adapter();
-			$id = $_GET['id'];
+			$id = $getId;
 			$result= $adapter->delete("DELETE FROM customer WHERE customerId = '$id'  ");
 			if(!$result){
 				throw new Exception("System is unable to delete record.", 1);	

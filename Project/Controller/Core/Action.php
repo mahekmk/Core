@@ -7,6 +7,12 @@ class Controller_Core_Action{
 
     public $view = null; 
 
+    public function getAdapter()
+    {
+        global $adapter;
+        return $adapter;
+    }
+
 	public function redirect($url)
     {
         header("location : $url");
@@ -27,3 +33,4 @@ class Controller_Core_Action{
         return $this;
     }
 }
+
