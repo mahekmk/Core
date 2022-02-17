@@ -1,4 +1,5 @@
 <?php
+Ccc::loadClass('Controller_Core_Front');
 echo '<pre>';
 class Model_Core_Request
 { 
@@ -22,14 +23,17 @@ class Model_Core_Request
 
     public function getRequest($key = null , $value = null)
     {
+
        if($key == null)
         {
             return $_REQUEST;
         }
         if(!array_key_exists($key, $_REQUEST))
         {
+
             return $value;
         }
+
         return $_REQUEST[$key];
     }
 

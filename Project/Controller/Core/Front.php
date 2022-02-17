@@ -8,7 +8,6 @@
 
 class Controller_Core_Front
 {
-
 	protected $request = NULL;
 
 	public function getRequest()

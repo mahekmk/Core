@@ -2,23 +2,23 @@
 <?php
 class Ccc
 {
-	public $front = null;
+	public static $front = null;
 
-	public function getFront()
+	public static function getFront()
 	{
-		Ccc::loadClass('Controller_Core_Front');
-		if(!$this->front)
+		if(!self::$front)
 		{
+			Ccc::loadClass('Controller_Core_Front');
 			$front = new Controller_Core_Front();
-			$this->setFront($front);
+			self::setFront($front);
 		}
-		return $this->front;
+		return self::$front;
 	}
 
-	public function setFront($front)
+	public static function setFront($front)
 	{
-		$this->front = $front;
-		return $this;
+		self::$front = $front;
+		
 	}
 
 	public static function loadFile($path)
@@ -32,19 +32,20 @@ class Ccc
 		Ccc::loadFile($path);
 	}
 
-	public function init()
+	public static function getModel($className)
 	{
-		$this->getFront()->init();
+		$className='Model_'.$className;
+		self::loadClass($className);
+		return new $className();
+	}
 
-		/*$actionName = (isset($_GET['a'])) ? $_GET['a'].'Action' : 'errorAction';
-		$controllerName = (isset($_GET['c'])) ? ucfirst($_GET['c']) : 'Customer' ;
-		$controllerPath = 'Controller/'.$controllerName.'.php';
-		$controllerClassName = 'Controller_'.$controllerName;
-		Ccc::loadClass($controllerClassName);
-		$controller = new $controllerClassName();
-		$controller->$actionName();*/
+	public static function init()
+	{
+		self::getFront()->init();
 	}
 }
-$obj = new Ccc();
-$obj->init();
+/*$obj = new Ccc();
+$obj->init();*/
+
+Ccc::init();
 ?>
