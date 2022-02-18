@@ -1,3 +1,4 @@
+<?php $controllerCoreAction = new Controller_Core_Action(); ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -6,7 +7,7 @@
 	<title>Admin Add</title>
 </head>
 <body>
-	<form action="index.php?c=admin&a=save" method="POST">
+	<form action="<?php echo $controllerCoreAction->getUrl('save','admin',null,true) ?>" method="POST">
 		<table border="1" width="100%" cellspacing="4">
 			<tr>
 				<td colspan="2"><h2>Admin Information</h2> </td>
@@ -46,7 +47,7 @@
 				<td width="10%">&nbsp;</td>
 				<td>
 					<input type="submit" name="submit" value="Save">
-					<button type="button"><a href="index.php?c=admin&a=grid">Cancel</a></button>
+					<button type="button"><a href="<?php echo $controllerCoreAction->getUrl('grid','admin',null,true) ?>">Cancel</a></button>
 				</td>
 			</tr>
 		</table>

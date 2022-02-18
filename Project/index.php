@@ -38,6 +38,13 @@ class Ccc
 		self::loadClass($className);
 		return new $className();
 	}
+	
+	public static function getBlock($className)
+	{
+		$className='Block_'.$className;
+		self::loadClass($className);
+		return new $className();
+	}
 
 	public static function init()
 	{

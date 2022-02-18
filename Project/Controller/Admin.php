@@ -2,7 +2,9 @@
 Ccc::loadClass('Controller_Core_Action');
 Ccc::loadClass('Model_Core_Request');
 Ccc::loadClass('Model_Admin');
+?>
 
+<?php
 class Controller_Admin extends Controller_Core_Action
 {
     public function testAction()
@@ -22,12 +24,8 @@ class Controller_Admin extends Controller_Core_Action
     
         //$adminTable->fetchRow("SELECT * FROM admin WHERE adminId = 9");
         //$adminTable->fetchAll("SELECT * FROM admin ");
-    }
 
-    public function gridAction()
-    {
-
-        //index.php?c=category&a=grid&id=5&tab=menu
+         //index.php?c=category&a=grid&id=5&tab=menu
 
         //$this->getUrl(); //index.php?c=category&a=grid&id=5&tab=menu
         //$this->getUrl('save'); //index.php?c=category&a=save&id=5&tab=menu
@@ -38,42 +36,38 @@ class Controller_Admin extends Controller_Core_Action
         //$this->getUrl('save','category',null,true); //index.php?c=category&a=save
         //$this->getUrl(null,'category',null,true); //index.php?c=category&a=grid
         //$this->getUrl(null,'category',['module' => 'Admin'],true); //index.php?c=category&a=grid&module=Admin
+      
+    }
 
-        $adapter = new Model_Core_Adapter();
-        $adminTable = new Model_Admin();
-        $admins = $adminTable->fetchAll("SELECT * FROM admin ");
-        $view = $this->getView();
-        $view->addData('admins', $admins);
-        $view->setTemplate('view/admin/grid.php');
-        $view->toHtml();
-
-        //require_once('view/admin/grid.php');       
+    public function gridAction()
+    {
+        Ccc::getBlock('Admin_Grid')->toHtml();      
     }
 
     public function editAction()
     {
-        global $adapter; 
-        $request = new Model_Core_Request();
-        $adminTable = new Model_Admin();
-        $getId = $request->getRequest('id');
-        if ($getId)
+        try 
         {
-            $id = $getId;
-            $admins = $adminTable->fetchRow("SELECT * FROM admin WHERE adminId = $id");
+            $id = (int) $this->getRequest()->getRequest('id');
+            if(!$id){
+                throw new Exception("Id not valid.");
+            }
+            $adminModel = Ccc::getModel('Admin');
+            $admin = $adminModel->fetchRow("SELECT * FROM admin WHERE adminId = {$id} ");
+            if(!$admin){
+                throw new Exception("unable to load admin.");
+            }
+            Ccc::getBlock('Admin_Edit')->addData('admin',$admin)->toHtml();       
+        } 
+        catch (Exception $e) 
+        {
+            echo $e->getMessage();
         }
-        $view = $this->getView();
-        $view->addData('admins', $admins);
-        $view->setTemplate('view/admin/edit.php');
-        $view->toHtml();
-        //require_once('view/admin/edit.php');
     }
 
     public function addAction()
     {
-        $view = $this->getView();
-        $view->setTemplate('view/admin/add.php');
-        $view->toHtml();
-        //require_once('view/admin/add.php');    
+       Ccc::getBlock('Admin_Add')->toHtml();  
     }
 
     public function saveAction()
@@ -124,7 +118,7 @@ class Controller_Admin extends Controller_Core_Action
                 }
 
             endif;
-            $this->redirect('index.php?c=admin&a=grid');
+           $this->redirect($this->getUrl('grid','admin',null,true));
         }
 
         catch(Exception $e)
@@ -153,7 +147,7 @@ class Controller_Admin extends Controller_Core_Action
             {
                 throw new Exception("System is unable to delete record.", 1);
             }
-            $this->redirect('index.php?c=admin&a=grid');
+            $this->redirect($this->getUrl('grid','admin',null,true));
         }
         catch(Exception $e)
         {

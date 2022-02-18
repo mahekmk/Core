@@ -128,7 +128,7 @@ class Controller_Customer extends Controller_Core_Action
 		{
 			$customerId = $this->saveCustomer();
 			$this->saveAddress($customerId);
-			$this->redirect('index.php?c=customer&a=grid');
+			$this->redirect($this->getUrl('grid','customer',null,true));
 		} 
 		
 		catch (Exception $e) {
@@ -151,7 +151,7 @@ class Controller_Customer extends Controller_Core_Action
 			if(!$result){
 				throw new Exception("System is unable to delete record.", 1);	
 			}
-			$this->redirect('index.php?c=customer&a=grid');
+			$this->redirect($this->getUrl('grid','customer',null,true));
 		}
 		catch (Exception $e) {
 			echo $e->getMessage(); 	

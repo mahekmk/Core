@@ -1,10 +1,5 @@
-
-<?php //require_once('Model/Core/Adapter.php') ?>
-<?php 
-/*$adapter = new Model_Core_Adapter();
-$admins = $adapter->fetchAll("SELECT * FROM admin");*/
-
-?>
+<?php $admins = $this->getAdmins(); ?>
+<?php $controllerCoreAction = new Controller_Core_Action();?>
 
 <html>
 <head>
@@ -13,7 +8,7 @@ $admins = $adapter->fetchAll("SELECT * FROM admin");*/
 		<button name='Customer'><a href="index.php?c=customer&a=grid">Customer</a></button>
 		<button name='Category'><a href="index.php?c=category&a=grid">Category</a></button>
 		<button name='Product'><a href="index.php?c=product&a=grid">Product</a></button>
-		<button name='Add'><a href="index.php?c=admin&a=add">Add</a></button>
+		<button name='Add'><a href="<?php echo $controllerCoreAction->getUrl('add','admin',null,true) ?>">Add</a></button>
 		<table border="1" width="100%" cellspacing="4">
 			<tr>
 				<th>admin Id</th>
@@ -26,12 +21,12 @@ $admins = $adapter->fetchAll("SELECT * FROM admin");*/
 				<th>Edit</th>
 				<th>Delete</th>
 			</tr>
-			<?php if(!$data['admins']): ?>
+			<?php if(!$admins): ?>
 				<tr>
 					<td colspan="17">No Record available.</td>
 				</tr>
 			<?php else : ?>
-				<?php foreach ($data['admins'] as $admin): ?>
+				<?php foreach ($admins as $admin): ?>
 				<tr>
 					<td><?php echo $admin['adminId']?></td>
 					<td><?php echo $admin['firstName']?></td>
@@ -40,8 +35,8 @@ $admins = $adapter->fetchAll("SELECT * FROM admin");*/
 					<td><?php echo $admin['status']?></td>
 					<td><?php echo $admin['createdAt']?></td>
 					<td><?php echo $admin['updatedAt']?></td>
-					<td><a href="index.php?c=admin&a=edit&id=<?php echo $admin['adminId'] ?>">Edit</a></td>
-					<td><a href="index.php?c=admin&a=delete&id=<?php echo $admin['adminId'] ?>">Delete</a></td>
+					<td><a href="<?php echo $controllerCoreAction->getUrl('edit','admin',['id'=> $admin['adminId']],true) ?>">Edit</a></td>
+					<td><a href="<?php echo $controllerCoreAction->getUrl('delete','admin',['id'=> $admin['adminId']],true) ?>">Delete</a></td>
 				</tr>
 				<?php endforeach;	?>
 		<?php endif;  ?>

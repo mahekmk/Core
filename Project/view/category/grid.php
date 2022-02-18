@@ -1,8 +1,10 @@
+<?php $categories = $this->getCategories(); ?>
 <?php
-/*$categories = $this->getData('categories');*/
-$controllerCategory = new Controller_Category();
 
+$controllerCategory = new Controller_Category();
 ?>
+
+
 
 <html>
 <head>
@@ -22,12 +24,12 @@ $controllerCategory = new Controller_Category();
 				<th>Edit</th>
 				<th>Delete</th>
 			</tr>
-			<?php if(!$data['categories']): ?>
+			<?php if(!$categories): ?>
 				<tr>
 					<td colspan="9">No Record available.</td>
 				</tr>
 			<?php else : ?>
-				<?php foreach ($data['categories'] as $category): ?>
+				<?php foreach ($categories as $category): ?>
 				<tr>
 					<td><?php echo $category['categoryId']?></td>
 					<td>

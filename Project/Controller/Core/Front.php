@@ -1,11 +1,4 @@
 <?php 
-
-//Ccc::loadClass('Controller_Core_Front');
-
-?>
-
-<?php 
-
 class Controller_Core_Front
 {
 	protected $request = NULL;

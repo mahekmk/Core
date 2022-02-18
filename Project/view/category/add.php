@@ -1,6 +1,5 @@
 <?php 
 $controllerCategory = new Controller_Category();
-echo "<pre>";
 ?>
 <!DOCTYPE html>
 <html>

@@ -3,48 +3,38 @@ Ccc::loadClass('Controller_Core_Action');
 Ccc::loadClass('Model_Core_Request');
 ?>
 
-
 <?php
 class Controller_Product extends Controller_Core_Action{
 
 	public function gridAction()
 	{
-		$adapter = new Model_Core_Adapter();
-		$products = $adapter->fetchAll("SELECT * FROM product");
-		echo "<pre>";
-		$view = $this->getView();
-		$view->addData('products',$products);
-		$view->setTemplate('view/product/grid.php'); 
-		$view->toHtml();
-		
-		/*require_once('view/product/grid.php');*/
+		Ccc::getBlock('Product_Grid')->toHtml();
 	}
 
 	public function editAction()
-	{
-		global $adapter;
-		$request = new Model_Core_Request();
-        $getId = $request->getRequest('id');
-		if($getId)
+	{	
+		try 
 		{
-			$id = $getId;
-			$productRow = $adapter->fetchRow("SELECT * FROM product WHERE productID = '$id'");
+			$id = (int) $this->getRequest()->getRequest('id');
+			if(!$id){
+				throw new Exception("Id not valid.");
+			}
+			$productModel = Ccc::getModel('Product');
+			$product = $productModel->fetchRow("SELECT * FROM product WHERE productId = {$id} ");
+			if(!$product){
+				throw new Exception("unable to load product.");
+			}
+			Ccc::getBlock('Product_Edit')->addData('product',$product)->toHtml();		
+		} 
+		catch (Exception $e) 
+		{
+			echo $e->getMessage();
 		}
-		$view = $this->getView();
-		$view->addData('productRow',$productRow);
-		$view->setTemplate('view/product/edit.php'); 
-		$view->toHtml();
-
-		//require_once('view/product/edit.php');
 	}
 
 	public function addAction()
 	{
-		$adapter = new Model_Core_Adapter();
-		$view = $this->getView();
-		$view->setTemplate('view/product/add.php'); 
-		$view->toHtml();
-		//require_once('view/product/add.php');
+		Ccc::getBlock('Product_Add')->toHtml();
 	}
 
 	public function saveAction()
@@ -68,7 +58,7 @@ class Controller_Product extends Controller_Core_Action{
 				if(!$result){
 					throw new Exception("System is unable to insert information.",1);
 				}
-				$this->redirect('index.php?c=product&a=grid');
+				$this->redirect($this->getUrl('grid','product',null,true));
 			else:
 				$query = "UPDATE product SET productId='$id' , name='$name' , price='$price' , quantity='$quantity' , status='$status' , updatedAt='$date' WHERE productId = '$id' ";
 				$result = $adapter->update($query);
@@ -101,7 +91,7 @@ class Controller_Product extends Controller_Core_Action{
 			if(!$result){
 				throw new Exception("System is unable to delete record.", 1);
 			}
-			$this->redirect("index.php?c=product&a=grid");
+			$this->redirect($this->getUrl('grid','admin',null,true));
 		}//var_dump($result);
 		catch (Exception $e) {
 			echo $e->getMessage();

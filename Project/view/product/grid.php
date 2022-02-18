@@ -1,10 +1,4 @@
-<?php// require_once('Model/Core/Adapter.php') ?>
-<?php 
-
-//$products = $this->getData('products');
-
-?>
-
+<?php $products = $this->getProducts(); ?>
 <html>
 <head>
 	<body>
@@ -25,12 +19,12 @@
 				<th>Edit</th>
 				<th>Delete</th>
 			</tr>
-			<?php if(!$data['products']): ?>
+			<?php if(!$products): ?>
 				<tr>
 					<td colspan="10">No Record available.</td>
 				</tr>
 			<?php else : ?>
-				<?php foreach ($data['products'] as $product): ?>
+				<?php foreach ($products as $product): ?>
 				<tr>
 					<td><?php echo $product['productId']?></td>
 					<td><?php echo $product['name']?></td>
