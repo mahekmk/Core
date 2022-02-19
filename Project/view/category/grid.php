@@ -7,11 +7,11 @@
 <html>
 <head>
 	<body>
-		<button name='Admin'><a href="index.php?c=admin&a=grid">Admin</a></button>
-		<button name='Customer'><a href="index.php?c=customer&a=grid">Customer</a></button>
-		<button name='Category'><a href="">Category</a></button>
-		<button name='Product'><a href="<?php echo $controllerCoreAction->getUrl('add','category',null,true) ?>">Product</a></button>
-		<button name='Add'><a href="index.php?c=category&a=add">Add</a></button>
+		<button name='Admin'><a href="<?php echo $controllerCoreAction->getUrl('grid','admin',null,true) ?>">Admin</a></button>
+		<button name='Customer'><a href="<?php echo $controllerCoreAction->getUrl('grid','customer',null,true) ?>">Customer</a></button>
+		<button name='Category'><a href="<?php echo $controllerCoreAction->getUrl('grid','category',null,true) ?>">Category</a></button>
+		<button name='Product'><a href="<?php echo $controllerCoreAction->getUrl('grid','product',null,true) ?>">Product</a></button>
+		<button name='Add'><a href="<?php echo $controllerCoreAction->getUrl('add','category',null,true) ?>">Add</a></button>
 		<table border="1" width="100%" cellspacing="4">
 			<tr>
 				<th>Category Id</th>
@@ -38,8 +38,8 @@
 					<td><?php echo $category['status']?></td>
 					<td><?php echo $category['createdAt']?></td>
 					<td><?php echo $category['updatedAt']?></td>
-					<td><a href="<?php echo $controllerCoreAction->getUrl('edit','category',['id'=> $category['categoryId']],true) ?>">Edit</a></td>
-					<td><a href="index.php?c=category&a=delete&id=<?php echo $category['categoryId'] ?>">Delete</a></td>
+					<td><a href="<?php echo $controllerCoreAction->getUrl('edit','category',['categoryId'=> $category['categoryId']],true) ?>">Edit</a></td>
+					<td><a href="<?php echo $controllerCoreAction->getUrl('delete','category',['categoryId'=> $category['categoryId']],true) ?>">Delete</a></td>
 				</tr>
 				<?php endforeach;	?>
 		<?php endif;  ?>

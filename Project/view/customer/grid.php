@@ -3,11 +3,11 @@
 <html>
 <head>
 	<body>
-		<button name='Admin'><a href="index.php?c=admin&a=grid">Admin</a></button>
-		<button name='Customer'><a href="">Customer</a></button>
-		<button name='Category'><a href="<?php echo $controllerCoreAction->getUrl('add','customer',null,true) ?>">Category</a></button>
-		<button name='Product'><a href="index.php?c=product&a=grid">Product</a></button>
-		<button name='Add'><a href="index.php?c=customer&a=add">Add</a></button>
+		<button name='Admin'><a href="<?php echo $controllerCoreAction->getUrl('grid','admin',null,true) ?>">Admin</a></button>
+		<button name='Customer'><a href="<?php echo $controllerCoreAction->getUrl('grid','customer',null,true) ?>">Customer</a></button>
+		<button name='Category'><a href="<?php echo $controllerCoreAction->getUrl('grid','category',null,true) ?>">Category</a></button>
+		<button name='Product'><a href="<?php echo $controllerCoreAction->getUrl('grid','product',null,true) ?>">Product</a></button>
+		<button name='Add'><a href="<?php echo $controllerCoreAction->getUrl('add','customer',null,true) ?>">Add</a></button>
 		<table border="1" width="100%" cellspacing="4">
 			<tr>
 				<th>Customer Id</th>
