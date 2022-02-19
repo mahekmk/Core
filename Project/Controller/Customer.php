@@ -6,114 +6,88 @@ class Controller_Customer extends Controller_Core_Action
 {
 	public function gridAction()
 	{
-		$adapter = new Model_Core_Adapter();
-		$customers = $adapter->fetchAll("SELECT c.*, a.* FROM customer c LEFT JOIN address a ON c.customerId = a.customerId");
-		$view=$this->getView();
-		$view->addData('customers',$customers);
-		$view->setTemplate('view/customer/grid.php');
-		$view->toHtml();
-
-		//require_once('view/customer/grid.php');
+		Ccc::getBlock('Customer_Grid')->toHtml();
 	}
 
 	public function editAction()
 	{
-		global $adapter; 
-        $request = new Model_Core_Request();
-        $getId = $request->getRequest('id');
-        if ($getId)
+		try 
 		{
-			$id = $getId;
-			$customerAddresses = $adapter->fetchRow("SELECT c.*, a.* FROM customer c LEFT JOIN address a ON c.customerId = a.customerId WHERE c.customerID = '$id'");
+			$id = (int) $this->getRequest()->getRequest('id');
+			if(!$id){
+				throw new Exception("Id not valid.");
+			}
+			$customerModel = Ccc::getModel('Customer');
+			$customer = $customerModel->fetchRow("SELECT c.*, a.* FROM customer c LEFT JOIN address a ON c.customerId = a.customerId WHERE c.customerID = '$id'");
+			if(!$customer){
+				throw new Exception("unable to load customer.");
+			}
+			Ccc::getBlock('Customer_Edit')->addData('customer',$customer)->toHtml();		
+		} 
+		catch (Exception $e) 
+		{
+			echo $e->getMessage();
 		}
-		$view=$this->getView();
-		$view->addData('customerAddresses',$customerAddresses);
-		$view->setTemplate('view/customer/edit.php');
-		$view->toHtml();
-		//require_once('view/customer/edit.php');
 	}
 
 	public function addAction()
 	{
-		$view=$this->getView();
-		$view->setTemplate('view/customer/add.php');
-		$view->toHtml();
-		//require_once('view/customer/add.php');
+		Ccc::getBlock('Customer_Add')->toHtml();
 	}
 
 	protected function saveCustomer()
 	{
+		$customerModel = Ccc::getModel('Customer');
 		global $adapter;
-		$request = new Model_Core_Request();
 		date_default_timezone_set("Asia/Kolkata");
 		$date = date('Y-m-d H:i:s');
-		$row = $request->getPost('customer');
-		$id=$row['id'];
-		$firstName=$row['firstName'];
-		$lastName=$row['lastName'];
-		$email=$row['email'];
-		$mobile=$row['mobile'];
-		$status = $row['status'];
-		$createdAt = $date;
-		$updatedAt = $date;
-
-		if(!$id):
-			$query = "INSERT INTO `customer`(`firstName`,`lastName`,`mobile`,`email`,`status`,`createdAt`) VALUES ('$firstName','$lastName','$mobile','$email','$status','$date')";
-			$result = $adapter->insert($query);
-			if(!$result):
+		 $row = $this->getRequest()->getRequest('customer');
+		if(!array_key_exists('id',$row))
+		{	
+			$customerModel = Ccc::getModel('Customer');
+			$result = $customerModel->insert(['firstName' => $row['firstName'] , 'lastName' => $row['lastName'] , 'email' => $row['email'] , 'mobile' => $row['mobile'] , 'status' => $row['status']]);
+			if(!$result){
 				throw new Exception("System is unable to insert customer info.",1);
-			endif;
+			}
 			return $result;
-		else:
-
-			$query ="UPDATE customer 
-			SET firstName='$firstName' ,
-				lastName='$lastName' ,  
-				mobile='$mobile' , 
-				email='$email' ,
-				status='$status' , 
-				updatedAt='$date' 
-			WHERE customerId = '$id'";
-			$result = $adapter->update($query);
+		}
+		else{
+			$id=$row['id'];
+			$result = $customerModel->update(['firstName' => $row['firstName'] , 'lastName' => $row['lastName'] , 'email' => $row['email'] , 'mobile' => $row['mobile'] , 'status' => $row['status'] , 'updatedAt' => $date] , ['customerId' => $id]);
 			if(!$result){
 				throw new Exception("System is unable to update information.",1);
 			}
 			return $id;
-		endif;
-		
+		}
 		
 	}
 
 	protected function saveAddress($customerId)	
 	{
+		
+		$addressModel = Ccc::getModel('Customer_Address');
 		$adapter = new Model_Core_Adapter();
-		$request = new Model_Core_Request();
-		$row = $request->getPost('address');
-		$address = $row['address'];
-		$postalCode = $row['postalCode'];
-		$city = $row['city'];
-		$state = $row['state'];
-		$country = $row['country'];
-		$billingAddress = $row['billingAddress'];
-		$shippingAddress = $row['shippingAddress'];
-		$addressData = $adapter->fetchRow("SELECT * FROM address WHERE customerId = '$customerId'");
+		$row = $this->getRequest()->getRequest('address');
+		$billing = 0;
+	    $shipping = 0;
+
+	        if (array_key_exists("billing", $row) && $row["billing"] == 1) {
+	            $billing = 1;
+	        }
+	        if (array_key_exists("shipping", $row) && $row["shipping"] == 1) {
+	            $shipping = 1;
+        }
+		
+		$addressData = $addressModel->fetchRow("SELECT * FROM address WHERE customerId = '$customerId'");
 		if(!$addressData):
-			$query = "INSERT INTO `address`( `customerId`, `address`, `postalCode`, `city`, `state`, `country`, `billingAddress`,`shippingAddress`) VALUES ('$customerId','$address','$postalCode','$city','$state','$country','$billingAddress' ,'$shippingAddress')";
-			$result = $adapter->insert($query);
+			$result = $addressModel->insert(['customerId' => $customerId , 'address' => $row['address'] , 'postalCode' => $row['postalCode'] , 'city' => $row['city'] , 'state' => $row['state'] , 'country' => $row['country'] , 'billing' => $row['billing'] , 'shipping' => $row['shipping']]);
 			if(!$result):
 				throw new Exception("System is unable to insert address info.",1);
 			endif;
 		else:
-			$query ="UPDATE address 
-			SET address='$address' , 
-				postalCode='$postalCode' ,  
-				city='$city' , 
-				state='$state' , 
-				country='$country' , 
-				billingAddress='$billingAddress' , 
-				shippingAddress='$shippingAddress'
-			WHERE customerId = '$customerId'";
-			$result = $adapter->update($query);
+		
+        $id = $row['id'];
+			$result = $addressModel->update(['customerId' => $customerId , 'address' => $row["address"] , 'city' => $row["city"] ,'state' => $row["state"] , 'country' => $row["country"] , 'postalCode' => $row["postalCode"] , 'billing' => $billing,'shipping' =>  $shipping ],['addressId' => $id] );
 			if(!$result):
 				throw new Exception("System is unable to update information.",1);
 			endif;
@@ -138,8 +112,8 @@ class Controller_Customer extends Controller_Core_Action
 
 	public function deleteAction()
 	{
-		$request = new Model_Core_Request();
-        $getId = $request->getRequest('id');
+		$customerModel = Ccc::getModel('Customer');
+        $getId = $this->getRequest()->getRequest('id');
 		try {
 			
 			if (!isset($getId)) {
@@ -147,7 +121,7 @@ class Controller_Customer extends Controller_Core_Action
 			}
 			$adapter = new Model_Core_Adapter();
 			$id = $getId;
-			$result= $adapter->delete("DELETE FROM customer WHERE customerId = '$id'  ");
+			$result=$customerModel->delete(['customerId' => $getId]);
 			if(!$result){
 				throw new Exception("System is unable to delete record.", 1);	
 			}

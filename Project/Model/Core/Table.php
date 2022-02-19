@@ -52,7 +52,7 @@ class Model_Core_Table
 		$tableName = $this->getTableName();
 
 		$key = key($deleteArr);
-		$value = $deleteArr['adminId'];
+		$value = $deleteArr[$this->primaryKey];
 		$delete = "DELETE FROM $tableName WHERE $key = $value;";
 		$result = $adapter->delete($delete);
 		return $result;
@@ -66,12 +66,13 @@ class Model_Core_Table
 		$set = [];
 		$tableName = $this->getTableName();
 		$key = key($whereArr);
-		$value = $whereArr['adminId'];
+		$value = $whereArr[$this->primaryKey];
 		foreach($updateArr as $k => $v){
 			$set[] = "$k='$v'";
 		}
 		$imp = implode(',', $set);
-		$update = "UPDATE $tableName SET $imp , updatedAt = '".$date."' WHERE $key = $value;";
+	//$update = "UPDATE $tableName SET $imp , updatedAt = '".$date."' WHERE $key = $value;";
+		$update = "UPDATE $tableName SET $imp WHERE $key = $value;";
 		$result = $adapter->update($update);
 		return $result;
 		//Update admin SET firstName = "M" , lastName = "K" WHERE adminId = 5;

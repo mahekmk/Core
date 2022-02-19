@@ -72,12 +72,11 @@ class Controller_Admin extends Controller_Core_Action
 
     public function saveAction()
     {
-         $adminTable = new Model_Admin();
+         $adminModel = Ccc::getModel('Admin');
          global $adapter;
-            $request = new Model_Core_Request();
             date_default_timezone_set("Asia/Kolkata");
             $date = date('Y-m-d H:i:s');
-            $row = $request->getPost('admin');
+            $row = $this->getRequest()->getRequest('admin');
             $id = $row['id'];
             $firstName = $row['firstName'];
             $lastName = $row['lastName'];
@@ -90,28 +89,15 @@ class Controller_Admin extends Controller_Core_Action
         {
             if (!$id):
 
-               $result = $adminTable->insert(['firstName' => $firstName , 'lastName' => $lastName , 'email' => $email ,'password' => $password , 'status' => $status ]);
-
-
-                /*$query = "INSERT INTO `admin`(`firstName`,`lastName`,`password`,`email`,`status`,`createdAt`) VALUES ('$firstName','$lastName',md5('$password'),'$email','$status','$date')";
-                $result = $adapter->insert($query);*/
+               $result = $adminModel->insert(['firstName' => $firstName , 'lastName' => $lastName , 'email' => $email ,'password' => $password , 'status' => $status ]);
                 if (!$result):
                     throw new Exception("System is unable to insert admin info.", 1);
                 endif;
 
             else:
 
-            $result = $adminTable->update(['firstName' => $firstName , 'lastName' => $lastName , 'email' => $email ,'password' => $password , 'status' => $status ], ['adminId'=> $id]);
+            $result = $adminModel->update(['firstName' => $firstName , 'lastName' => $lastName , 'email' => $email ,'password' => $password , 'status' => $status ,'updatedAt' => $date ], ['adminId'=> $id]);
 
-            /*$query = "UPDATE admin 
-			SET firstName='$firstName' ,
-				lastName='$lastName' ,  
-				password=md5('$password') , 
-				email='$email' ,
-				status='$status' , 
-				updatedAt='$date' 
-			WHERE adminId = '$id'";
-                $result = $adapter->update($query);*/
                 if (!$result)
                 {
                     throw new Exception("System is unable to update information.", 1);
@@ -129,8 +115,8 @@ class Controller_Admin extends Controller_Core_Action
 
     public function deleteAction()
     {
-        $adminTable = new Model_Admin();
-        //$request = new Model_Core_Request();
+        $adminModel = Ccc::getModel('Admin');
+        /*$adminTable = new Model_Admin();*/
         $getId = $this->getRequest()->getRequest('id');
         try
         {
@@ -138,11 +124,8 @@ class Controller_Admin extends Controller_Core_Action
             {
                 throw new Exception("Invalid Request.", 1);
             }
-            $adapter = new Model_Core_Adapter();
             $id = $getId;
-            $result = $adminTable->delete(['adminId' => $id]); 
-            var_dump($result);
-            //$result = $adapter->delete("DELETE FROM admin WHERE adminId = '$id'  ");
+            $result = $adminModel->delete(['adminId' => $id]); 
             if (!$result)
             {
                 throw new Exception("System is unable to delete record.", 1);

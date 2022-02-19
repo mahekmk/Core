@@ -1,6 +1,8 @@
 <?php 
 Ccc::loadClass('Controller_Core_Action');
 Ccc::loadClass('Model_Core_Request');
+Ccc::loadClass('Model_Product');
+
 ?>
 
 <?php
@@ -39,11 +41,11 @@ class Controller_Product extends Controller_Core_Action{
 
 	public function saveAction()
 	{
+		$productModel = Ccc::getModel('Product');
 		global $adapter;
-        $request = new Model_Core_Request();
 		date_default_timezone_set("Asia/Kolkata");
 		$date = date('Y-m-d H:i:s');
-		$row = $request->getPost('product');
+		$row = $this->getRequest()->getRequest('product');
 		$id =$row['id'];
 		$name=$row['name'];
 		$price=$row['price'];
@@ -53,20 +55,18 @@ class Controller_Product extends Controller_Core_Action{
 		$updatedAt = $date;
 		try{
 			if($id == NULL):
-				$query = "INSERT INTO product(name,price,quantity,status,createdAt) VALUES ('$name','$price','$quantity','$status','$date')";
-				$result = $adapter->insert($query);
+				$result = $productModel->insert(['name' => $name, 'price' => $price , 'quantity' => $quantity , 'status' => $status]);
 				if(!$result){
 					throw new Exception("System is unable to insert information.",1);
 				}
 				$this->redirect($this->getUrl('grid','product',null,true));
 			else:
-				$query = "UPDATE product SET productId='$id' , name='$name' , price='$price' , quantity='$quantity' , status='$status' , updatedAt='$date' WHERE productId = '$id' ";
-				$result = $adapter->update($query);
+				$result = $productModel->update(['name' => $name, 'status' => $status, 'price' => $price, 'quantity' => $quantity, 'updatedAt' => $date], ['productId' => $id]);
 
 				if(!$result){
 					throw new Exception("System is unable to update information.",1);
 				}
-				$this->redirect('index.php?c=product&a=grid');
+				$this->redirect($this->getUrl('grid','product',null,true));
 			endif;
 		}
 		catch (Exception $e) {
@@ -78,20 +78,20 @@ class Controller_Product extends Controller_Core_Action{
 
 	public function deleteAction()
 	{
-		$request = new Model_Core_Request();
-        $getId = $request->getRequest('id');
+		$productModel = Ccc::getModel('Product');
+        $getId = $this->getRequest()->getRequest('id');;
 		try {
 			
 			if (!isset($getId)) {
 				throw new Exception("Invalid Request.", 1);
 			}
 			$adapter = new Model_Core_Adapter();
-			$pid = $getId;
-			$result= $adapter->delete("DELETE FROM product WHERE productId = '$pid' ");
+			$id = $getId;
+			$result= $productModel->delete(['productId' => $id]);
 			if(!$result){
 				throw new Exception("System is unable to delete record.", 1);
 			}
-			$this->redirect($this->getUrl('grid','admin',null,true));
+			$this->redirect($this->getUrl('grid','product',null,true));
 		}//var_dump($result);
 		catch (Exception $e) {
 			echo $e->getMessage();

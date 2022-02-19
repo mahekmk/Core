@@ -1,4 +1,5 @@
 <?php $products = $this->getProducts(); ?>
+<?php $controllerCoreAction = new Controller_Core_Action(); ?>
 <html>
 <head>
 	<body>
@@ -33,8 +34,8 @@
 					<td><?php echo $product['status']?></td>
 					<td><?php echo $product['createdAt']?></td>
 					<td><?php echo $product['updatedAt']?></td>
-					<td><a href="index.php?c=product&a=edit&id=<?php echo $product['productId'] ?>">Edit</a></td>
-					<td><a href="index.php?c=product&a=delete&id=<?php echo $product['productId'] ?>">Delete</a></td>
+					<td><a href="<?php echo$controllerCoreAction->getUrl('edit','product',['id' =>  $product['productId']],true) ?>">Edit</a></td>
+					<td><a href="<?php echo$controllerCoreAction->getUrl('delete','product',['id' =>  $product['productId']],true) ?>">Delete</a></td>
 				</tr>
 				<?php endforeach;	?>
 		<?php endif;  ?>

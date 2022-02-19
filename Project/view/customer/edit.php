@@ -1,3 +1,5 @@
+<?php $customerAddress = $this->getCustomerAddress(); ?>
+<?php $controllerCoreAction = new Controller_Core_Action();?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -6,7 +8,7 @@
 	<title>Customer edit</title>
 </head>
 <body>
-	<form action="index.php?c=customer&a=save&id=<?php echo $_GET['id']?>" method="POST">
+	<form action="<?php echo$controllerCoreAction->getUrl('save','customer',['id' =>  $customerAddress['customerId']],true) ?>" method="POST">
 		<table border="1" width="100%" cellspacing="4">
 			<tr>
 				<td colspan="2"> Customer Information</td>
@@ -14,77 +16,93 @@
 
 			<tr>
 				<td width="10%">Customer Id</td>
-				<td><input type="text" name="customer[id]" value="<?php echo $data['customerAddresses']['customerId']; ?>" readonly></td>
+				<td><input type="text" name="customer[id]" value="<?php echo $customerAddress['customerId']; ?>" readonly></td>
 			</tr>
 
 			<tr>
 				<td width="10%">First Name</td>
-				<td><input type="text" name="customer[firstName]" value="<?php echo $data['customerAddresses']['firstName'] ; ?>" ></td>
+				<td><input type="text" name="customer[firstName]" value="<?php echo $customerAddress['firstName'] ; ?>" ></td>
 			</tr>
 
 			<tr>
 				<td width="10%">Last Name</td>
-				<td><input type="text" name="customer[lastName]" value="<?php echo $data['customerAddresses']['lastName'] ;?>"></td>
+				<td><input type="text" name="customer[lastName]" value="<?php echo $customerAddress['lastName'] ;?>"></td>
 			</tr>
 
 			<tr>
 				<td width="10%">email</td>
-				<td><input type="text" name="customer[email]" value="<?php echo $data['customerAddresses']['email'] ; ?>"></td>
+				<td><input type="text" name="customer[email]" value="<?php echo $customerAddress['email'] ; ?>"></td>
 			</tr>
 
 			<tr>
 				<td width="10%">mobile</td>
-				<td><input type="number" name="customer[mobile]" value="<?php echo $data['customerAddresses']['mobile'] ;?>"></td>
+				<td><input type="number" name="customer[mobile]" value="<?php echo $customerAddress['mobile'] ;?>"></td>
 			</tr>
 
 			<tr>
 				<td width="10%">Status</td>
 				<td>
-					<select name="customer[status]" value="<?php echo $data['customerAddresses']['status']; ?>">
-						<option value="1"  <?php if($data['customerAddresses']['status']== 1):?>  selected="selected" <?php endif; ?>>Active</option>
-						<option value="2"  <?php if($data['customerAddresses']['status']== 2):?>  selected="selected" <?php endif; ?>>Inactive</option>
+					<select name="customer[status]" value="<?php echo $customerAddress['status']; ?>">
+						<option value="1"  <?php if($customerAddress['status']== 1):?>  selected="selected" <?php endif; ?>>Active</option>
+						<option value="2"  <?php if($customerAddress['status']== 2):?>  selected="selected" <?php endif; ?>>Inactive</option>
 					</select>
 				</td>
 			</tr>
 
 			<tr>
+				<td width="10%">Address Id</td>
+				<td><input type="text" name="address[id]" value="<?php echo $customerAddress['addressId']; ?>" readonly></td>
+			</tr>
+
+			<tr>
 				<td width="10%">Address</td>
-				<td><input type="text" name="address[address]" value="<?php echo $data['customerAddresses']['address'] ; ?>"></td>
+				<td><input type="text" name="address[address]" value="<?php echo $customerAddress['address'] ; ?>"></td>
 			</tr>
 
 			<tr>
 				<td width="10%">Postal Code</td>
-				<td><input type="text" name="address[postalCode]" value="<?php echo $data['customerAddresses']['postalCode'] ; ?>"></td>
+				<td><input type="text" name="address[postalCode]" value="<?php echo $customerAddress['postalCode'] ; ?>"></td>
 			</tr>
 
 			<tr>
 				<td width="10%">City</td>
-				<td><input type="text" name="address[city]" value="<?php echo $data['customerAddresses']['city'] ; ?>"></td>
+				<td><input type="text" name="address[city]" value="<?php echo $customerAddress['city'] ; ?>"></td>
 			</tr>
 
 			<tr>
 				<td width="10%">State</td>
-				<td><input type="text" name="address[state]" value="<?php echo $data['customerAddresses']['state'] ; ?>"></td>
+				<td><input type="text" name="address[state]" value="<?php echo $customerAddress['state'] ; ?>"></td>
 			</tr>
 
 			<tr>
 				<td width="10%">Country</td>
-				<td><input type="text" name="address[country]" value="<?php echo $data['customerAddresses']['country'] ; ?>"></td>
+				<td><input type="text" name="address[country]" value="<?php echo $customerAddress['country'] ; ?>"></td>
 			</tr>
 
-			<tr>
-				<td width="10%">Address Type</td>
-				<td><input type="checkbox" name="address[billingAddress]" value="1" <?php if($data['customerAddresses']['billingAddress'] == 1):?>  checked <?php endif; ?>>Billing Address
-					<input type="checkbox" name="address[shippingAddress]" value="1" <?php if($data['customerAddresses']['shippingAddress'] == 1):?>  checked <?php endif; ?>>Shipping Address</td>
-			</tr>
+			<tr>    
+		      <td>
+		        <?php if($customerAddress['billing'] == '1'): ?>
+		          <input type="checkbox" name="address[billing]" value=1 checked>Billing Addres</td>
+		        <?php else: ?>
+		          <input type="checkbox" name="address[billing]" value=1>Billing Addres</td>
+		        <?php endif; ?>
+
+		      <td>
+		        <?php if($customerAddress['shipping'] == '1'): ?>
+		          <input type="checkbox" name="address[shipping]" checked value=1> Shipping Address</td>
+		        <?php else: ?>
+		          <input type="checkbox" name="address[shipping]" value=1> Shipping Address</td>
+		        <?php endif; ?>
+		    </tr>
 
 			<tr>
 				<td width="10%">&nbsp;</td>
 				<td>
 					<input type="submit" name="submit" value="Save">
-					<button type="button"><a href=" index.php?c=customer&a=grid">Cancel</a></button>
+					<button type="button"><a href=" <?php echo $controllerCoreAction->getUrl('grid','customer',null,true) ?>">Cancel</a></button>
 				</td>
 			</tr>
+
 		</table>
 	</form>
 </body>

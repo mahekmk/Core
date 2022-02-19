@@ -18,20 +18,7 @@ class Controller_Core_Front
 		$this->request = $request;
 		return $this;
 	}
-
-	/*public function init()
-    {
-        $actionName = (isset($_GET['a'])) ? $_GET['a'] : 'error';
-		$actionName = $actionName.'Action';
-		$controllerName = (isset($_GET['c'])) ? ucfirst($_GET['c']) : 'admin';
-		$controllerPath = 'Controller/'.$controllerName.'.php';
-		$controllerClassName = 'Controller_'.$controllerName;
-        $controllerClassName1 = $this->prepareClassName($controllerClassName);
-		Ccc::loadClass($controllerClassName);
-		$controller = new $controllerClassName();
-		$controller->$actionName();
-    }
-*/
+	
 	public function init()
 	{
 		$actionName = (isset($_GET['a'])) ? $_GET['a'].'Action' : 'errorAction';

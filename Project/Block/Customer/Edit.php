@@ -6,7 +6,7 @@ class Block_Customer_Edit extends Block_Core_Template{
 	{
 		$this->setTemplate('view/customer/edit.php');
 	}
-	public function getCustomer()
+	public function getCustomerAddress()
 	{
 		return $this->getData('customer');
 	}

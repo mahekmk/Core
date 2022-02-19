@@ -110,7 +110,7 @@ class Controller_Category extends Controller_Core_Action
                         }
                     }
                 }
-                $this->redirect('index.php?c=category&a=grid');
+                $this->redirect($this->getUrl('grid','category',null,true));
             }
 
             else
@@ -156,7 +156,7 @@ class Controller_Category extends Controller_Core_Action
         }
         catch (Exception $e) 
         {
-            $this->redirect("index.php?c=category&a=grid"); 
+             $this->redirect($this->getUrl('grid','category',null,true)); 
         }
     }
 

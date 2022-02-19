@@ -1,6 +1,7 @@
 <?php $category = $this->getCategory(); ?>
 <?php $categoryPathPair = $this->getData('categoryPathPair'); ?>
 <?php $categoryPath = $this->getData('categoryPath'); ?>
+<?php $controllerCoreAction = new Controller_Core_Action();?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -10,7 +11,7 @@
 </head>
 <body>
 
-<form action="index.php?c=category&a=save&id=<?php echo $category['categoryId']?>" method="POST">
+<form action="<?php echo$controllerCoreAction->getUrl('save','category',['id' =>  $category['categoryId']],true) ?>" method="POST">
 		<table border="1" width="100%" cellspacing="4">
 			<tr>
 				<td colspan="2"> Category Information</td>
@@ -60,7 +61,7 @@
 			<td width="10%">&nbsp;</td>
 				<td>
 					<input type="submit" name="submit" value="Save">
-					<button type="button"><a href=" index.php?c=category&a=grid">Cancel</a></button>
+					<button type="button"><a href=" <?php echo $controllerCoreAction->getUrl('grid','category',null,true) ?>">Cancel</a></button>
 				</td>
 		</tr>
 		</table>

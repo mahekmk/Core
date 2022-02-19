@@ -1,9 +1,11 @@
+<?php $customerAddresses = $this->getCustomerAddresses(); ?>
+<?php $controllerCoreAction = new Controller_Core_Action();?>
 <html>
 <head>
 	<body>
 		<button name='Admin'><a href="index.php?c=admin&a=grid">Admin</a></button>
 		<button name='Customer'><a href="">Customer</a></button>
-		<button name='Category'><a href="index.php?c=category&a=grid">Category</a></button>
+		<button name='Category'><a href="<?php echo $controllerCoreAction->getUrl('add','customer',null,true) ?>">Category</a></button>
 		<button name='Product'><a href="index.php?c=product&a=grid">Product</a></button>
 		<button name='Add'><a href="index.php?c=customer&a=add">Add</a></button>
 		<table border="1" width="100%" cellspacing="4">
@@ -27,12 +29,12 @@
 				<th>Edit</th>
 				<th>Delete</th>
 			</tr>
-			<?php if(!$data['customers']): ?>
+			<?php if(!$customerAddresses): ?>
 				<tr>
 					<td colspan="17">No Record available.</td>
 				</tr>
 			<?php else : ?>
-				<?php foreach ($data['customers'] as $customer): ?>
+				<?php foreach ($customerAddresses as $customer): ?>
 				<tr>
 					<td><?php echo $customer['customerId']?></td>
 					<td><?php echo $customer['firstName']?></td>
@@ -48,10 +50,10 @@
 					<td><?php echo $customer['city']?></td>
 					<td><?php echo $customer['state']?></td>
 					<td><?php echo $customer['country']?></td>
-					<td><?php echo $customer['billingAddress']?></td>
-					<td><?php echo $customer['shippingAddress']?></td>
+					<td><?php echo $customer['billing']?></td>
+					<td><?php echo $customer['shipping']?></td>
 					<td><a href="index.php?c=customer&a=edit&id=<?php echo $customer['customerId'] ?>">Edit</a></td>
-					<td><a href="index.php?c=customer&a=delete&id=<?php echo $customer['customerId'] ?>">Delete</a></td>
+					<td><a href="<?php echo $controllerCoreAction->getUrl('delete','customer',['id'=> $customer['customerId']],true) ?>">Delete</a></td>
 				</tr>
 				<?php endforeach;	?>
 		<?php endif;  ?>

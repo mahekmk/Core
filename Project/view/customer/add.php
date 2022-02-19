@@ -1,3 +1,4 @@
+<?php $controllerCoreAction = new Controller_Core_Action(); ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -6,7 +7,7 @@
 	<title>Customer Add</title>
 </head>
 <body>
-	<form action="index.php?c=customer&a=save" method="POST">
+	<form action="<?php echo $controllerCoreAction->getUrl('save','customer',null,true) ?>" method = "POST">
 		<table border="1" width="100%" cellspacing="4">
 			<tr>
 				<td colspan="2"><h2>Customer Information</h2> </td>
@@ -71,17 +72,16 @@
 				<td><input type="text" name="address[country]"></td>
 			</tr>
 
-			<tr>
-				<td width="10%">Address Type</td>
-				<td><input type="checkbox" name="address[billingAddress]" value="1">Billing Address
-					<input type="checkbox" name="address[shippingAddress]" value="1">Shipping Address</td>
-			</tr>
+			<tr>    
+		      <td><input type="checkbox" name="address[billing]" value="1">Billing Addres</td>
+		      <td><input type="checkbox" name="address[shipping]" value="1"> Shipping Address</td>
+		    </tr>
 
 			<tr>
 				<td width="10%">&nbsp;</td>
 				<td>
 					<input type="submit" name="submit" value="Save">
-					<button type="button"><a href="index.php?c=customer&a=grid">Cancel</a></button>
+					<button type="button"><a href="<?php echo $controllerCoreAction->getUrl('grid','customer',null,true) ?>">Cancel</a></button>
 				</td>
 			</tr>
 		</table>

@@ -1,8 +1,6 @@
 <?php $categories = $this->getCategories(); ?>
-<?php
-
-$controllerCategory = new Controller_Category();
-?>
+<?php $controllerCategory = new Controller_Category(); ?>
+<?php $controllerCoreAction = new Controller_Core_Action();?>
 
 
 
@@ -12,7 +10,7 @@ $controllerCategory = new Controller_Category();
 		<button name='Admin'><a href="index.php?c=admin&a=grid">Admin</a></button>
 		<button name='Customer'><a href="index.php?c=customer&a=grid">Customer</a></button>
 		<button name='Category'><a href="">Category</a></button>
-		<button name='Product'><a href="index.php?c=product&a=grid">Product</a></button>
+		<button name='Product'><a href="<?php echo $controllerCoreAction->getUrl('add','category',null,true) ?>">Product</a></button>
 		<button name='Add'><a href="index.php?c=category&a=add">Add</a></button>
 		<table border="1" width="100%" cellspacing="4">
 			<tr>
@@ -40,7 +38,7 @@ $controllerCategory = new Controller_Category();
 					<td><?php echo $category['status']?></td>
 					<td><?php echo $category['createdAt']?></td>
 					<td><?php echo $category['updatedAt']?></td>
-					<td><a href="index.php?c=category&a=edit&id=<?php echo $category['categoryId'] ?>">Edit</a></td>
+					<td><a href="<?php echo $controllerCoreAction->getUrl('edit','category',['id'=> $category['categoryId']],true) ?>">Edit</a></td>
 					<td><a href="index.php?c=category&a=delete&id=<?php echo $category['categoryId'] ?>">Delete</a></td>
 				</tr>
 				<?php endforeach;	?>
