@@ -1,8 +1,8 @@
-<?php $category = $this->getCategory(); ?>
+<?php $category = $this->getCategory();?>
 <?php $UrlAction = new Controller_Core_Action();?>
 <?php $controllerCategory = new Controller_category(); ?>
-<?php $categoryData = $this->getData('category'); ?>
 <?php $result = $this->getData('getCategoryWithPath');?>
+<?php $result = $controllerCategory->getCategoryWithPath(); ?>
 
 <!DOCTYPE html>
 <html>
@@ -21,12 +21,11 @@
 			<td width="10%">Category</td>
 			<td>
 				<select name="category[parentId]">
-					<option value="">New</option>
+					<option value="">Main Category</option>
 					<?php
-						$result = $controllerCategory->getCategoryWithPath();
 						foreach ($result as $key => $row) {
 						 	?>
-						 	<option value="<?php echo $key; ?>" <?php if ($categoryData['parentId'] == $key) {
+						 	<option value="<?php echo $key; ?>" <?php if ($category['parentId'] == $key) {
 						 		echo "selected";
 						 	} ?>><?php echo $row; ?></option>
 						 	<?php

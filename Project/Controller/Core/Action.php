@@ -69,7 +69,7 @@ class Controller_Core_Action{
         }
         else
         {
-            $tempArray = array_merge($_GET,$tempArray);
+            $tempArray = array_merge($this->getRequest()->getRequest(),$tempArray);
             if($parameters)
             {
                 $tempArray = array_merge($tempArray,$parameters);

@@ -2,8 +2,6 @@
 <?php $controllerCategory = new Controller_Category(); ?>
 <?php $controllerCoreAction = new Controller_Core_Action();?>
 
-
-
 <html>
 <head>
 	<body>

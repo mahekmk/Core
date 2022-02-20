@@ -1,44 +1,11 @@
 <?php
 Ccc::loadClass('Controller_Core_Action');
 Ccc::loadClass('Model_Core_Request');
-Ccc::loadClass('Model_Admin');
 ?>
 
 <?php
 class Controller_Admin extends Controller_Core_Action
 {
-    public function testAction()
-    { 
-        $adminTable = new Model_Admin(); //Model_Core_Table
-        echo '<pre>';
-        //echo $adminTable->getTableName();
-
-        //$adminTable->setTableName('admin');
-        //$adminTable->setPrimaryKey('adminId');
-       // $adminTable->insert(['firstName' => 'M' , 'lastName' => 'k' , 'email' => 'a@b.com' ,'password' => 'abc' , 'status' => '1' ]);
-        
-
-        //$adminTable->update(['firstName' => 'R' , 'lastName' => 'K' ], ['adminId'=>9]); // array or id
-
-        //$adminTable->delete(['adminId' => 6]); // array or id 
-    
-        //$adminTable->fetchRow("SELECT * FROM admin WHERE adminId = 9");
-        //$adminTable->fetchAll("SELECT * FROM admin ");
-
-         //index.php?c=category&a=grid&id=5&tab=menu
-
-        //$this->getUrl(); //index.php?c=category&a=grid&id=5&tab=menu
-        //$this->getUrl('save'); //index.php?c=category&a=save&id=5&tab=menu
-        //$this->getUrl('save','admin'); //index.php?c=admin&a=save&id=5&tab=menu
-        //$this->getUrl('save','category',['id' => 10]); //index.php?c=category&a=save&id=10&tab=menu
-        //$this->getUrl('save','category',['id' => 10,'tab' => 'hello']); //index.php?c=category&a=save&id=10&tab=hello
-        //$this->getUrl('save','category',['id' => 5,'tab' => 'asd'],false); //index.php?c=category&a=save&id=5
-        //$this->getUrl('save','category',null,true); //index.php?c=category&a=save
-        //$this->getUrl(null,'category',null,true); //index.php?c=category&a=grid
-        //$this->getUrl(null,'category',['module' => 'Admin'],true); //index.php?c=category&a=grid&module=Admin
-      
-    }
-
     public function gridAction()
     {
         Ccc::getBlock('Admin_Grid')->toHtml();      
@@ -72,8 +39,10 @@ class Controller_Admin extends Controller_Core_Action
 
     public function saveAction()
     {
-         $adminModel = Ccc::getModel('Admin');
-         global $adapter;
+        try
+        {
+
+            $adminModel = Ccc::getModel('Admin');
             date_default_timezone_set("Asia/Kolkata");
             $date = date('Y-m-d H:i:s');
             $row = $this->getRequest()->getRequest('admin');
@@ -85,9 +54,10 @@ class Controller_Admin extends Controller_Core_Action
             $status = $row['status'];
             $createdAt = $date;
             $updatedAt = $date;
-        try
-        {
-            if (!$id):
+            if (!isset($row)) {
+                throw new Exception("Invalid Request.", 1);             
+            }           
+            if (!array_key_exists('id',$row)):
 
                $result = $adminModel->insert(['firstName' => $firstName , 'lastName' => $lastName , 'email' => $email ,'password' => $password , 'status' => $status ]);
                 if (!$result):

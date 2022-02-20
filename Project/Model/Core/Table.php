@@ -29,15 +29,15 @@ class Model_Core_Table
 
 	public function insert(array $insertArr)
 	{
-		$cn = [];
-		$vn =[];
+		$colName = [];
+		$valueName =[];
 		global $adapter;
 		foreach ($insertArr as $columnName => $value ){
-			array_push($cn,$columnName);
-			array_push($vn,$value);
+			array_push($colName,$columnName);
+			array_push($valueName,$value);
 		}
-			$sql1= implode(',', $cn);
-			$sql2= implode("','", $vn);
+			$sql1= implode(',', $colName);
+			$sql2= implode("','", $valueName);
 			$sql3 = "'" . $sql2 . "'";
 			$tableName = $this->getTableName();
 
@@ -67,43 +67,29 @@ class Model_Core_Table
 		$tableName = $this->getTableName();
 		$key = key($whereArr);
 		$value = $whereArr[$this->primaryKey];
-		foreach($updateArr as $k => $v){
+		foreach($updateArr as $k => $v)
+		{
 			$set[] = "$k='$v'";
 		}
 		$imp = implode(',', $set);
-	//$update = "UPDATE $tableName SET $imp , updatedAt = '".$date."' WHERE $key = $value;";
 		$update = "UPDATE $tableName SET $imp WHERE $key = $value;";
 		$result = $adapter->update($update);
 		return $result;
-		//Update admin SET firstName = "M" , lastName = "K" WHERE adminId = 5;
 	}
 
 	public function fetchRow($queryFetchRow)
-    {
-        global $adapter;
-        $tableName = $this->getTableName();
-        $result = $adapter->fetchRow($queryFetchRow);
-        return $result;  
-    }
+  	{
+		global $adapter;
+		$tableName = $this->getTableName();
+		$result = $adapter->fetchRow($queryFetchRow);
+		return $result;  
+  	}
 
-    public function fetchAll($queryFetchAll)
-    {
-        global $adapter;
-        $tableName = $this->getTableName();
-        $result = $adapter->fetchAll($queryFetchAll);
-        return $result;
-        exit();
-    }
-
+	public function fetchAll($queryFetchAll)
+	{
+		global $adapter;
+		$tableName = $this->getTableName();
+		$result = $adapter->fetchAll($queryFetchAll);
+		return $result;
+	}
 }
-/*
-public function update($table, $rows){
-  $set = [];
-  foreach($rows as $k => $v) {
-    $set[] = "$k='$v'";
-  }
-  $sql = "UPDATE $table SET ". implode(', ', $set);
-  $this->query($sql);
-} */
-
-
