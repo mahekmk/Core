@@ -162,15 +162,27 @@ class Controller_Category extends Controller_Core_Action
 
     public function getCategoryWithPath()
     {
-        $adapter = new Model_Core_Adapter();
+        global $adapter;
         $category = [];
         $categoryIdName = $adapter->fetchPairs('SELECT categoryId , name FROM category');
-        $categoryIdPath = $adapter->fetchPairs('SELECT categoryId , path FROM category');
+         if (!$this->getRequest()->getRequest('categoryId')) 
+        {
+            $query = "SELECT categoryId, path FROM category ORDER BY path"; 
+        }
+        else 
+        {
+            $categoryId = $this->getRequest()->getRequest('categoryId');
+            $excludePath = $adapter->fetchOne("SELECT path FROM category WHERE categoryId = '$categoryId'");
+            $excludePath = $excludePath . '/%';
+            $query = "SELECT categoryId,path FROM category WHERE categoryId <> '$categoryId' AND path NOT LIKE('$excludePath') ORDER BY path";  
+        }
+        $categoryIdPath = $adapter->fetchPairs($query);
+
         foreach ($categoryIdPath as $categoryId => $path)
         {
-            $id_array = explode("/", $path);
+            $idArray = explode("/", $path);
             $temp = [];
-            foreach ($id_array as $key => $categoryId)
+            foreach ($idArray as $key => $categoryId)
             {
                 if (array_key_exists($categoryId, $categoryIdName)):
                     array_push($temp, $categoryIdName[$categoryId]);
