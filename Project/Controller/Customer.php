@@ -5,8 +5,8 @@ class Controller_Customer extends Controller_Core_Action
 {
 	public function gridAction()
 	{
-		//Ccc::getBlock('Customer_Grid')->toHtml();
-		$customerModel = Ccc::getModel('Customer');
+		Ccc::getBlock('Customer_Grid')->toHtml();
+		/*$customerModel = Ccc::getModel('Customer');
 		echo "<pre>";
 		print_r($customerModel);
 		$customer = $customerModel->getRow();
@@ -16,7 +16,7 @@ class Controller_Customer extends Controller_Core_Action
 		unset($customer->lastName);
 		$customer->email = '123@mahek.com';
 		$customer->save();
-		print_r($customer);
+		print_r($customer);*/
 
 	}
 
@@ -51,10 +51,34 @@ class Controller_Customer extends Controller_Core_Action
 	protected function saveCustomer()
 	{
 		$customerModel = Ccc::getModel('Customer');
+		$customer = $customerModel->getRow();
 		date_default_timezone_set("Asia/Kolkata");
-		$date = date('Y-m-d H:i:s');
 		$row = $this->getRequest()->getRequest('customer');
+		$date = date('Y-m-d H:i:s');
+		//$customer = $customerModel->load($row['id']);
 		if(!array_key_exists('id',$row))
+		{
+				$customer->firstName = $row['firstName'];
+				$customer->lastName =  $row['lastName'];
+				$customer->email =  $row['email'];
+				$customer->mobile =  $row['mobile'];
+				$customer->status =  $row['status'];
+				$result = $customer->save();
+				return $result;
+		}
+		else{
+				$customer = $customerModel->load($row['id']);
+				$customer->firstName = $row['firstName'];
+				$customer->lastName =  $row['lastName'];
+				$customer->email =  $row['email'];
+				$customer->mobile =  $row['mobile'];
+				$customer->status =  $row['status'];
+				$customer->updatedAt =  $date;
+				$customer->save();
+				return $row['id'];
+		}
+		
+		/*if(!array_key_exists('id',$row))
 		{	
 			$result = $customerModel->insert(['firstName' => $row['firstName'] , 'lastName' => $row['lastName'] , 'email' => $row['email'] , 'mobile' => $row['mobile'] , 'status' => $row['status']]);
 			if(!$result)
@@ -72,7 +96,7 @@ class Controller_Customer extends Controller_Core_Action
 				throw new Exception("System is unable to update information.",1);
 			}
 			return $id;
-		}
+		}*/
 	}
 
 	protected function saveAddress($customerId)	
