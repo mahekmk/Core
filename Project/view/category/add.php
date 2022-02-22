@@ -1,6 +1,4 @@
-<?php 
-$controllerCategory = new Controller_Category();
-?>
+<?php $getCategoryWithPath = $this->getCategoryWithPath(); ?>
 <?php $controllerCoreAction = new Controller_Core_Action(); ?>
 <!DOCTYPE html>
 <html>
@@ -21,7 +19,7 @@ $controllerCategory = new Controller_Category();
 				<td><select name="category[parentId]">
 					<option value="">Main category </option>
 						<?php
-							$result = $controllerCategory->getCategoryWithPath();			
+							$result = $getCategoryWithPath;		
 							foreach($result as $key => $value):
 						?>		<option value=<?php echo $key; ?> >
 						<?php

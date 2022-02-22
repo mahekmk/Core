@@ -5,7 +5,19 @@ class Controller_Customer extends Controller_Core_Action
 {
 	public function gridAction()
 	{
-		Ccc::getBlock('Customer_Grid')->toHtml();
+		//Ccc::getBlock('Customer_Grid')->toHtml();
+		$customerModel = Ccc::getModel('Customer');
+		echo "<pre>";
+		print_r($customerModel);
+		$customer = $customerModel->getRow();
+		$customer->customerId = '174';
+		$customer->firstName = 'Mahek';
+		$customer->lastName = 'Mahek';
+		unset($customer->lastName);
+		$customer->email = '123@mahek.com';
+		$customer->save();
+		print_r($customer);
+
 	}
 
 	public function editAction()

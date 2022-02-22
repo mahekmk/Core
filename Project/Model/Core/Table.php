@@ -1,10 +1,27 @@
-<?php
+<?php Ccc::loadClass('Model_Core_Table_Row');
 
 class Model_Core_Table
 {
 	protected $tableName = NULL;
 	protected $primaryKey = NULL;
+	protected $rowClassName;
   
+	public function getRowClassName()
+	{
+		return $this->rowClassName;
+	}
+
+	public function setRowClassName($rowClassName)
+	{
+		$this->rowClassName = $rowClassName;
+		return $this;
+	}
+
+	public function getRow()
+	{
+		return Ccc::getModel($this->getRowClassName());
+	}
+
 	public function getTableName()
 	{
 		return $this->tableName;
@@ -91,5 +108,17 @@ class Model_Core_Table
 		$tableName = $this->getTableName();
 		$result = $adapter->fetchAll($queryFetchAll);
 		return $result;
+	}
+
+	public function load($id)
+	{
+		$rowData = $this->fetchRow("SELECT * FROM {$this->getTableName()} WHERE {$this->getPrimaryKey()} = {$id}");
+		if(!$rowData)
+		{
+			return false;
+		}
+		$row = $this->getRow();
+		$row->setData($rowData);
+		return $row;
 	}
 }

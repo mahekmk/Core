@@ -1,5 +1,5 @@
 <?php $categories = $this->getCategories(); ?>
-<?php $controllerCategory = new Controller_Category(); ?>
+<?php $getCategoryWithPath = $this->getCategoryWithPath(); ?>
 <?php $controllerCoreAction = new Controller_Core_Action();?>
 
 <html>
@@ -29,7 +29,7 @@
 				<tr>
 					<td><?php echo $category['categoryId']?></td>
 					<td>
-						<?php $result = $controllerCategory->getCategoryWithPath();
+						<?php $result = $getCategoryWithPath; 
 		    				echo $result[$category['categoryId']];
 			    		?>
 					</td>
