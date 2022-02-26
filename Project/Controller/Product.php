@@ -20,8 +20,8 @@ class Controller_Product extends Controller_Core_Action{
 			{
 				throw new Exception("Id not valid.");
 			}
-			$productModel = Ccc::getModel('Product');
-			$product = $productModel->fetchRow("SELECT * FROM product WHERE productId = {$id} ");
+			$product = Ccc::getModel('Product')->load($id);
+			//$product = $productModel->fetchRow("SELECT * FROM product WHERE productId = {$id} ");
 			if(!$product)
 			{
 				throw new Exception("unable to load product.");
@@ -43,30 +43,51 @@ class Controller_Product extends Controller_Core_Action{
 	{
 		try
 		{
-			$productModel = Ccc::getModel('Product');
+			$product = Ccc::getModel('Product');
 			date_default_timezone_set("Asia/Kolkata");
 			$date = date('Y-m-d H:i:s');
+			//$product = $productModel->getRow();
 			$row = $this->getRequest()->getRequest('product');
-			$id =$row['id'];
+
+
+			/*$id =$row['id'];
 			$name=$row['name'];
 			$price=$row['price'];
 			$quantity=$row['quantity'];
 			$status = $row['status'];
 			$createdAt = $date;
-			$updatedAt = $date;
+			$updatedAt = $date;*/
 			
 			if (!isset($row)) {
                 throw new Exception("Invalid Request.", 1);             
             }           
             if (!array_key_exists('id',$row)):
-				$result = $productModel->insert(['name' => $name, 'price' => $price , 'quantity' => $quantity , 'status' => $status]);
+
+            	$product->name = $row['name'];
+            	$product->price = $row['price'];
+            	$product->quantity = $row['quantity'];
+            	$product->status = $row['status'];
+            	$result = $product->save();
+
+
+				/*$result = $productModel->insert(['name' => $name, 'price' => $price , 'quantity' => $quantity , 'status' => $status]);*/
 				if(!$result)
 				{
 					throw new Exception("System is unable to insert information.",1);
 				}
 				$this->redirect($this->getUrl('grid','product',null,true));
 			else:
-				$result = $productModel->update(['name' => $name, 'status' => $status, 'price' => $price, 'quantity' => $quantity, 'updatedAt' => $date], ['productId' => $id]);
+
+				$product->load($row['id']);
+				$product->productId = $row["id"];
+				$product->name = $row['name'];
+            	$product->price = $row['price'];
+            	$product->quantity = $row['quantity'];
+            	$product->status = $row['status'];
+            	$product->updatedAt = $date;
+            	$result = $product->save();
+
+				/*$result = $productModel->update(['name' => $name, 'status' => $status, 'price' => $price, 'quantity' => $quantity, 'updatedAt' => $date], ['productId' => $id]);*/
 
 				if(!$result)
 				{
@@ -85,8 +106,8 @@ class Controller_Product extends Controller_Core_Action{
 
 	public function deleteAction()
 	{
-		$productModel = Ccc::getModel('Product');
         $getId = $this->getRequest()->getRequest('id');
+		$product = Ccc::getModel('Product')->load($getId);
 		try 
 		{
 			
@@ -95,7 +116,8 @@ class Controller_Product extends Controller_Core_Action{
 				throw new Exception("Invalid Request.", 1);
 			}
 			$id = $getId;
-			$result= $productModel->delete(['productId' => $id]);
+			$result = $product->delete(); 
+			//$result= $productModel->delete(['productId' => $id]);
 			if(!$result)
 			{
 				throw new Exception("System is unable to delete record.", 1);

@@ -29,8 +29,8 @@ class Controller_Customer extends Controller_Core_Action
 			{
 				throw new Exception("Id not valid.");
 			}
-			$customerModel = Ccc::getModel('Customer');
-			$customer = $customerModel->fetchRow("SELECT c.*, a.* FROM customer c LEFT JOIN address a ON c.customerId = a.customerId WHERE c.customerID = '$id'");
+			$customer = Ccc::getModel('Customer')->load($id);
+			//$customer = $customerModel->fetchRow("SELECT c.*, a.* FROM customer c LEFT JOIN address a ON c.customerId = a.customerId WHERE c.customerID = '$id'");
 			if(!$customer)
 			{
 				throw new Exception("unable to load customer.");
@@ -50,11 +50,11 @@ class Controller_Customer extends Controller_Core_Action
 
 	protected function saveCustomer()
 	{
-		$customerModel = Ccc::getModel('Customer');
-		$customer = $customerModel->getRow();
+		$customer = Ccc::getModel('Customer');
+		//$customer = $customerModel->getRow();
 		date_default_timezone_set("Asia/Kolkata");
-		$row = $this->getRequest()->getRequest('customer');
 		$date = date('Y-m-d H:i:s');
+		$row = $this->getRequest()->getRequest('customer');
 		//$customer = $customerModel->load($row['id']);
 		if(!array_key_exists('id',$row))
 		{
@@ -67,7 +67,8 @@ class Controller_Customer extends Controller_Core_Action
 				return $result;
 		}
 		else{
-				$customer = $customerModel->load($row['id']);
+				$customer->load($row['id']);
+				$customer->customerId = $row["id"];
 				$customer->firstName = $row['firstName'];
 				$customer->lastName =  $row['lastName'];
 				$customer->email =  $row['email'];
@@ -101,7 +102,10 @@ class Controller_Customer extends Controller_Core_Action
 
 	protected function saveAddress($customerId)	
 	{
-		$addressModel = Ccc::getModel('Customer_Address');
+		$address = Ccc::getModel('Customer_Address');
+		//$address = $addressModel->getRow();
+		date_default_timezone_set("Asia/Kolkata");
+		$date = date('Y-m-d H:i:s');
 		$row = $this->getRequest()->getRequest('address');
 		$billing = 0;
 	    $shipping = 0;
@@ -115,16 +119,44 @@ class Controller_Customer extends Controller_Core_Action
             $shipping = 1;
         }
 		
-		$addressData = $addressModel->fetchRow("SELECT * FROM address WHERE customerId = '$customerId'");
-		if(!$addressData):
-			$result = $addressModel->insert(['customerId' => $customerId , 'address' => $row['address'] , 'postalCode' => $row['postalCode'] , 'city' => $row['city'] , 'state' => $row['state'] , 'country' => $row['country'] , 'billing' => $row['billing'] , 'shipping' => $row['shipping']]);
-			if(!$result):
-				throw new Exception("System is unable to insert address info.",1);
-			endif;
-		else:
+
+		$addressData = $address->fetchRow("SELECT * FROM address WHERE customerId = '$customerId'");
 		
-        $id = $row['id'];
-		$result = $addressModel->update(['customerId' => $customerId , 'address' => $row["address"] , 'city' => $row["city"] ,'state' => $row["state"] , 'country' => $row["country"] , 'postalCode' => $row["postalCode"] , 'billing' => $billing,'shipping' =>  $shipping ],['addressId' => $id] );
+		if(!$addressData):
+
+			$address->customerId = $customerId;
+			$address->address = $row['address'];
+			$address->postalCode = $row['postalCode'];
+			$address->city = $row['city'];
+			$address->state= $row['state'];
+			$address->country = $row['country'];
+			$address->billing = $row['billing'];
+			$address->shipping = $row['shipping'];
+			$result = $address->save();
+
+
+/*
+		$result = $addressModel->insert(['customerId' => $customerId , 'address' => $row['address'] , 'postalCode' => $row['postalCode'] , 'city' => $row['city'] , 'state' => $row['state'] , 'country' => $row['country'] , 'billing' => $row['billing'] , 'shipping' => $row['shipping']]);
+		if(!$result):
+			throw new Exception("System is unable to insert address info.",1);
+		endif;
+*/
+
+		else:
+			$address->load($row['id']);
+			$address->customerId = $customerId;
+			$address->address = $row['address'];
+			$address->postalCode = $row['postalCode'];
+			$address->city = $row['city'];
+			$address->state= $row['state'];
+			$address->country = $row['country'];
+			$address->billing = $row['billing'];
+			$address->shipping = $row['shipping'];
+			$result = $address->save();
+
+		
+       /* $id = $row['id'];
+		$result = $addressModel->update(['customerId' => $customerId , 'address' => $row["address"] , 'city' => $row["city"] ,'state' => $row["state"] , 'country' => $row["country"] , 'postalCode' => $row["postalCode"] , 'billing' => $billing,'shipping' =>  $shipping ],['addressId' => $id] );*/
 		if(!$result):
 			throw new Exception("System is unable to update information.",1);
 		endif;
@@ -149,8 +181,8 @@ class Controller_Customer extends Controller_Core_Action
 
 	public function deleteAction()
 	{
-		$customerModel = Ccc::getModel('Customer');
         $getId = $this->getRequest()->getRequest('id');
+		$customer = Ccc::getModel('Customer')->load($getId);
 		try
 		{	
 			if (!isset($getId)) 
@@ -158,7 +190,7 @@ class Controller_Customer extends Controller_Core_Action
 				throw new Exception("Invalid Request.", 1);
 			}
 			$id = $getId;
-			$result=$customerModel->delete(['customerId' => $getId]);
+			$result=$customer->delete();
 			if(!$result)
 			{
 				throw new Exception("System is unable to delete record.", 1);	

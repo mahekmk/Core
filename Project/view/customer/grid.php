@@ -4,6 +4,7 @@
 <head>
 	<body>
 		<button name='Admin'><a href="<?php echo $controllerCoreAction->getUrl('grid','admin',null,true) ?>">Admin</a></button>
+		<button name='Config'><a href="<?php echo $controllerCoreAction->getUrl('grid','config',null,true) ?>">Config</a></button>
 		<button name='Customer'><a href="<?php echo $controllerCoreAction->getUrl('grid','customer',null,true) ?>">Customer</a></button>
 		<button name='Category'><a href="<?php echo $controllerCoreAction->getUrl('grid','category',null,true) ?>">Category</a></button>
 		<button name='Product'><a href="<?php echo $controllerCoreAction->getUrl('grid','product',null,true) ?>">Product</a></button>
@@ -36,24 +37,24 @@
 			<?php else : ?>
 				<?php foreach ($customerAddresses as $customer): ?>
 				<tr>
-					<td><?php echo $customer['customerId']?></td>
-					<td><?php echo $customer['firstName']?></td>
-					<td><?php echo $customer['lastName']?></td>
-					<td><?php echo $customer['email']?></td>
-					<td><?php echo $customer['mobile']?></td>
-					<td><?php echo $customer['status']?></td>
-					<td><?php echo $customer['createdAt']?></td>
-					<td><?php echo $customer['updatedAt']?></td>
-					<td><?php echo $customer['addressId']?></td>
-					<td><?php echo $customer['address']?></td>
-					<td><?php echo $customer['postalCode']?></td>
-					<td><?php echo $customer['city']?></td>
-					<td><?php echo $customer['state']?></td>
-					<td><?php echo $customer['country']?></td>
-					<td><?php echo $customer['billing']?></td>
-					<td><?php echo $customer['shipping']?></td>
-					<td><a href="index.php?c=customer&a=edit&id=<?php echo $customer['customerId'] ?>">Edit</a></td>
-					<td><a href="<?php echo $controllerCoreAction->getUrl('delete','customer',['id'=> $customer['customerId']],true) ?>">Delete</a></td>
+					<td><?php echo $customer->customerId;?></td>
+					<td><?php echo $customer->firstName;?></td>
+					<td><?php echo $customer->lastName;?></td>
+					<td><?php echo $customer->email;?></td>
+					<td><?php echo $customer->mobile;?></td>
+					<td><?php echo $customer->status;?></td>
+					<td><?php echo $customer->createdAt;?></td>
+					<td><?php echo $customer->updatedAt;?></td>
+					<td><?php echo $customer->addressId;?></td>
+					<td><?php echo $customer->address;?></td>
+					<td><?php echo $customer->postalCode;?></td>
+					<td><?php echo $customer->city;?></td>
+					<td><?php echo $customer->state;?></td>
+					<td><?php echo $customer->country;?></td>
+					<td><?php echo $customer->billing;?></td>
+					<td><?php echo $customer->shipping;?></td>
+					<td><a href="index.php?c=customer&a=edit&id=<?php echo $customer->customerId; ?>">Edit</a></td>
+					<td><a href="<?php echo $controllerCoreAction->getUrl('delete','customer',['id'=> $customer->customerId],true) ?>">Delete</a></td>
 				</tr>
 				<?php endforeach;	?>
 		<?php endif;  ?>

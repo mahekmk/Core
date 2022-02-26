@@ -19,7 +19,7 @@ class Controller_Category extends Controller_Core_Action
             {
                 throw new Exception("Error Processing Request edit 1", 1);
             }
-            $categoryModel = Ccc::getModel('Category');
+            $categoryModel = Ccc::getModel('Category_Resource');
             $category = $categoryModel->fetchRow("SELECT * FROM category WHERE categoryId = $categoryId");
             
             if(!$category)
@@ -43,7 +43,8 @@ class Controller_Category extends Controller_Core_Action
     public function saveAction()
     {
         global $adapter;
-        $categoryModel = Ccc::getModel('Category');
+        $categoryModel = Ccc::getModel('Category_Resource');
+        $category = $categoryModel -> getRow();
         $categoryData = $this->getRequest()->getRequest('category');
         try 
         {
@@ -68,7 +69,18 @@ class Controller_Category extends Controller_Core_Action
                 $categoryId = $categoryData['categoryId'];
                 if (!$parentId)
                 {
-                    $updateResult = $categoryModel->update(['name' => $name , 'parentId' => null , 'status' => $status , 'updatedAt' => $updatedAt],['categoryId' => $categoryId]);
+
+                    $category = $categroyModel->load($categoryId);
+                    print_r($category);
+                    exit();
+                    $category->name = $categoryData['name'];
+                    //$category->parentId = NULL;
+                    $category->status = $categoryData['status'];
+                    $category->updatedAt = $date;
+                    $updateResult = $category->save();
+
+
+                   /* $updateResult = $categoryModel->update(['name' => $name , 'parentId' => null , 'status' => $status , 'updatedAt' => $updatedAt],['categoryId' => $categoryId]);*/
                     if(!$updateResult)
                     {
                         throw new Exception("System is unable to update the record.", 1);
@@ -138,7 +150,7 @@ class Controller_Category extends Controller_Core_Action
 
     public function deleteAction()
     {
-        $categroyModel = Ccc::getModel('Category');
+        $categroyModel = Ccc::getModel('Category_Resource');
         $getId = $this->getRequest()->getRequest('categoryId');
         try
         {
@@ -196,7 +208,7 @@ class Controller_Category extends Controller_Core_Action
 
     public function updatePathIntoCategory($categoryId, $parentId)
     {
-        $categroyModel = Ccc::getModel('Category');
+        $categroyModel = Ccc::getModel('Category_Resource');
         global $adapter;
         $query = "SELECT path FROM category WHERE categoryId = '$categoryId'";
         $result = $adapter->fetchOne($query);
