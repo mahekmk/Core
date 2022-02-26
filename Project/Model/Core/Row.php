@@ -10,6 +10,12 @@ class Model_Core_Row
         
     }
 
+    public function getAdapter()
+    {
+    	global $adapter;
+    	return $adapter;
+    }
+
 	public function getTableClassName()
 	{
 		return $this->tableClassName;

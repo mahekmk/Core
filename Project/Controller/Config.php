@@ -34,7 +34,9 @@ class Controller_Config extends Controller_Core_Action
 
     public function addAction()
     {
-       Ccc::getBlock('Config_Add')->toHtml();  
+        $config = Ccc::getModel('Config');
+        Ccc::getBlock('Config_Edit')->addData('config',$config)->toHtml();
+     // Ccc::getBlock('Config_Add')->toHtml();  
     }
 
     public function saveAction()
@@ -51,7 +53,8 @@ class Controller_Config extends Controller_Core_Action
             if (!isset($row)) {
                 throw new Exception("Invalid Request.", 1);             
             }           
-            if (!array_key_exists('id',$row)):
+            if (array_key_exists('id',$row) && $row['id'] == NULL):
+            
                 $config->name = $row['name'];
                 $config->value = $row['value'];
                 $config->code = $row['code'];
@@ -60,6 +63,7 @@ class Controller_Config extends Controller_Core_Action
                 $config->save();
 
             else:
+
                 $config->load($row['id']);
                 $config->configId = $row["id"];
                 $config->name = $row['name'];

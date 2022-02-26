@@ -1,5 +1,5 @@
-<?php $controllerCoreAction = new Controller_Core_Action(); ?>
-<!DOCTYPE html>
+<?php //$controllerCoreAction = new Controller_Core_Action(); ?>
+<!-- <!DOCTYPE html>
 <html>
 <head>
 	<meta charset="utf-8">
@@ -52,4 +52,4 @@
 	</form>
 
 </body>
-</html>
+</html> -->

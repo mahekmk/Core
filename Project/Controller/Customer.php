@@ -29,8 +29,8 @@ class Controller_Customer extends Controller_Core_Action
 			{
 				throw new Exception("Id not valid.");
 			}
-			$customer = Ccc::getModel('Customer')->load($id);
-			//$customer = $customerModel->fetchRow("SELECT c.*, a.* FROM customer c LEFT JOIN address a ON c.customerId = a.customerId WHERE c.customerID = '$id'");
+			$customerModel = Ccc::getModel('Customer');
+			$customer = $customerModel->fetchRow("SELECT c.*, a.* FROM customer c LEFT JOIN address a ON c.customerId = a.customerId WHERE c.customerID = '$id'");
 			if(!$customer)
 			{
 				throw new Exception("unable to load customer.");
@@ -45,7 +45,9 @@ class Controller_Customer extends Controller_Core_Action
 
 	public function addAction()
 	{
-		Ccc::getBlock('Customer_Add')->toHtml();
+		$customer = Ccc::getModel('Customer');
+		Ccc::getBlock('Customer_Edit')->addData('customer',$customer)->toHtml();
+		//Ccc::getBlock('Customer_Add')->toHtml();
 	}
 
 	protected function saveCustomer()
@@ -56,7 +58,7 @@ class Controller_Customer extends Controller_Core_Action
 		$date = date('Y-m-d H:i:s');
 		$row = $this->getRequest()->getRequest('customer');
 		//$customer = $customerModel->load($row['id']);
-		if(!array_key_exists('id',$row))
+		if(array_key_exists('id',$row) && $row['id'] == NULL)
 		{
 				$customer->firstName = $row['firstName'];
 				$customer->lastName =  $row['lastName'];
@@ -107,6 +109,9 @@ class Controller_Customer extends Controller_Core_Action
 		date_default_timezone_set("Asia/Kolkata");
 		$date = date('Y-m-d H:i:s');
 		$row = $this->getRequest()->getRequest('address');
+
+		$addressId = $row['id'];
+		
 		$billing = 0;
 	    $shipping = 0;
 
@@ -121,6 +126,7 @@ class Controller_Customer extends Controller_Core_Action
 		
 
 		$addressData = $address->fetchRow("SELECT * FROM address WHERE customerId = '$customerId'");
+		/*$addressArr = $addressData->getData();*/
 		
 		if(!$addressData):
 
@@ -134,7 +140,6 @@ class Controller_Customer extends Controller_Core_Action
 			$address->shipping = $row['shipping'];
 			$result = $address->save();
 
-
 /*
 		$result = $addressModel->insert(['customerId' => $customerId , 'address' => $row['address'] , 'postalCode' => $row['postalCode'] , 'city' => $row['city'] , 'state' => $row['state'] , 'country' => $row['country'] , 'billing' => $row['billing'] , 'shipping' => $row['shipping']]);
 		if(!$result):
@@ -143,7 +148,8 @@ class Controller_Customer extends Controller_Core_Action
 */
 
 		else:
-			$address->load($row['id']);
+			$e = $address->load($row['id']);
+			$address->addressId = $row['id'];
 			$address->customerId = $customerId;
 			$address->address = $row['address'];
 			$address->postalCode = $row['postalCode'];

@@ -18,8 +18,12 @@
 				<th>Status</th>
 				<th>Created Date</th>
 				<th>Updated Date</th>
+				<th>Base</th>
+				<th>Small</th>
+				<th>Thumb</th>
 				<th>Edit</th>
 				<th>Delete</th>
+				<th>Media</th>
 			</tr>
 			<?php if(!$categories): ?>
 				<tr>
@@ -28,17 +32,21 @@
 			<?php else : ?>
 				<?php foreach ($categories as $category): ?>
 				<tr>
-					<td><?php echo $category['categoryId']?></td>
+					<td><?php echo $category->categoryId?></td>
 					<td>
 						<?php $result = $getCategoryWithPath; 
-		    				echo $result[$category['categoryId']];
+		    				echo $result[$category->categoryId];
 			    		?>
 					</td>
-					<td><?php echo $category['status']?></td>
-					<td><?php echo $category['createdAt']?></td>
-					<td><?php echo $category['updatedAt']?></td>
-					<td><a href="<?php echo $controllerCoreAction->getUrl('edit','category',['categoryId'=> $category['categoryId']],true) ?>">Edit</a></td>
-					<td><a href="<?php echo $controllerCoreAction->getUrl('delete','category',['categoryId'=> $category['categoryId']],true) ?>">Delete</a></td>
+					<td><?php echo $category->status?></td>
+					<td><?php echo $category->createdAt?></td>
+					<td><?php echo $category->updatedAt?></td>
+					<td><?php echo $category->baseImage ?></td>
+            		<td><?php echo $category->smallImage ?></td>
+            		<td><?php echo $category->thumbImage ?></td>
+					<td><a href="<?php echo $controllerCoreAction->getUrl('edit','category',['categoryId'=> $category->categoryId],true) ?>">Edit</a></td>
+					<td><a href="<?php echo $controllerCoreAction->getUrl('delete','category',['categoryId'=> $category->categoryId],true) ?>">Delete</a></td>
+					<td><a href="<?php echo$controllerCoreAction->getUrl('grid','category_media',['id' =>  $category->categoryId],true) ?>">Media</a></td>
 				</tr>
 				<?php endforeach;	?>
 		<?php endif;  ?>

@@ -34,7 +34,9 @@ class Controller_Admin extends Controller_Core_Action
 
     public function addAction()
     {
-       Ccc::getBlock('Admin_Add')->toHtml();  
+        $admin = Ccc::getModel('Admin');
+        Ccc::getBlock('Admin_Edit')->addData('admin',$admin)->toHtml();
+       //Ccc::getBlock('Admin_Add')->toHtml();  
     }
 
     public function saveAction()
@@ -58,7 +60,8 @@ class Controller_Admin extends Controller_Core_Action
             if (!isset($row)) {
                 throw new Exception("Invalid Request.", 1);             
             }           
-            if (!array_key_exists('id',$row)):
+            if (array_key_exists('id',$row) && $row['id'] == NULL):
+
                 $admin->firstName = $row['firstName'];
                 $admin->lastName = $row['lastName'];
                 $admin->email = $row['email'];

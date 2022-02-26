@@ -11,6 +11,12 @@ class Model_Core_Row_Resource
         
     }
 
+    public function getAdapter()
+    {
+    	global $adapter;
+    	return $adapter;
+    }
+
 	public function getRowClassName()
 	{
 		return $this->rowClassName;
@@ -54,30 +60,27 @@ class Model_Core_Row_Resource
         if(!$queryInsert){
             return false;
         }
-        global $adapter ;
         $key = '`'.implode("`,`", array_keys($queryInsert)).'`';
         $value = '\''.implode("','", array_values($queryInsert)).'\'';
 
         $sqlResult = "INSERT INTO `{$this->getTableName()}` ({$key}) VALUES ({$value});";
-        $result = $adapter->insert($sqlResult);
+        $result = $this->getAdapter()->insert($sqlResult);
         return $result;
     }
 
 	public function delete(array $deleteArr)
 	{ 
-		global $adapter;
 		$tableName = $this->getTableName();
 
 		$key = key($deleteArr);
 		$value = $deleteArr[$key];
 		$delete = "DELETE FROM $tableName WHERE $key = $value;";
-		$result = $adapter->delete($delete);
+		$result = $this->getAdapter()->delete($delete);
 		return $result;
 	}
 
 	public function update(array $updateArr , array $whereArr)
 	{
-		global $adapter;
 		date_default_timezone_set("Asia/Kolkata");
         $date = date('Y-m-d H:i:s');
 		$set = [];
@@ -91,23 +94,21 @@ class Model_Core_Row_Resource
 		$imp = implode(',', $set);
 		$update = "UPDATE $tableName SET $imp WHERE $key = $value;";
 		//print_r($update);
-		$result = $adapter->update($update);
+		$result = $this->getAdapter()->update($update);
 		return $result;
 	}
 
 	public function fetchRow($queryFetchRow)
   	{
-		global $adapter;
 		$tableName = $this->getTableName();
-		$result = $adapter->fetchRow($queryFetchRow);
+		$result = $this->getAdapter()->fetchRow($queryFetchRow);
 		return $result;  
   	}
 
 	public function fetchAll($queryFetchAll)
 	{
-		global $adapter;
 		$tableName = $this->getTableName();
-		$result = $adapter->fetchAll($queryFetchAll);
+		$result = $this->getAdapter()->fetchAll($queryFetchAll);
 		return $result;
 	}
 

@@ -1,5 +1,5 @@
-<?php $controllerCoreAction = new Controller_Core_Action(); ?>
-<!DOCTYPE html>
+<?php //$controllerCoreAction = new Controller_Core_Action(); ?>
+<!-- <!DOCTYPE html>
 <html>
 <head>
 	<meta charset="utf-8">
@@ -7,7 +7,7 @@
 	<title>Customer Add</title>
 </head>
 <body>
-	<form action="<?php echo $controllerCoreAction->getUrl('save','customer',null,true) ?>" method = "POST">
+	<form action="<?php //echo $controllerCoreAction->getUrl('save','customer',null,true) ?>" method = "POST">
 		<table border="1" width="100%" cellspacing="4">
 			<tr>
 				<td colspan="2"><h2>Customer Information</h2> </td>
@@ -81,10 +81,10 @@
 				<td width="10%">&nbsp;</td>
 				<td>
 					<input type="submit" name="submit" value="Save">
-					<button type="button"><a href="<?php echo $controllerCoreAction->getUrl('grid','customer',null,true) ?>">Cancel</a></button>
+					<button type="button"><a href="<?php// echo $controllerCoreAction->getUrl('grid','customer',null,true) ?>">Cancel</a></button>
 				</td>
 			</tr>
 		</table>
 	</form>
 </body>
-</html>
+</html> -->
