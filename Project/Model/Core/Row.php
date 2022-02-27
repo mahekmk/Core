@@ -72,12 +72,14 @@ class Model_Core_Row
 	{	
 		if(array_key_exists($this->getTable()->getPrimaryKey(),$this->data))
 		{
+			
 			$tableName = $this->getTable()->getPrimaryKey();	
 			$id = $this->data[$this->getTable()->getPrimaryKey()];
 			$this->getTable()->update($this->data,[$tableName => $id]);
 		}
 		else
 		{
+			
 			$id = $this->getTable()->insert($this->data);
 		}
 		return $id;
@@ -110,6 +112,7 @@ class Model_Core_Row
 
     public function fetchAll($query)
     {
+
         $results = $this->getTable()->fetchAll($query);
         if(!$results)
         {
