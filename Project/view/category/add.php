@@ -1,6 +1,6 @@
-<?php $getCategoryWithPath = $this->getCategoryWithPath(); ?>
-<?php $controllerCoreAction = new Controller_Core_Action(); ?>
-<!DOCTYPE html>
+<?php //$getCategoryWithPath = $this->getCategoryWithPath(); ?>
+<?php //$controllerCoreAction = new Controller_Core_Action(); ?>
+<!-- <!DOCTYPE html>
 <html>
 <head>
 	<meta charset="utf-8">
@@ -8,7 +8,7 @@
 	<title>Category Add</title>
 </head>
 <body>
-	<form action="<?php echo $controllerCoreAction->getUrl('save','category',null,true) ?>" method="POST">
+	<form action="<?php //echo $controllerCoreAction->getUrl('save','category',null,true) ?>" method="POST">
 		<table border="1" width="100%" cellspacing="4">
 			<tr>
 				<td colspan="2"> Category Information</td>
@@ -20,14 +20,14 @@
 					<option value="">Main category </option>
 						<?php
 							$result = $getCategoryWithPath;		
-							foreach($result as $key => $value):
-						?>		<option value=<?php echo $key; ?> >
+							//foreach($result as $key => $value):
+						?>		<option value=<?php //echo $key; ?> >
 						<?php
-								echo($value);
+								//echo($value);
 						?>
 					</option>
 						<?php
-							endforeach;
+							//endforeach;
 						?>							
 				</select>
 			</td>
@@ -57,4 +57,4 @@
 		</table>
 	</form>
 </body>
-</html>
+</html> -->
