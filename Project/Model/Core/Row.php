@@ -3,7 +3,7 @@
 class Model_Core_Row
 {
 	protected $data = [];
-	protected $tableClassName;
+	protected $resourceClassName;
 
 	public function __construct()
     {
@@ -16,7 +16,7 @@ class Model_Core_Row
     	return $adapter;
     }
 
-	public function getTableClassName()
+	/*public function getTableClassName()
 	{
 		return $this->tableClassName;
 	}
@@ -25,7 +25,18 @@ class Model_Core_Row
 	{
 		$this->tableClassName = $tableClassName;
 		return $this;
-	}
+	}*/
+
+	public function getResourceClassName()
+    {
+        return $this->resourceClassName;
+    }
+
+    public function setResourceClassName($resourceClassName)
+    {
+        $this->resourceClassName = $resourceClassName;
+        return $this;   
+    }
 
 	public function setData(array $data)
 	{
@@ -35,7 +46,7 @@ class Model_Core_Row
 
 	public function getData()
 	{
-			return $this->data;
+		return $this->data;
 	}
 
 	public function resetData()
@@ -65,7 +76,7 @@ class Model_Core_Row
 
 	public function getTable()
 	{
-		return Ccc::getModel($this->getTableClassName());
+		return Ccc::getModel($this->getResourceClassName());
 	}
 
 	public function save()

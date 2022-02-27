@@ -33,7 +33,7 @@
 					<td><?php echo $admin->firstName;?></td>
 					<td><?php echo $admin->lastName;?></td>
 					<td><?php echo $admin->email;?></td>
-					<td><?php echo $admin->status;?></td>
+					<td><?php echo $admin->getStatus($admin->status); ?></td>
 					<td><?php echo $admin->createdAt;?></td>
 					<td><?php echo $admin->updatedAt;?></td>
 					<td><a href="<?php echo $controllerCoreAction->getUrl('edit','admin',['id'=> $admin->adminId],true) ?>">Edit</a></td>

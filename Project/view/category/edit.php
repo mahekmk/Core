@@ -21,12 +21,12 @@
 			<td>
 				<select name="category[parentId]">
 					<option value="">Main Category</option>
-					<?php
-						foreach ($result as $key => $row) {
-						 	?>
-						 	<option value="<?php echo $key; ?>" <?php if ($category->parentId == $key) {
+					<?php foreach ($result as $key => $row) { ?>
+					<option value="<?php echo $key; ?>" 
+						<?php if ($category->parentId == $key) {
 						 		echo "selected";
-						 	} ?>><?php echo $row; ?></option>
+						 	} ?>><?php echo $row; ?>
+					</option>
 						 	<?php
 						 } 
 						
@@ -38,8 +38,13 @@
 		<tr>
 			<td>Status</td>
 			<td><select name="category[status]" value="<?php echo $category->status;?>">
-				<option value="1" <?php if($category->status == 1): ?> selected = "selected" <?php endif; ?>>Active</option>
-				<option value="2" <?php if($category->status == 2): ?> selected = "selected" <?php endif; ?>>Inactive</option>
+				<?php if($category->status == 2): ?>
+				              <option value='2'>InActive</option>
+				              <option value='1'>Active</option>
+				          <?php else: ?>
+				              <option value='1'>Active</option>
+				              <option value='2'>InActive</option>
+				          <?php endif;?>
 			</select>
 		</td>
 	</tr>

@@ -54,7 +54,7 @@ $id= $_GET['id'];?>
 
 <form align="center" action="<?php echo $controllerCoreAction->getUrl('add','product_media',['id' =>  $id],true) ?>" method="POST" enctype="multipart/form-data">
 <input type="file" name="image[]">
-<input type="submit" name="submit" value="Submit">
+<input type="submit" name="submit" value="Upload">
 
 
 

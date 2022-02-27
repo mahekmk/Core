@@ -38,9 +38,14 @@
 			<tr>
 				<td width="10%">Status</td>
 				<td>
-					<select name="product[status]" value="<?php $product->status ; ?>">
-						<option value="1" <?php if($product->status == 1):?>  selected="selected" <?php endif; ?>>Active</option>
-						<option value="2" <?php if($product->status == 2):?>  selected="selected" <?php endif; ?>>Inactive</option>
+					<select name="product[status]" value="<?php echo $product->status;?>">
+						<?php if($product->status == 2): ?>
+				              <option value='2'>InActive</option>
+				              <option value='1'>Active</option>
+				          <?php else: ?>
+				              <option value='1'>Active</option>
+				              <option value='2'>InActive</option>
+				          <?php endif;?>
 					</select>
 				</td>
 			</tr>

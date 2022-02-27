@@ -37,12 +37,14 @@ class Controller_Category extends Controller_Core_Action
 
     public function addAction()
     {
-        Ccc::getBlock('Category_Add')->toHtml();
+        $category = Ccc::getModel('Category');
+        Ccc::getBlock('Category_Edit')->addData('category', $category)->toHtml();
+        //Ccc::getBlock('Category_Add')->toHtml();
     }
 
     public function saveAction()
     {
-        global $adapter;
+        //global $adapter;
         $category = Ccc::getModel('Category');
         //$category = $category -> getRow();
         //$categoryData = $this->getRequest()->getRequest('category');
@@ -63,7 +65,7 @@ class Controller_Category extends Controller_Core_Action
             $createdAt = $date;
             $updatedAt = $date;
             
-            if (array_key_exists('categoryId', $categoryData))
+            if (array_key_exists('categoryId', $categoryData) && $categoryData['categoryId'] != NULL)
             {
                // echo 4;
                 if (!(int)$categoryData['categoryId'])
@@ -174,7 +176,7 @@ class Controller_Category extends Controller_Core_Action
                     {
                         //echo 'k';
                         $query2 = "SELECT `path` FROM category WHERE categoryId = '$parentId'";
-                        $result2 = $adapter->fetchOne($query2);
+                        $result2 = $this->getAdapter()->fetchOne($query2);
                         $output = $result2 . '/' . $insert;
                         //$query3 = "UPDATE category SET path = '$output' WHERE categoryId = '$insert'";
 
@@ -231,9 +233,9 @@ class Controller_Category extends Controller_Core_Action
 
     public function getCategoryWithPath()
     {
-        global $adapter;
+        //global $adapter;
         $category = [];
-        $categoryIdName = $adapter->fetchPairs('SELECT categoryId , name FROM category');
+        $categoryIdName = $this->getAdapter()->fetchPairs('SELECT categoryId , name FROM category');
          if (!$this->getRequest()->getRequest('categoryId')) 
         {
             $query = "SELECT categoryId, path FROM category ORDER BY path"; 
@@ -241,11 +243,11 @@ class Controller_Category extends Controller_Core_Action
         else 
         {
             $categoryId = $this->getRequest()->getRequest('categoryId');
-            $excludePath = $adapter->fetchOne("SELECT path FROM category WHERE categoryId = '$categoryId'");
+            $excludePath = $this->getAdapter()->fetchOne("SELECT path FROM category WHERE categoryId = '$categoryId'");
             $excludePath = $excludePath . '/%';
             $query = "SELECT categoryId,path FROM category WHERE categoryId <> '$categoryId' AND path NOT LIKE('$excludePath') ORDER BY path";  
         }
-        $categoryIdPath = $adapter->fetchPairs($query);
+        $categoryIdPath = $this->getAdapter()->fetchPairs($query);
 
         foreach ($categoryIdPath as $categoryId => $path)
         {
@@ -266,14 +268,14 @@ class Controller_Category extends Controller_Core_Action
     public function updatePathIntoCategory($categoryId, $parentId)
     {
         $category = Ccc::getModel('Category');
-        global $adapter;
+        //global $adapter;
         $query = "SELECT path FROM category WHERE categoryId = '$categoryId'";
-        $result = $adapter->fetchOne($query);
+        $result = $this->getAdapter()->fetchOne($query);
         //print_r($result);
         
         $output = $result . '/%';
        // print_r($output);
-        $path = $adapter->fetchOne("SELECT path FROM category WHERE categoryId = '$parentId'");
+        $path = $this->getAdapter()->fetchOne("SELECT path FROM category WHERE categoryId = '$parentId'");
         if (!$path) 
         {
             $newPath = $categoryId; 
@@ -304,11 +306,11 @@ class Controller_Category extends Controller_Core_Action
             foreach ($categories as $categoryId => $category) 
             {
                 $res = $category->getData();
-                 $parentId = $res['parentId'];
-                 $categoryId = $res['categoryId'];
+                $parentId = $res['parentId'];
+                $categoryId = $res['categoryId'];
                 $newParentId = $parentId;
                 $newCategoryId = $categoryId;
-                $getParentPath = $adapter->fetchOne("SELECT path FROM category WHERE categoryId='$newParentId'");
+                $getParentPath = $this->getAdapter()->fetchOne("SELECT path FROM category WHERE categoryId='$newParentId'");
                 $updatedPath = $getParentPath . '/' . $categoryId;
                 
                 $category->load($newCategoryId);

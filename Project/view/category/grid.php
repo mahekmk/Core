@@ -38,7 +38,7 @@
 		    				echo $result[$category->categoryId];
 			    		?>
 					</td>
-					<td><?php echo $category->status?></td>
+					<td><?php echo $category->getStatus($category->status); ?></td>
 					<td><?php echo $category->createdAt?></td>
 					<td><?php echo $category->updatedAt?></td>
 					<td><?php echo $category->baseImage ?></td>

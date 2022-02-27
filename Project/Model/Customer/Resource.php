@@ -15,6 +15,6 @@ class Model_Customer_Resource extends Model_Core_Row_Resource
 {
 	public function __construct()
 	{
-		$this->setTableClassName('Customer');
+		$this->setResourceClassName('Customer');
 	}
 }*/

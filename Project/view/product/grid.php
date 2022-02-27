@@ -37,7 +37,7 @@
 					<td><?php echo $product->name; ?></td>
 					<td><?php echo $product->price; ?></td>
 					<td><?php echo $product->quantity; ?></td>
-					<td><?php echo $product->status; ?></td>
+					<td><?php echo $product->getStatus($product->status); ?></td>
 					<td><?php echo $product->createdAt; ?></td>
 					<td><?php echo $product->updatedAt; ?></td>
 					<td><?php echo $product->baseImage; ?></td>

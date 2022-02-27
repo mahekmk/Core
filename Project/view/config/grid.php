@@ -32,7 +32,7 @@
 					<td><?php echo $config->name;?></td>
 					<td><?php echo $config->value;?></td>
 					<td><?php echo $config->code;?></td>
-					<td><?php echo $config->status;?></td>
+					<td><?php echo $config->getStatus($config->status); ?></td>
 					<td><?php echo $config->createdAt;?></td>
 					<td><a href="<?php echo $controllerCoreAction->getUrl('edit','config',['id'=> $config->configId],true) ?>">Edit</a></td>
 					<td><a href="<?php echo $controllerCoreAction->getUrl('delete','config',['id'=> $config->configId],true) ?>">Delete</a></td>

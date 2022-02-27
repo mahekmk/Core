@@ -12,7 +12,7 @@ class Controller_Category_Media extends Controller_Core_Action{
 
    public function saveAction()
    {
-      global $adapter;
+      //global $adapter;
       try 
       {
           $categoryId = $this->getRequest()->getRequest('id');
@@ -45,19 +45,19 @@ class Controller_Category_Media extends Controller_Core_Action{
             
 
             $query="DELETE FROM `category_media` WHERE imageId IN($removeIdsImplode)";
-            $result = $adapter->delete($query);
+            $result = $this->getAdapter()->delete($query);
          }
 
 //------------------------------RESET status,small,base,thumb,gallery--------------------------------------
 
             $query = "SELECT imageId,categoryId FROM `category_media` WHERE categoryId = $categoryId";
 
-            $result = $adapter->fetchPairs($query);
+            $result = $this->getAdapter()->fetchPairs($query);
             $ids = array_keys($result);
             $implodeIds = implode(",",$ids);
             
             $query = "UPDATE `category_media` SET status = 0, thumb = 0, base = 0, small = 0 , gallery = 0 WHERE imageId IN ($implodeIds)";
-            $result = $adapter->update($query);      
+            $result = $this->getAdapter()->update($query);      
 
 
 //--------------------------------------------------------------------------Status--------------------------
@@ -71,7 +71,7 @@ class Controller_Category_Media extends Controller_Core_Action{
             } 
             $statusIdsImplode = implode(",",$statusIds);
             $query = "UPDATE `category_media` SET status = 1 WHERE imageId IN ($statusIdsImplode)";
-            $result = $adapter->update($query);
+            $result = $this->getAdapter()->update($query);
          }
 //------------------------------------------------------------------------gallery--------------------------
 
@@ -85,7 +85,7 @@ class Controller_Category_Media extends Controller_Core_Action{
             } 
             $galleryIdsImplode = implode(",",$galleryIds);
             $query = "UPDATE `category_media` SET gallery = 1 WHERE imageId IN ($galleryIdsImplode)";
-            $result = $adapter->update($query);
+            $result = $this->getAdapter()->update($query);
          }  
 //--------------------------------------------------------------------------Base--------------------------
 
@@ -93,7 +93,7 @@ class Controller_Category_Media extends Controller_Core_Action{
          {
             $baseId = $rows['media']['base'];
             $query = "UPDATE `category_media` SET base = 1 WHERE imageId = {$baseId}";
-            $result = $adapter->update($query);
+            $result = $this->getAdapter()->update($query);
          }
 
 //--------------------------------------------------------------------------Small--------------------------
@@ -101,14 +101,14 @@ class Controller_Category_Media extends Controller_Core_Action{
          {
             $smallId = $rows['media']['small'];
             $query = "UPDATE `category_media` SET small = 1 WHERE imageId = {$smallId}";
-            $result = $adapter->update($query);
+            $result = $this->getAdapter()->update($query);
          }
 //--------------------------------------------------------------------------Thumb--------------------------
          if(array_key_exists('thumb',$media))
          {
             $thumbId = $rows['media']['thumb'];
             $query = "UPDATE `category_media` SET thumb = 1 WHERE imageId = {$thumbId}";
-           $result = $adapter->update($query);
+           $result = $this->getAdapter()->update($query);
          }
  //------------------------------------------------------------------------Redirect-----------------------
 
@@ -139,10 +139,10 @@ class Controller_Category_Media extends Controller_Core_Action{
          
       if(move_uploaded_file($imageAddress , 'E:\xampp\htdocs\Cybercom\Core\Project\Media\category/'. $imageName))
          {
-            global $adapter;
+            //global $adapter;
             $query =  "INSERT INTO `category_media`( `categoryId`, `image`, `base`, `thumb`, `small`, `gallery`, `status`) VALUES ($categoryId,'$imageName',0,0,0,0,0)";
            
-            $result = $adapter->insert($query);
+            $result = $this->getAdapter()->insert($query);
            
 
            $this->redirect($this->getUrl('grid','category_media',['id'=> $categoryId]));
@@ -175,8 +175,8 @@ class Controller_Category_Media extends Controller_Core_Action{
          if(move_uploaded_file($tempImageName1, $folderName)){
 
             $query = "INSERT INTO `category_media`( `categoryId`, `image`, `base`, `thumb`, `small`, `gallery`, `status`) VALUES ($categoryId,$name1,0,0,0,0,0)";
-            global $adapter;
-            $insert = $adapter->insert('$query');
+            //global $adapter;
+            $insert = $this->getAdapter()->insert('$query');
             print_r("$insert");
 
          }
