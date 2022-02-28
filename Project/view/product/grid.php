@@ -40,9 +40,17 @@
 					<td><?php echo $product->getStatus($product->status); ?></td>
 					<td><?php echo $product->createdAt; ?></td>
 					<td><?php echo $product->updatedAt; ?></td>
-					<td><?php echo $product->baseImage; ?></td>
-					<td><?php echo $product->smallImage; ?></td>
-					<td><?php echo $product->thumbImage; ?></td>
+					<td>
+						<?php if(!$product->baseImage): echo "No image Selected"?>
+						<?php else:?><img src="<?php echo 'Media/product/' . $product->baseImage; ?>" width="100px" height="100px" alt=" No Image Selected">
+						<?php endif;?>
+					</td>
+					<td><?php if(!$product->smallImage): echo "No image Selected"?>
+						<?php else:?><img src="<?php echo 'Media/product/' . $product->smallImage; ?>" width="100px" height="100px" alt=" No Image Selected">
+						<?php endif;?></td>
+					<td><?php if(!$product->thumbImage): echo "No image Selected"?>
+						<?php else:?><img src="<?php echo 'Media/product/' . $product->thumbImage; ?>" width="100px" height="100px" alt=" No Image Selected">
+						<?php endif;?></td>
 					<td><a href="<?php echo$controllerCoreAction->getUrl('edit','product',['id' =>  $product->productId],true) ?>">Edit</a></td>
 					<td><a href="<?php echo$controllerCoreAction->getUrl('delete','product',['id' =>  $product->productId],true) ?>">Delete</a></td>
 					<td><a href="<?php echo$controllerCoreAction->getUrl('grid','product_media',['id' =>  $product->productId],true) ?>">Media</a></td>

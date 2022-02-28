@@ -41,9 +41,17 @@
 					<td><?php echo $category->getStatus($category->status); ?></td>
 					<td><?php echo $category->createdAt?></td>
 					<td><?php echo $category->updatedAt?></td>
-					<td><?php echo $category->baseImage ?></td>
-            		<td><?php echo $category->smallImage ?></td>
-            		<td><?php echo $category->thumbImage ?></td>
+					<td>
+						<?php if(!$category->baseImage): echo "No image Selected"?>
+						<?php else:?><img src="<?php echo 'Media/category/' . $category->baseImage; ?>" width="100px" height="100px" alt=" No Image Selected">
+						<?php endif;?>
+					</td>
+					<td><?php if(!$category->smallImage): echo "No image Selected"?>
+						<?php else:?><img src="<?php echo 'Media/category/' . $category->smallImage; ?>" width="100px" height="100px" alt=" No Image Selected">
+						<?php endif;?></td>
+					<td><?php if(!$category->thumbImage): echo "No image Selected"?>
+						<?php else:?><img src="<?php echo 'Media/category/' . $category->thumbImage; ?>" width="100px" height="100px" alt=" No Image Selected">
+						<?php endif;?></td>
 					<td><a href="<?php echo $controllerCoreAction->getUrl('edit','category',['categoryId'=> $category->categoryId],true) ?>">Edit</a></td>
 					<td><a href="<?php echo $controllerCoreAction->getUrl('delete','category',['categoryId'=> $category->categoryId],true) ?>">Delete</a></td>
 					<td><a href="<?php echo$controllerCoreAction->getUrl('grid','category_media',['id' =>  $category->categoryId],true) ?>">Media</a></td>

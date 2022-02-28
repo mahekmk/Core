@@ -123,23 +123,19 @@ class Controller_Product_Media extends Controller_Core_Action{
 
    public function addAction()
    {
-      
-      $productId = $_GET['id'];
 
-      //$mediaTable = Ccc::getModel('Media_Resource');
-      $imageName1 = $_FILES['image']['name'];
-      $imageAddress1 = $_FILES['image']['tmp_name'];
-      $imageName = implode("", $imageName1);
-      $imageName = date("mjYhis")."-".$imageName;
-      $imageAddress = implode("", $imageAddress1);
-      // $media = Ccc::getModel('Product_Media');   
-      //$media = $mediaModel->getRow();
-
-      //  $row = $this->getRequest()->getRequest('product_media');
+      try 
+      {
          
-      if(move_uploaded_file($imageAddress , 'E:\xampp\htdocs\Cybercom\Core\Project\Media\product/'. $imageName))
+         $productId = $_GET['id'];
+         $imageName1 = $_FILES['image']['name'];
+         $imageAddress1 = $_FILES['image']['tmp_name'];
+         $imageName = implode("", $imageName1);
+         $imageName = date("mjYhis")."-".$imageName;
+         $imageAddress = implode("", $imageAddress1);
+     
+         if(move_uploaded_file($imageAddress , $this->getBaseUrl('Media/product/') . $imageName))
          {
-            //global $adapter;
             $query =  "INSERT INTO `product_media`( `productId`, `image`, `base`, `thumb`, `small`, `gallery`, `status`) VALUES ($productId,'$imageName',0,0,0,0,0)";
            
             $result = $this->getAdapter()->insert($query);
@@ -149,39 +145,19 @@ class Controller_Product_Media extends Controller_Core_Action{
          }
          else
          {
-            //$this->redirect($this->getUrl('grid','product_media',['id' =>  $productId],true));
-         }  
-}
+            $this->redirect($this->getUrl('grid','product_media',['id' =>  $productId],true));
+         }
+
+      } catch (Exception $e) {
+         
+      }
+
+       
+      }
    }
 
 
-   /*public function saveAction()
-   {
-      $productId = $_GET['id'];
-      print_r($productId);
-      die;
-      if(!isset($_POST['submit']))
-      {
-         
-         $imageName = $_FILES['image']['name'];
-         $tempImageName = $_FILES['image']['tmp_name'];
-         $name = implode("",$imageName);
-         $tempImageName1 =implode("",$tempImageName);
-         $imageExt = pathinfo($name,PATHINFO_EXTENSION);
-         $name1 =  date("mjYHis") . $name ."." .$imageExt ;
-
-         $folderName = 'E:\xampp\htdocs\Cybercom\Core\Project\Media/' . $name1;
-         //print_r($imageName);
-         if(move_uploaded_file($tempImageName1, $folderName)){
-
-            $query = "INSERT INTO `product_media`( `productId`, `image`, `base`, `thumb`, `small`, `gallery`, `status`) VALUES ($productId,$name1,0,0,0,0,0)";
-            //global $adapter;
-            $insert = $this->getAdapter()->insert('$query');
-            print_r("$insert");
-
-         }
-
-      }*/
+   
    
 
 ?>

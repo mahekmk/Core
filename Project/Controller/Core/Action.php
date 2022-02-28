@@ -78,4 +78,13 @@ class Controller_Core_Action{
         $url = 'index.php?'.http_build_query($tempArray);
         return $url;
     }
+
+    public function getBaseUrl($subUrl = null)
+    {
+        $url = "E:/xampp/htdocs/Cybercom/Core/Project";
+        if($subUrl){
+            $url = $url."/".$subUrl;
+        }
+        return $url;
+    }
 }

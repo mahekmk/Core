@@ -26,10 +26,11 @@ $id= $_GET['id'];?>
 			</tr>
 			<?php if($medias): ?>
 			
-				<?php foreach ($medias as $media): ?>		
+				<?php foreach ($medias as $media): ?>	
+
 					<tr>
 			    		<td><?php echo $media->imageId ; ?></td>
-						<td><?php echo $media->image ; ?></td>
+						<td><img src="<?php echo 'Media/product/' . $media->image; ?>" width="100px" height="100px" alt="image"></td>
 						<input type="hidden" name="media[imageId]" value="<?php echo $media->imageId?>">
 						<td><input type="radio" name="media[base]" value="<?php echo $media->imageId?>"<?php echo ($media->base==1) ? 'checked' : '' ; ?>></td>
 						<td><input type="radio" name="media[thumb]" value="<?php echo $media->imageId?>"<?php echo ($media->thumb==1) ? 'checked' : '' ;?>></td>

@@ -137,7 +137,7 @@ class Controller_Category_Media extends Controller_Core_Action{
 
       //  $row = $this->getRequest()->getRequest('category_media');
          
-      if(move_uploaded_file($imageAddress , 'E:\xampp\htdocs\Cybercom\Core\Project\Media\category/'. $imageName))
+      if(move_uploaded_file($imageAddress , $this->getBaseUrl('Media/category/') . $imageName))
          {
             //global $adapter;
             $query =  "INSERT INTO `category_media`( `categoryId`, `image`, `base`, `thumb`, `small`, `gallery`, `status`) VALUES ($categoryId,'$imageName',0,0,0,0,0)";
