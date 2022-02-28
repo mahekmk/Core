@@ -1,12 +1,12 @@
 <?php 
-Ccc::loadClass('Model_Core_View');
+Ccc::loadClass('Block_Core_Layout');
 Ccc::loadClass('Model_Core_Request');
 ?>
 
 <?php 
 class Controller_Core_Action{
 
-    public $view = null; 
+    protected $layout = null; 
 
     public function getAdapter()
     {
@@ -20,18 +20,24 @@ class Controller_Core_Action{
         exit();
     }
 
-    public function getView()
+    public function getLayout()
     {
-        if(!$this->view){
-            $this->setView(new Model_Core_View());
+        if(!$this->layout)
+        {
+            $this->setLayout(new Block_Core_Layout());
         }
-        return $this->view;
+        return $this->layout;
     }
 
-    public function setView($view)
+    public function setLayout($layout)
     {
-        $this->view = $view;
+        $this->layout = $layout;
         return $this;
+    }
+
+    public function renderLayout()
+    {
+        return $this->getLayout()->toHtml();
     }
 
     public function getRequest()

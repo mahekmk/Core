@@ -43,9 +43,19 @@ class Controller_Category_Media extends Controller_Core_Action{
            
             $removeIdsImplode = implode(",",$removeIds);
             
+             $query1 = "SELECT imageId , image FROM `category_media` WHERE imageId IN($removeIdsImplode) ";
+            $result1 = $this->getAdapter()->fetchPairs($query1);
+
 
             $query="DELETE FROM `category_media` WHERE imageId IN($removeIdsImplode)";
             $result = $this->getAdapter()->delete($query);
+
+             foreach($result1 as $key => $value){
+               if($result)
+               {
+                  unlink($this->getBaseUrl('Media/category/') . $value);
+               }
+            }
          }
 
 //------------------------------RESET status,small,base,thumb,gallery--------------------------------------
