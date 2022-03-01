@@ -11,7 +11,11 @@ $id= $_GET['id'];?>
 
 	<form action="<?php echo $controllerCoreAction->getUrl('save','product_media',['id' =>  $id],true) ?>" method="POST" align="center">
 		<input type="submit" name="update" value="UPDATE"> 
-	<button ><a href="<?php echo $controllerCoreAction->getUrl('grid','product',null,true) ?>">Cancel</a></button>
+	<button ><a href="<?php echo $controllerCoreAction->getUrl('grid','product',null,true) ?>">Cancel</a>
+	</button>
+	<br>
+	<br>
+
 
 		<table border=1 width=100%>
 			<tr>
@@ -49,14 +53,20 @@ $id= $_GET['id'];?>
 	</form>
 	<br>
 	<br>
-	<br>
-	<br>
+	
 
 
 <form align="center" action="<?php echo $controllerCoreAction->getUrl('add','product_media',['id' =>  $id],true) ?>" method="POST" enctype="multipart/form-data">
-<input type="file" name="image[]">
-<input type="submit" name="submit" value="Upload">
-
+	<table width="50%" border="1px" align="center">
+		<tr>
+			<td><label>Select File</label></td>
+			<td><input type="file" name="image[]" accept="image/*"></td>
+		</tr>
+		<tr>
+			<td colspan="2"><input type="submit" name="submit" value="Upload"></td>
+		</tr>
+		
+	</table>
 
 
 </form>

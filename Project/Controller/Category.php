@@ -211,14 +211,27 @@ class Controller_Category extends Controller_Core_Action
         $category = Ccc::getModel('Category')->load($getId);
         try
         {
+            
+            $query1 = "SELECT imageId,image FROM category c LEFT JOIN category_media cm ON c.categoryId = cm.categoryId  WHERE c.categoryId = $getId;";
+
+            $result1 = $this->getAdapter()->fetchPairs($query1);
+
             if (!isset($getId))
             {
                 throw new Exception("Invalid Request.", 1);
             }
 
             $result = $category->delete();
-            /*$categoryId = $getId;
-            $result = $category->delete(['categoryId' => $categoryId]);*/
+
+            foreach($result1 as $key => $value)
+            {
+               if($result)
+               {
+              
+                  unlink($this->getBaseUrl('Media/category/') . $value);
+               }
+            }
+
             if (!$result)
             {
                 throw new Exception("System is unable to delete record.", 1);

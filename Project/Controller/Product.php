@@ -49,14 +49,6 @@ class Controller_Product extends Controller_Core_Action{
 			//$product = $productModel->getRow();
 			$row = $this->getRequest()->getRequest('product');
 
-
-			/*$id =$row['id'];
-			$name=$row['name'];
-			$price=$row['price'];
-			$quantity=$row['quantity'];
-			$status = $row['status'];
-			$createdAt = $date;
-			$updatedAt = $date;*/
 			
 			if (!isset($row)) {
                 throw new Exception("Invalid Request.", 1);             
@@ -110,6 +102,9 @@ class Controller_Product extends Controller_Core_Action{
 		$product = Ccc::getModel('Product')->load($getId);
 		try 
 		{
+			$query1 = "SELECT imageId,image FROM product p LEFT JOIN product_media pm ON p.productId = pm.productId  WHERE p.productId = $getId;";
+
+			$result1 = $this->getAdapter()->fetchPairs($query1);
 			
 			if (!isset($getId)) 
 			{
@@ -117,7 +112,16 @@ class Controller_Product extends Controller_Core_Action{
 			}
 			$id = $getId;
 			$result = $product->delete(); 
-			//$result= $productModel->delete(['productId' => $id]);
+			
+			foreach($result1 as $key => $value)
+			{
+               if($result)
+               {
+              
+                  unlink($this->getBaseUrl('Media/product/') . $value);
+               }
+            }
+
 			if(!$result)
 			{
 				throw new Exception("System is unable to delete record.", 1);

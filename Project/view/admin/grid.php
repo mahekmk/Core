@@ -5,6 +5,7 @@
 <head>
 	<body>
 
+		<button name='Add'><a href="<?php echo $controllerCoreAction->getUrl('add','admin',null,true) ?>">Add</a></button>
 		<table border="1" width="100%" cellspacing="4">
 			<tr>
 				<th>admin Id</th>

@@ -5,7 +5,7 @@ class Model_Salesman_Resource extends Model_Core_Row_Resource
 	public function __construct()
 	{
 		$this->setTableName('salesman')->setPrimaryKey('salesmanId');
-		$this->setRowClassName('Salesman_Resource');
+		//$this->setRowClassName('Salesman_Resource');
 		parent::__construct();
 	}
 }
