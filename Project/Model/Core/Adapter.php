@@ -1,5 +1,4 @@
 <?php
-echo '<pre>';
 class Model_Core_Adapter{
 
 	public $config = [
@@ -43,7 +42,8 @@ class Model_Core_Adapter{
 
 	public function query($query)
     {
-        if(!$this->getConnect()){
+        if(!$this->getConnect())
+        {
             $this->connect();
         }
         $result = $this->getConnect()->query($query);
@@ -53,8 +53,8 @@ class Model_Core_Adapter{
 	public function insert($query)
 	{
 		$result=$this->query($query);
-		if($result){
-			
+		if($result)
+		{	
 			return $this->getConnect()->insert_id;
 		}
 		return $result;
@@ -72,33 +72,77 @@ class Model_Core_Adapter{
 		return $result;
 	}
 
+	public function select($query)
+	{
+		$result = $this->query($query);
+		return $result;
+	}
+
 	public function fetchRow($query)
 	{
 		$result = $this->query($query);
-		if($result->num_rows){
+		if($result->num_rows)
+		{
 			return $result->fetch_assoc();
 		}
 		return false;
 	}
 
-	public function fetchAll($query)
+	public function fetchAll($query , $mode= MYSQLI_ASSOC)
 	{
 		$result = $this->query($query);
-		if($result->num_rows){
-			return $result->fetch_all(MYSQLI_ASSOC);
+		if($result->num_rows)
+		{
+			return $result->fetch_all($mode);
 		}
 		return false;
 	}
 
-	public function redirect($url)
+	public function fetchPairs($query)
+	{
+		$result = $this->fetchAll( $query , MYSQLI_NUM );
+		if(!$result)
+		{
+			return false;
+		}
+			
+		$keys = array_column($result, "0");
+		$values = array_column($result, "1");
+		if(!$values)
+		{
+			$values = array_fill(0, count($key), null);
+		}
+		$result = array_combine($keys,$values);
+		
+		return $result;
+	}
+	
+	public function fetchOne($query)
+	{
+		$result = $this->fetchRow($query);
+		if(!$result)
+		{
+			return false;
+		}
+
+		$popElement = array_pop($result);
+		return $popElement;
+	}
+
+	/*public function redirect($url)
 	{
 		header("location :$url");	
 		exit();			
-	}
-
+	}*/
 }
-
 $adapter = new Model_Core_Adapter();
+
+/*
+$query = "SELECT productId , name FROM product";
+$result = $adapter->fetchPairs($query);
+print_r($result);
+*/
+
 
 //$adapter->insert("INSERT INTO `product`(`ID`, `name`, `price`, `quantity`, `status`, `created_date`, `updated_at`) VALUES ('3','tablet','6000','2','2','2022-01-10','2022-01-11')");
 //$adapter->insert("INSERT INTO category(name,status,created_at,updated_at) VALUES('electronics',1,'2022-01-10','2022-01-12')");

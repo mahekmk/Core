@@ -1,18 +1,5 @@
-<?php
-require_once('Model/Core/Adapter.php');
-$adapter = new Model_Core_Adapter();
-if($_GET['id'])
-{
-$id = $_GET['id'];
-$data = $adapter->fetchRow("Select * FROM product WHERE productID = '$id'");
- 
- 		$name = $data['name'];
- 		$price = $data['price'];
- 		$quantity = $data['quantity'];
- 		$status = $data['status'];
-
-}
-?>
+<?php $product = $this->getProduct(); ?>
+<?php $controllerCoreAction = new Controller_Core_Action(); ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -22,7 +9,7 @@ $data = $adapter->fetchRow("Select * FROM product WHERE productID = '$id'");
 </head>
 <body>
 
-<form action="index.php?c=product&a=save&id=<?php echo $_GET['id']?>" method="POST">
+<form action="<?php echo$controllerCoreAction->getUrl('save','product',['id' =>  $product->productId],true) ?>" method="POST">
 		<table border="1" width="100%" cellspacing="4">
 			<tr>
 				<td colspan="2"> Product Information</td>
@@ -30,30 +17,35 @@ $data = $adapter->fetchRow("Select * FROM product WHERE productID = '$id'");
 
 			<tr>
 				<td width="10%">Product Id</td>
-				<td><input type="hidden" name="product[id]" value="<?php echo $id ; ?>"></td>
+				<td><input type="text" name="product[id]" value="<?php echo $product->productId  ; ?>" readonly></td>
 			</tr>
 
 			<tr>
 				<td width="10%">Name</td>
-				<td><input type="text" name="product[name]" value="<?php echo $name ; ?>" ></td>
+				<td><input type="text" name="product[name]" value="<?php echo $product->name ;?>" ></td>
 			</tr>
 
 			<tr>
 				<td width="10%">Price</td>
-				<td><input type="text" name="product[price]" value="<?php echo $price ;?>"></td>
+				<td><input type="text" name="product[price]" value="<?php echo  $product->price  ;?>"></td>
 			</tr>
 
 			<tr>
 				<td width="10%">Quantity</td>
-				<td><input type="text" name="product[quantity]" value="<?php echo $quantity ; ?>"></td>
+				<td><input type="text" name="product[quantity]" value="<?php echo $product->quantity  ; ?>"></td>
 			</tr>
 
 			<tr>
 				<td width="10%">Status</td>
 				<td>
-					<select name="product[status]" value="<?php echo $status; ?>">
-						<option value="1" <?php if($status== 1):?>  selected="selected" <?php endif; ?>>Active</option>
-						<option value="2" <?php if($status== 2):?>  selected="selected" <?php endif; ?>>Inactive</option>
+					<select name="product[status]" value="<?php echo $product->status;?>">
+						<?php if($product->status == 2): ?>
+				              <option value='2'>InActive</option>
+				              <option value='1'>Active</option>
+				          <?php else: ?>
+				              <option value='1'>Active</option>
+				              <option value='2'>InActive</option>
+				          <?php endif;?>
 					</select>
 				</td>
 			</tr>
@@ -62,7 +54,7 @@ $data = $adapter->fetchRow("Select * FROM product WHERE productID = '$id'");
 			<td width="10%">&nbsp;</td>
 				<td>
 					<input type="submit" name="submit" value="Save">
-					<button type="button"><a href=" index.php?c=product&a=grid">Cancel</a></button>
+					<button type="button"><a href="<?php echo $controllerCoreAction->getUrl('grid','product',null,true) ?>">Cancel</a></button>
 				</td>
 		</tr>
 		</table>
