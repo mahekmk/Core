@@ -8,7 +8,10 @@ class Controller_salesman extends Controller_Core_Action
 {
     public function gridAction()
     {
-       Ccc::getBlock('Salesman_Grid')->toHtml();      
+        $content = $this->getLayout()->getContent();
+         $salesmanGrid = Ccc::getBlock("Salesman_Grid");
+         $content->addChild($salesmanGrid);
+         $this->renderLayout();      
     }
 
     public function editAction()
@@ -23,7 +26,10 @@ class Controller_salesman extends Controller_Core_Action
             if(!$salesman){
                 throw new Exception("unable to load salesman.");
             }
-            Ccc::getBlock('Salesman_Edit')->addData('salesman',$salesman)->toHtml();       
+           $content = $this->getLayout()->getContent();
+            $salesmanEdit = Ccc::getBlock("Salesman_Edit")->addData("salesman", $salesman);
+            $content->addChild($salesmanEdit);
+            $this->renderLayout();        
         } 
         catch (Exception $e) 
         {

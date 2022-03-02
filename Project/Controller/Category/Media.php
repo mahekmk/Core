@@ -7,7 +7,10 @@ class Controller_Category_Media extends Controller_Core_Action{
 
    public function gridAction()
    { 
-         Ccc::getBlock('Category_Media_Grid')->toHtml();      
+         $content = $this->getLayout()->getContent();
+        $mediaGrid = Ccc::getBlock("Category_Media_Grid");
+        $content->addChild($mediaGrid);
+        $this->renderLayout();     
    }
 
    public function saveAction()

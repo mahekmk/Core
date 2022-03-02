@@ -5,18 +5,10 @@ class Controller_Customer extends Controller_Core_Action
 {
 	public function gridAction()
 	{
-		Ccc::getBlock('Customer_Grid')->toHtml();
-		/*$customerModel = Ccc::getModel('Customer');
-		echo "<pre>";
-		print_r($customerModel);
-		$customer = $customerModel->getRow();
-		$customer->customerId = '174';
-		$customer->firstName = 'Mahek';
-		$customer->lastName = 'Mahek';
-		unset($customer->lastName);
-		$customer->email = '123@mahek.com';
-		$customer->save();
-		print_r($customer);*/
+		$content = $this->getLayout()->getContent();
+        $customerGrid = Ccc::getBlock("Customer_Grid");
+        $content->addChild($customerGrid);
+        $this->renderLayout();
 
 	}
 
@@ -35,7 +27,10 @@ class Controller_Customer extends Controller_Core_Action
 			{
 				throw new Exception("unable to load customer.");
 			}
-			Ccc::getBlock('Customer_Edit')->addData('customer',$customer)->toHtml();		
+			$content = $this->getLayout()->getContent();
+            $customerEdit = Ccc::getBlock("Customer_Edit")->addData("customer", $customer);
+            $content->addChild($customerEdit);
+            $this->renderLayout();		
 		} 
 		catch (Exception $e) 
 		{
@@ -46,8 +41,10 @@ class Controller_Customer extends Controller_Core_Action
 	public function addAction()
 	{
 		$customer = Ccc::getModel('Customer');
-		Ccc::getBlock('Customer_Edit')->addData('customer',$customer)->toHtml();
-		//Ccc::getBlock('Customer_Add')->toHtml();
+        $content = $this->getLayout()->getContent();
+        $customerAdd = Ccc::getBlock('Customer_Edit')->addData('customer',$customer);
+        $content->addChild($customerAdd);
+        $this->renderLayout();
 	}
 
 	protected function saveCustomer()

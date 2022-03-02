@@ -1,10 +1,8 @@
 <?php $admins = $this->getAdmins(); ?>
 <?php $controllerCoreAction = new Controller_Core_Action();?>
 
-<html>
-<head>
-	<body>
 
+		<h1 align="center"> Admin Information </h1>
 		<button name='Add'><a href="<?php echo $controllerCoreAction->getUrl('add','admin',null,true) ?>">Add</a></button>
 		<table border="1" width="100%" cellspacing="4">
 			<tr>
@@ -38,7 +36,3 @@
 				<?php endforeach;	?>
 		<?php endif;  ?>
 		</table>
-
-	</body>
-
-</head>

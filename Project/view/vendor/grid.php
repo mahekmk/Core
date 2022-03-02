@@ -1,9 +1,7 @@
 <?php $vendorAddresses = $this->getVendorAddresses(); ?>
 <?php $controllerCoreAction = new Controller_Core_Action();?>
-<html>
-<head>
-	<body>
-		
+
+		<h1 align="center"> Vendor Information </h1>		
 		<button name='Add'><a href="<?php echo $controllerCoreAction->getUrl('add','vendor',null,true) ?>">Add</a></button>
 		<table border="1" width="100%" cellspacing="4">
 			<tr>
@@ -51,7 +49,3 @@
 				<?php endforeach;	?>
 		<?php endif;  ?>
 		</table>
-
-	</body>
-
-</head>
