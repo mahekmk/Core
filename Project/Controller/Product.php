@@ -16,18 +16,22 @@ class Controller_Product extends Controller_Core_Action{
 
 	public function editAction()
 	{	
+		$message = Ccc::getModel('Core_Message');
 		try 
 		{
 			$id = (int) $this->getRequest()->getRequest('id');
 			if(!$id)
 			{
-				throw new Exception("Id not valid.");
+				 $message->addMessage('Id not valid.',Model_Core_Message::ERROR);            
+              $this->redirect($this->getUrl('grid','product',null,true));
+				//throw new Exception("Id not valid.");
 			}
 			$product = Ccc::getModel('Product')->load($id);
-			//$product = $productModel->fetchRow("SELECT * FROM product WHERE productId = {$id} ");
 			if(!$product)
 			{
-				throw new Exception("unable to load product.");
+				 $message->addMessage('unable to load product.',Model_Core_Message::ERROR);            
+                $this->redirect($this->getUrl('grid','product',null,true));
+				//throw new Exception("unable to load product.");
 			}
 			$content = $this->getLayout()->getContent();
             $productEdit = Ccc::getBlock("Product_Edit")->addData("product", $product);
@@ -51,19 +55,21 @@ class Controller_Product extends Controller_Core_Action{
 
 	public function saveAction()
 	{
+		$message = Ccc::getModel('Core_Message');
 		try
 		{
 			$product = Ccc::getModel('Product');
 			date_default_timezone_set("Asia/Kolkata");
 			$date = date('Y-m-d H:i:s');
-			//$product = $productModel->getRow();
 			$row = $this->getRequest()->getRequest('product');
 
 			
 			if (!isset($row)) {
-                throw new Exception("Invalid Request.", 1);             
+				 $message->addMessage('Invalid Request.',Model_Core_Message::ERROR);            
+                $this->redirect($this->getUrl('grid','product',null,true));
+                //throw new Exception("Invalid Request.", 1);             
             }           
-            if (array_key_exists('id',$row) && $row['id'] == NULL):
+            if (array_key_exists('id',$row) && $row['id'] == NULL){
 
             	$product->name = $row['name'];
             	$product->price = $row['price'];
@@ -71,14 +77,16 @@ class Controller_Product extends Controller_Core_Action{
             	$product->status = $row['status'];
             	$result = $product->save();
 
-
-				/*$result = $productModel->insert(['name' => $name, 'price' => $price , 'quantity' => $quantity , 'status' => $status]);*/
 				if(!$result)
 				{
-					throw new Exception("System is unable to insert information.",1);
+					 $message->addMessage('System is unable to insert information.',Model_Core_Message::ERROR);            
+                $this->redirect($this->getUrl('grid','product',null,true));
+					//throw new Exception("System is unable to insert information.",1);
 				}
+				 $message->addMessage('Data Added Successfully');
 				$this->redirect($this->getUrl('grid','product',null,true));
-			else:
+			}
+			else{
 
 				$product->load($row['id']);
 				$product->productId = $row["id"];
@@ -89,14 +97,15 @@ class Controller_Product extends Controller_Core_Action{
             	$product->updatedAt = $date;
             	$result = $product->save();
 
-				/*$result = $productModel->update(['name' => $name, 'status' => $status, 'price' => $price, 'quantity' => $quantity, 'updatedAt' => $date], ['productId' => $id]);*/
-
 				if(!$result)
 				{
-					throw new Exception("System is unable to update information.",1);
+					 $message->addMessage('System is unable to update information.',Model_Core_Message::ERROR);            
+                $this->redirect($this->getUrl('grid','product',null,true));
+					//throw new Exception("System is unable to update information.",1);
 				}
+				$message->addMessage('Data Updated Successfully');
 				$this->redirect($this->getUrl('grid','product',null,true));
-			endif;
+			}
 		}
 		catch (Exception $e) 
 		{
@@ -108,7 +117,8 @@ class Controller_Product extends Controller_Core_Action{
 
 	public function deleteAction()
 	{
-        $getId = $this->getRequest()->getRequest('id');
+		$message = Ccc::getModel('Core_Message');
+      $getId = $this->getRequest()->getRequest('id');
 		$product = Ccc::getModel('Product')->load($getId);
 		try 
 		{
@@ -118,7 +128,9 @@ class Controller_Product extends Controller_Core_Action{
 			
 			if (!isset($getId)) 
 			{
-				throw new Exception("Invalid Request.", 1);
+				 $message->addMessage('Invalid Request.',Model_Core_Message::ERROR);            
+                $this->redirect($this->getUrl('grid','product',null,true));
+				//throw new Exception("Invalid Request.", 1);
 			}
 			$id = $getId;
 			$result = $product->delete(); 
@@ -134,8 +146,11 @@ class Controller_Product extends Controller_Core_Action{
 
 			if(!$result)
 			{
-				throw new Exception("System is unable to delete record.", 1);
+				 $message->addMessage('System is unable to delete record.',Model_Core_Message::ERROR);            
+                $this->redirect($this->getUrl('grid','product',null,true));
+				//throw new Exception("System is unable to delete record.", 1);
 			}
+			$message->addMessage('Data Deleted Successfully');
 			$this->redirect($this->getUrl('grid','product',null,true));
 		}
 		catch (Exception $e) 
@@ -144,11 +159,6 @@ class Controller_Product extends Controller_Core_Action{
 		}
 	}
 
-	public function redirect($url)
-	{
-		header("location:$url");	
-		exit();			
-	}
 
 	public function errorAction()
 	{

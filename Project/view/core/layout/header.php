@@ -2,14 +2,16 @@
 
 <?php 
 
-$content = $controllerCoreAction->getLayout()->getHeader();
+$header = $controllerCoreAction->getLayout()->getHeader();
 $menuGrid = Ccc::getBlock("Core_Layout_Header_Menu");
-$content->addChild($menuGrid);
+$message = Ccc::getBlock("Core_Message");
+$header->addChild($menuGrid);
+$header->addChild($message);
 
 
 ?>
 
-<?php foreach ($content->getChildren() as $key => $child): ?>
+<?php foreach ($header->getChildren() as $key => $child): ?>
 <?php $child->toHtml(); ?>
 <?php endforeach; ?>
 
