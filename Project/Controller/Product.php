@@ -8,7 +8,10 @@ class Controller_Product extends Controller_Core_Action{
 
 	public function gridAction()
 	{
-		Ccc::getBlock('Product_Grid')->toHtml();
+		  $content = $this->getLayout()->getContent();
+	     $productGrid = Ccc::getBlock("Product_Grid");
+	     $content->addChild($productGrid);
+	     $this->renderLayout();
 	}
 
 	public function editAction()
@@ -26,7 +29,10 @@ class Controller_Product extends Controller_Core_Action{
 			{
 				throw new Exception("unable to load product.");
 			}
-			Ccc::getBlock('Product_Edit')->addData('product',$product)->toHtml();		
+			$content = $this->getLayout()->getContent();
+            $productEdit = Ccc::getBlock("Product_Edit")->addData("product", $product);
+            $content->addChild($productEdit);
+            $this->renderLayout(); 		
 		} 
 		catch (Exception $e) 
 		{
@@ -36,7 +42,11 @@ class Controller_Product extends Controller_Core_Action{
 
 	public function addAction()
 	{
-		Ccc::getBlock('Product_Add')->toHtml();
+		 $product = Ccc::getModel('Product');
+        $content = $this->getLayout()->getContent();
+        $productAdd = Ccc::getBlock('Product_Edit')->addData('product',$product);
+        $content->addChild($productAdd);
+        $this->renderLayout();
 	}
 
 	public function saveAction()
@@ -53,7 +63,7 @@ class Controller_Product extends Controller_Core_Action{
 			if (!isset($row)) {
                 throw new Exception("Invalid Request.", 1);             
             }           
-            if (!array_key_exists('id',$row)):
+            if (array_key_exists('id',$row) && $row['id'] == NULL):
 
             	$product->name = $row['name'];
             	$product->price = $row['price'];

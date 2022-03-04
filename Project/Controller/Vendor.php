@@ -5,7 +5,10 @@ class Controller_Vendor extends Controller_Core_Action
 {
 	public function gridAction()
 	{
-		Ccc::getBlock('Vendor_Grid')->toHtml();
+		$content = $this->getLayout()->getContent();
+        $vendorGrid = Ccc::getBlock("Vendor_Grid");
+        $content->addChild($vendorGrid);
+        $this->renderLayout();   
 	}
 
 	public function editAction()
@@ -23,7 +26,10 @@ class Controller_Vendor extends Controller_Core_Action
 			{
 				throw new Exception("unable to load vendor.");
 			}
-			Ccc::getBlock('Vendor_Edit')->addData('vendor',$vendor)->toHtml();		
+			$content = $this->getLayout()->getContent();
+            $vendorEdit = Ccc::getBlock("Vendor_Edit")->addData("vendor", $vendor);
+            $content->addChild($vendorEdit);
+            $this->renderLayout(); 		
 		} 
 		catch (Exception $e) 
 		{
@@ -33,8 +39,11 @@ class Controller_Vendor extends Controller_Core_Action
 
 	public function addAction()
 	{
-		$vendor = Ccc::getModel('Vendor');
-		Ccc::getBlock('Vendor_Edit')->addData('vendor',$vendor)->toHtml();
+		 $vendor = Ccc::getModel('vendor');
+        $content = $this->getLayout()->getContent();
+        $vendorAdd = Ccc::getBlock('vendor_Edit')->addData('vendor',$vendor);
+        $content->addChild($vendorAdd);
+        $this->renderLayout();
 	}
 
 	protected function saveVendor()

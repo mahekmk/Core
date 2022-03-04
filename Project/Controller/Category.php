@@ -7,7 +7,10 @@ class Controller_Category extends Controller_Core_Action
 {
     public function gridAction()
     {
-        Ccc::getBlock('Category_Grid')->toHtml();
+        $content = $this->getLayout()->getContent();
+        $categoryGrid = Ccc::getBlock("Category_Grid");
+        $content->addChild($categoryGrid);
+        $this->renderLayout();
     }
 
    public function editAction()
@@ -26,7 +29,10 @@ class Controller_Category extends Controller_Core_Action
             {
                 throw new Exception("Error Processing Request edit 2", 1);
             }
-            Ccc::getBlock('Category_Edit')->addData('category', $category)->toHtml();
+            $content = $this->getLayout()->getContent();
+            $categoryEdit = Ccc::getBlock("Category_Edit")->addData("category", $category);
+            $content->addChild($categoryEdit);
+            $this->renderLayout();
             
         }
         catch(Exception $e)
@@ -38,7 +44,10 @@ class Controller_Category extends Controller_Core_Action
     public function addAction()
     {
         $category = Ccc::getModel('Category');
-        Ccc::getBlock('Category_Edit')->addData('category', $category)->toHtml();
+        $content = $this->getLayout()->getContent();
+        $categoryAdd = Ccc::getBlock('Category_Edit')->addData('category',$category);
+        $content->addChild($categoryAdd);
+        $this->renderLayout();
         //Ccc::getBlock('Category_Add')->toHtml();
     }
 
