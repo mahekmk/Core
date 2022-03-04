@@ -1,6 +1,6 @@
 <?php
 Ccc::loadClass('Controller_Core_Action');
-Ccc::loadClass('Model_Core_Request');
+Ccc::loadClass('Model_Core_Request'); 
 ?>
 
 <?php
