@@ -3,7 +3,7 @@
 
 
 		<h1 align="center"> Admin Information </h1>
-		<button name='Add'><a href="<?php echo $controllerCoreAction->getUrl('add','admin',null,true) ?>">Add</a></button>
+		<button name='Add'><a href="<?php echo $controllerCoreAction->getUrl('add') ?>">Add</a></button>
 		<table border="1" width="100%" cellspacing="4">
 			<tr>
 				<th>admin Id</th>
@@ -30,8 +30,8 @@
 					<td><?php echo $admin->getStatus($admin->status); ?></td>
 					<td><?php echo $admin->createdAt;?></td>
 					<td><?php echo $admin->updatedAt;?></td>
-					<td><a href="<?php echo $controllerCoreAction->getUrl('edit','admin',['id'=> $admin->adminId],true) ?>">Edit</a></td>
-					<td><a href="<?php echo $controllerCoreAction->getUrl('delete','admin',['id'=> $admin->adminId],true) ?>">Delete</a></td>
+					<td><a href="<?php echo $controllerCoreAction->getUrl('edit',null,['id'=> $admin->adminId],true) ?>">Edit</a></td>
+					<td><a href="<?php echo $controllerCoreAction->getUrl('delete',null,['id'=> $admin->adminId],true) ?>">Delete</a></td>
 				</tr>
 				<?php endforeach;	?>
 		<?php endif;  ?>

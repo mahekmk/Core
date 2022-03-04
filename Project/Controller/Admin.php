@@ -1,31 +1,38 @@
 <?php
 Ccc::loadClass('Controller_Core_Action');
-Ccc::loadClass('Model_Core_Request'); 
+Ccc::loadClass('Model_Core_Request');
 ?>
 
 <?php
 class Controller_Admin extends Controller_Core_Action
 {
+
     public function gridAction()
     {
         $content = $this->getLayout()->getContent();
         $adminGrid = Ccc::getBlock("Admin_Grid");
         $content->addChild($adminGrid);
-        $this->renderLayout();      
+        $this->renderLayout(); 
     }
 
     public function editAction()
     {
+        $message = Ccc::getModel('Core_Message');
+
         try 
         {
             $id = (int) $this->getRequest()->getRequest('id');
             if(!$id){
-                throw new Exception("Id not valid.");
+                $message->addMessage('Id not valid.',Model_Core_Message::ERROR);            
+                $this->redirect($this->getUrl('grid')); 
+                //throw new Exception("Id not valid.");
             }
             $admin = Ccc::getModel('Admin')->load($id);
-            //$admin = $adminModel->fetchRow("SELECT * FROM admin WHERE adminId = {$id} ");
+            
             if(!$admin){
-                throw new Exception("unable to load admin.");
+                $message->addMessage('unable to load admin.',Model_Core_Message::ERROR);
+                $this->redirect($this->getUrl('grid')); 
+                //throw new Exception("unable to load admin.");
             }
             $content = $this->getLayout()->getContent();
             $adminEdit = Ccc::getBlock("Admin_Edit")->addData("admin", $admin);
@@ -45,13 +52,12 @@ class Controller_Admin extends Controller_Core_Action
         $adminAdd = Ccc::getBlock('Admin_Edit')->addData('admin',$admin);
         $content->addChild($adminAdd);
         $this->renderLayout(); 
-       /*
-        Ccc::getBlock('Admin_Edit')->addData('admin',$admin)->toHtml();*/
-       //Ccc::getBlock('Admin_Add')->toHtml();  
+      
     }
 
     public function saveAction()
     {
+        $message = Ccc::getModel('Core_Message');
         try
         {
 
@@ -60,32 +66,36 @@ class Controller_Admin extends Controller_Core_Action
             //$admin = $adminModel->getRow();
             $date = date('Y-m-d H:i:s');
             $row = $this->getRequest()->getRequest('admin');
-            //$id = $row['id'];
-          /*  $firstName = $row['firstName'];
-            $lastName = $row['lastName'];
-            $email = $row['email'];
-            $password = $row['password'];
-            $status = $row['status'];
-            $createdAt = $date;
-            $updatedAt = $date;*/
+            
             if (!isset($row)) {
-                throw new Exception("Invalid Request.", 1);             
+                $message->addMessage('Invalid Request.',Model_Core_Message::ERROR);         
+                $this->redirect($this->getUrl('grid')); 
+                //throw new Exception("Invalid Request.", 1);             
             }           
-            if (array_key_exists('id',$row) && $row['id'] == NULL):
+            if (array_key_exists('id',$row) && $row['id'] == NULL){
 
                 $admin->firstName = $row['firstName'];
                 $admin->lastName = $row['lastName'];
                 $admin->email = $row['email'];
                 $admin->password = $row['password'];
                 $admin->status = $row['status'];
-                $admin->save();
+                $result = $admin->save();
 
-              /* $result = $adminModel->insert(['firstName' => $firstName , 'lastName' => $lastName , 'email' => $email ,'password' => $password , 'status' => $status ]);
-                if (!$result):
-                    throw new Exception("System is unable to insert admin info.", 1);
-                endif;*/
+                if (!$result)
+                {
+                    $message->addMessage('System is unable to update information.',Model_Core_Message::ERROR);          
+                    $this->redirect($this->getUrl('grid')); 
+                   // throw new Exception("System is unable to update information.", 1);
+                }
 
-            else:
+                if($result)
+                {
+                    $message->addMessage('Admin Data Added Successfully');
+                }
+            }
+
+            else
+            {
                 $admin->load($row['id']);
                 $admin->adminId = $row["id"];
                 $admin->firstName = $row['firstName'];
@@ -96,14 +106,15 @@ class Controller_Admin extends Controller_Core_Action
                 $admin->updatedAt = $date;
                 $result = $admin->save();
 
-           /* $result = $adminModel->update(['firstName' => $firstName , 'lastName' => $lastName , 'email' => $email ,'password' => $password , 'status' => $status ,'updatedAt' => $date ], ['adminId'=> $id]);*/
-
                 if (!$result)
                 {
-                    throw new Exception("System is unable to update information.", 1);
+                    $message->addMessage('System is unable to update information.',Model_Core_Message::ERROR);          
+                    $this->redirect($this->getUrl('grid')); 
+                   // throw new Exception("System is unable to update information.", 1);
                 }
+                $message->addMessage('Admin Data Edited Successfully');   
 
-            endif;
+            }
            $this->redirect($this->getUrl('grid','admin',null,true));
         }
 
@@ -115,6 +126,7 @@ class Controller_Admin extends Controller_Core_Action
 
     public function deleteAction()
     {
+        $message = Ccc::getModel('Core_Message');
         $getId = $this->getRequest()->getRequest('id');
         $admin = Ccc::getModel('Admin')->load($getId);
         /*$adminTable = new Model_Admin();*/
@@ -122,26 +134,25 @@ class Controller_Admin extends Controller_Core_Action
         {
             if (!isset($getId))
             {
-                throw new Exception("Invalid Request.", 1);
+                $message->addMessage('Invalid Request.',Model_Core_Message::ERROR);         
+                $this->redirect($this->getUrl('grid')); 
+               // throw new Exception("Invalid Request.", 1);
             }
             $id = $getId;
             $result = $admin->delete(); 
             if (!$result)
             {
-                throw new Exception("System is unable to delete record.", 1);
+                $message->addMessage('System is unable to delete record.',Model_Core_Message::ERROR);           
+                $this->redirect($this->getUrl('grid')); 
+               // throw new Exception("System is unable to delete record.", 1);
             }
+            $message->addMessage('Admin Data Deleted Successfully');
             $this->redirect($this->getUrl('grid','admin',null,true));
         }
         catch(Exception $e)
         {
             echo $e->getMessage();
         }
-    }
-
-    public function redirect($url)
-    {
-        header("location:$url");
-        exit();
     }
 
     public function errorAction()
