@@ -16,15 +16,20 @@ class Controller_salesman extends Controller_Core_Action
 
     public function editAction()
     {
+        $message = Ccc::getModel('Core_Message');
         try 
         {
             $id = (int) $this->getRequest()->getRequest('id');
             if(!$id){
-                throw new Exception("Id not valid.");
+                 $message->addMessage('Id not valid.',Model_Core_Message::ERROR);         
+                $this->redirect($this->getUrl('grid','salesman',null,true));
+                //throw new Exception("Id not valid.");
             }
             $salesman = Ccc::getModel('Salesman')->load($id);
             if(!$salesman){
-                throw new Exception("unable to load salesman.");
+                 $message->addMessage('Unable to load salesman.',Model_Core_Message::ERROR);         
+                $this->redirect($this->getUrl('grid','salesman',null,true));
+                //throw new Exception("unable to load salesman.");
             }
            $content = $this->getLayout()->getContent();
             $salesmanEdit = Ccc::getBlock("Salesman_Edit")->addData("salesman", $salesman);
@@ -45,6 +50,7 @@ class Controller_salesman extends Controller_Core_Action
 
     public function saveAction()
     {
+        $message = Ccc::getModel('Core_Message');
         try
         {
             $salesman = Ccc::getModel('salesman');
@@ -52,9 +58,12 @@ class Controller_salesman extends Controller_Core_Action
             $date = date('Y-m-d H:i:s');
             $row = $this->getRequest()->getRequest('salesman');
             if (!isset($row)) {
-                throw new Exception("Invalid Request.", 1);             
+                 $message->addMessage('Invalid Request.',Model_Core_Message::ERROR);         
+                $this->redirect($this->getUrl('grid','salesman',null,true));
+                //throw new Exception("Invalid Request.", 1);             
             }           
-            if (array_key_exists('id',$row) && $row['id'] == NULL):
+            if (array_key_exists('id',$row) && $row['id'] == NULL)
+            {
 
                 $salesman->firstName = $row['firstName'];
                 $salesman->lastName = $row['lastName'];
@@ -62,9 +71,23 @@ class Controller_salesman extends Controller_Core_Action
                 $salesman->email = $row['email'];
                 $salesman->status = $row['status'];
                 $salesman->createdAt = $date;
-                $salesman->save();
+                $result = $salesman->save();
 
-            else:
+                if (!$result)
+                {
+                    $message->addMessage('System is unable to inserted information.',Model_Core_Message::ERROR);          
+                    $this->redirect($this->getUrl('grid','salesman',null,true)); 
+                   // throw new Exception("System is unable to update information.", 1);
+                }
+
+                if($result)
+                {
+                    $message->addMessage('Data Added Successfully');
+                }
+            }
+
+            else
+            {
                 $salesman->load($row['id']);
                 $salesman->salesmanId = $row["id"];
                 $salesman->firstName = $row['firstName'];
@@ -77,10 +100,12 @@ class Controller_salesman extends Controller_Core_Action
 
                 if (!$result)
                 {
-                    throw new Exception("System is unable to update information.", 1);
+                     $message->addMessage('System is unable to update information.',Model_Core_Message::ERROR);         
+                $this->redirect($this->getUrl('grid','salesman',null,true));
+                    //throw new Exception("System is unable to update information.", 1);
                 }
-
-            endif;
+                $message->addMessage('Data Updated Successfully'); 
+            }
            $this->redirect($this->getUrl('grid','salesman',null,true));
         }
 
@@ -92,20 +117,26 @@ class Controller_salesman extends Controller_Core_Action
 
     public function deleteAction()
     {
+        $message = Ccc::getModel('Core_Message');
         $getId = $this->getRequest()->getRequest('id');
         $salesman = Ccc::getModel('salesman')->load($getId);
         try
         {
             if (!isset($getId))
             {
-                throw new Exception("Invalid Request.", 1);
+                 $message->addMessage('Invalid Request.',Model_Core_Message::ERROR);         
+                $this->redirect($this->getUrl('grid','salesman',null,true));
+                //throw new Exception("Invalid Request.", 1);
             }
             $id = $getId;
             $result = $salesman->delete(); 
             if (!$result)
             {
-                throw new Exception("System is unable to delete record.", 1);
+                 $message->addMessage('System is unable to delete record.',Model_Core_Message::ERROR);         
+                $this->redirect($this->getUrl('grid','salesman',null,true));
+                //throw new Exception("System is unable to delete record.", 1);
             }
+            $message->addMessage('Data Deleted Successfully');
             $this->redirect($this->getUrl('grid','salesman',null,true));
         }
         catch(Exception $e)

@@ -16,16 +16,20 @@ class Controller_Config extends Controller_Core_Action
 
     public function editAction()
     {
+        $message = Ccc::getModel('Core_Message');
         try 
         {
             $id = (int) $this->getRequest()->getRequest('id');
             if(!$id){
-                throw new Exception("Id not valid.");
+                $message->addMessage('Id not valid.',Model_Core_Message::ERROR);            
+                $this->redirect($this->getUrl('grid','config',null,true));
+                //throw new Exception("Id not valid.");
             }
             $config = Ccc::getModel('Config')->load($id);
-            //$config = $configModel->fetchRow("SELECT * FROM config WHERE configId = {$id} ");
             if(!$config){
-                throw new Exception("unable to load config.");
+                $message->addMessage('unable to load.',Model_Core_Message::ERROR);
+                $this->redirect($this->getUrl('grid','config',null,true));
+                //throw new Exception("unable to load config.");
             }
             $content = $this->getLayout()->getContent();
             $configEdit = Ccc::getBlock("Config_Edit")->addData("config", $config);
@@ -45,34 +49,48 @@ class Controller_Config extends Controller_Core_Action
         $configAdd = Ccc::getBlock('Config_Edit')->addData('config',$config);
         $content->addChild($configAdd);
         $this->renderLayout();
-     // Ccc::getBlock('Config_Add')->toHtml();  
     }
 
     public function saveAction()
     {
+        $message = Ccc::getModel('Core_Message');
         try
         {
 
             $config = Ccc::getModel('Config');
             date_default_timezone_set("Asia/Kolkata");
-            //$config = $configModel->getRow();
             $date = date('Y-m-d H:i:s');
             $row = $this->getRequest()->getRequest('config');
             
             if (!isset($row)) {
-                throw new Exception("Invalid Request.", 1);             
+                $message->addMessage('Invalid Request.',Model_Core_Message::ERROR);         
+                $this->redirect($this->getUrl('grid','config',null,true));
+                //throw new Exception("Invalid Request.", 1);             
             }           
-            if (array_key_exists('id',$row) && $row['id'] == NULL):
+            if (array_key_exists('id',$row) && $row['id'] == NULL){
             
                 $config->name = $row['name'];
                 $config->value = $row['value'];
                 $config->code = $row['code'];
                 $config->status = $row['status'];
                 $config->createdAt = $date;
-                $config->save();
+                $result = $config->save();
 
-            else:
+                if (!$result)
+                {
+                    $message->addMessage('System is unable to inserted information.',Model_Core_Message::ERROR);          
+                    $this->redirect($this->getUrl('grid','config',null,true)); 
+                   // throw new Exception("System is unable to update information.", 1);
+                }
 
+                if($result)
+                {
+                    $message->addMessage('Data Added Successfully');
+                }
+            }
+
+            else
+            {
                 $config->load($row['id']);
                 $config->configId = $row["id"];
                 $config->name = $row['name'];
@@ -80,15 +98,14 @@ class Controller_Config extends Controller_Core_Action
                 $config->code = $row['code'];
                 $config->status = $row['status'];
                 $result = $config->save();
-
-           /* $result = $configModel->update(['firstName' => $firstName , 'lastName' => $lastName , 'email' => $email ,'password' => $password , 'status' => $status ,'updatedAt' => $date ], ['configId'=> $id]);*/
-
                 if (!$result)
                 {
-                    throw new Exception("System is unable to update information.", 1);
+                    $message->addMessage('System is unable to update information.',Model_Core_Message::ERROR);          
+                    $this->redirect($this->getUrl('grid','config',null,true)); 
+                   // throw new Exception("System is unable to update information.", 1);
                 }
-
-            endif;
+                $message->addMessage('Data Updated Successfully'); 
+            }
            $this->redirect($this->getUrl('grid','config',null,true));
         }
 
@@ -100,6 +117,7 @@ class Controller_Config extends Controller_Core_Action
 
     public function deleteAction()
     {
+        $message = Ccc::getModel('Core_Message');
         $getId = $this->getRequest()->getRequest('id');
         $config = Ccc::getModel('Config')->load($getId);
         /*$configTable = new Model_config();*/
@@ -107,26 +125,25 @@ class Controller_Config extends Controller_Core_Action
         {
             if (!isset($getId))
             {
-                throw new Exception("Invalid Request.", 1);
+                $message->addMessage('Invalid Request.',Model_Core_Message::ERROR);         
+                $this->redirect($this->getUrl('grid','config',null,true)); 
+                //throw new Exception("Invalid Request.", 1);
             }
             $id = $getId;
             $result = $config->delete(); 
             if (!$result)
             {
-                throw new Exception("System is unable to delete record.", 1);
+                $message->addMessage('System is unable to delete record.',Model_Core_Message::ERROR);           
+                $this->redirect($this->getUrl('grid','config',null,true));
+                //throw new Exception("System is unable to delete record.", 1);
             }
+            $message->addMessage('Data Deleted Successfully');
             $this->redirect($this->getUrl('grid','config',null,true));
         }
         catch(Exception $e)
         {
             echo $e->getMessage();
         }
-    }
-
-    public function redirect($url)
-    {
-        header("location:$url");
-        exit();
     }
 
     public function errorAction()

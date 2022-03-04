@@ -16,15 +16,20 @@ class Controller_Page extends Controller_Core_Action
 
     public function editAction()
     {
+        $message = Ccc::getModel('Core_Message');
         try 
         {
             $id = (int) $this->getRequest()->getRequest('id');
             if(!$id){
-                throw new Exception("Id not valid.");
+                $message->addMessage('Id not valid.',Model_Core_Message::ERROR);         
+                $this->redirect($this->getUrl('grid','page',null,true)); 
+                //throw new Exception("Id not valid.");
             }
             $page = Ccc::getModel('Page')->load($id);
             if(!$page){
-                throw new Exception("unable to load page.");
+                $message->addMessage('Unable to load page.',Model_Core_Message::ERROR);         
+                $this->redirect($this->getUrl('grid','page',null,true)); 
+                //throw new Exception("unable to load page.");
             }
             $content = $this->getLayout()->getContent();
             $pageEdit = Ccc::getBlock("Page_Edit")->addData("page", $page);
@@ -48,6 +53,7 @@ class Controller_Page extends Controller_Core_Action
 
     public function saveAction()
     {
+        $message = Ccc::getModel('Core_Message');
         try
         {
 
@@ -57,18 +63,34 @@ class Controller_Page extends Controller_Core_Action
             $row = $this->getRequest()->getRequest('page');
             
             if (!isset($row)) {
-                throw new Exception("Invalid Request.", 1);             
+                $message->addMessage('Invalid Request.',Model_Core_Message::ERROR);         
+                $this->redirect($this->getUrl('grid','page',null,true)); 
+                //throw new Exception("Invalid Request.", 1);             
             }           
-            if (array_key_exists('id',$row) && $row['id'] == NULL):
+            if (array_key_exists('id',$row) && $row['id'] == NULL)
+            {
             
                 $page->name = $row['name'];
                 $page->code = $row['code'];
                 $page->content = $row['content'];
                 $page->status = $row['status'];
                 $page->createdAt = $date;
-                $page->save();
+                $result = $page->save();
 
-            else:
+                 if (!$result)
+                {
+                    $message->addMessage('System is unable to inserted information.',Model_Core_Message::ERROR);          
+                    $this->redirect($this->getUrl('grid','page',null,true)); 
+                   // throw new Exception("System is unable to update information.", 1);
+                }
+
+                if($result)
+                {
+                    $message->addMessage('Data Added Successfully');
+                }
+            }
+            else
+            {
 
                 $page->load($row['id']);
                 $page->pageId = $row["id"];
@@ -79,13 +101,15 @@ class Controller_Page extends Controller_Core_Action
                 $page->updatedAt = $date;
                 $result = $page->save();
 
-
                 if (!$result)
                 {
-                    throw new Exception("System is unable to update information.", 1);
+                    $message->addMessage('System is unable to update information.',Model_Core_Message::ERROR);         
+                    $this->redirect($this->getUrl('grid','page',null,true)); 
+                    //throw new Exception("System is unable to update information.", 1);
                 }
+                $message->addMessage('Data Updated Successfully'); 
+            }
 
-            endif;
            $this->redirect($this->getUrl('grid','page',null,true));
         }
 
@@ -97,20 +121,26 @@ class Controller_Page extends Controller_Core_Action
 
     public function deleteAction()
     {
+        $message = Ccc::getModel('Core_Message');
         $getId = $this->getRequest()->getRequest('id');
         $page = Ccc::getModel('page')->load($getId);
         try
         {
             if (!isset($getId))
             {
-                throw new Exception("Invalid Request.", 1);
+                $message->addMessage('Invalid Request.',Model_Core_Message::ERROR);         
+                $this->redirect($this->getUrl('grid','page',null,true)); 
+                //throw new Exception("Invalid Request.", 1);
             }
             $id = $getId;
             $result = $page->delete(); 
             if (!$result)
             {
-                throw new Exception("System is unable to delete record.", 1);
+                $message->addMessage('System is unable to delete record.',Model_Core_Message::ERROR);         
+                $this->redirect($this->getUrl('grid','page',null,true)); 
+                //throw new Exception("System is unable to delete record.", 1);
             }
+            $message->addMessage('Data Deleted Successfully');
             $this->redirect($this->getUrl('grid','page',null,true));
         }
         catch(Exception $e)

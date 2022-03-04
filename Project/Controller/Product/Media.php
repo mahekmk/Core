@@ -15,7 +15,7 @@ class Controller_Product_Media extends Controller_Core_Action{
 
    public function saveAction()
    {
-      //global $adapter;
+      $message = Ccc::getModel('Core_Message');
       try 
       {
           $productId = $this->getRequest()->getRequest('id');
@@ -25,18 +25,19 @@ class Controller_Product_Media extends Controller_Core_Action{
           //exit();
 
           if(!$this->getRequest()->isPost()){
-            throw new Exception("Invalid Request" , 1);
+            $message->addMessage('Invalid Request.',Model_Core_Message::ERROR);
+                $this->redirect($this->getUrl('grid','product_media',['id'=> $productId]));
+            //throw new Exception("Invalid Request" , 1);
           }
 
-          $rows = $this->getRequest()->getPost();
-          /*echo "<pre>";
-          print_r($rows);*/
+         $rows = $this->getRequest()->getPost();
 
          $media = $rows['media'];
  //-------------------------------------------------------------------Remove--------------------------------
       
        if(array_key_exists('remove',$media))
          {
+            $message = Ccc::getModel('Core_Message');
             $removeArr = $rows['media']['remove'];
             $removeIds = [];
             foreach($removeArr as $key => $value)
@@ -51,6 +52,10 @@ class Controller_Product_Media extends Controller_Core_Action{
 
             $query="DELETE FROM `product_media` WHERE imageId IN($removeIdsImplode)";
             $result = $this->getAdapter()->delete($query);
+
+            if(!$result){
+                $message->addMessage('Unable to delete',Model_Core_Message::ERROR);
+            }
 
             foreach($result1 as $key => $value){
                if($result)
@@ -84,6 +89,9 @@ class Controller_Product_Media extends Controller_Core_Action{
             $statusIdsImplode = implode(",",$statusIds);
             $query = "UPDATE `product_media` SET status = 1 WHERE imageId IN ($statusIdsImplode)";
             $result = $this->getAdapter()->update($query);
+            if(!$result){
+                $message->addMessage('Unable to update status',Model_Core_Message::ERROR);
+            }
          }
 //------------------------------------------------------------------------gallery--------------------------
 
@@ -98,6 +106,9 @@ class Controller_Product_Media extends Controller_Core_Action{
             $galleryIdsImplode = implode(",",$galleryIds);
             $query = "UPDATE `product_media` SET gallery = 1 WHERE imageId IN ($galleryIdsImplode)";
             $result = $this->getAdapter()->update($query);
+             if(!$result){
+                $message->addMessage('Unable to update gallery',Model_Core_Message::ERROR);
+            }
          }  
 //--------------------------------------------------------------------------Base--------------------------
 
@@ -106,6 +117,9 @@ class Controller_Product_Media extends Controller_Core_Action{
             $baseId = $rows['media']['base'];
             $query = "UPDATE `product_media` SET base = 1 WHERE imageId = {$baseId}";
             $result = $this->getAdapter()->update($query);
+            if(!$result){
+                $message->addMessage('Unable to update base image.',Model_Core_Message::ERROR);
+            }
          }
 
 //--------------------------------------------------------------------------Small--------------------------
@@ -114,6 +128,9 @@ class Controller_Product_Media extends Controller_Core_Action{
             $smallId = $rows['media']['small'];
             $query = "UPDATE `product_media` SET small = 1 WHERE imageId = {$smallId}";
             $result = $this->getAdapter()->update($query);
+            if(!$result){
+                $message->addMessage('Unable to update small image.',Model_Core_Message::ERROR);
+            }
          }
 //--------------------------------------------------------------------------Thumb--------------------------
          if(array_key_exists('thumb',$media))
@@ -121,10 +138,13 @@ class Controller_Product_Media extends Controller_Core_Action{
             $thumbId = $rows['media']['thumb'];
             $query = "UPDATE `product_media` SET thumb = 1 WHERE imageId = {$thumbId}";
            $result = $this->getAdapter()->update($query);
+           if(!$result){
+                $message->addMessage('Unable to update thumb image.',Model_Core_Message::ERROR);
+            }
          }
  //------------------------------------------------------------------------Redirect-----------------------
 
-
+         $message->addMessage('Data Updated Successfully'); 
           $this->redirect($this->getUrl('grid','product_media',['id'=> $productId]));
 
       } catch (Exception $e) 
@@ -138,7 +158,7 @@ class Controller_Product_Media extends Controller_Core_Action{
 
       try 
       {
-         
+         $message = Ccc::getModel('Core_Message');  
          $productId = $_GET['id'];
          $imageName1 = $_FILES['image']['name'];
          $imageAddress1 = $_FILES['image']['tmp_name'];
@@ -151,12 +171,19 @@ class Controller_Product_Media extends Controller_Core_Action{
             $query =  "INSERT INTO `product_media`( `productId`, `image`, `base`, `thumb`, `small`, `gallery`, `status`) VALUES ($productId,'$imageName',0,0,0,0,0)";
            
             $result = $this->getAdapter()->insert($query);
-           
+            
 
+            if(!$result){
+
+               $message->addMessage('Image not added.',Model_Core_Message::ERROR);
+               $this->redirect($this->getUrl('grid','product_media',['id'=> $productId]));
+            }
+            $message->addMessage('Image added Successfully.');
            $this->redirect($this->getUrl('grid','product_media',['id'=> $productId]));
          }
          else
          {
+            $message->addMessage('Image not selected.',Model_Core_Message::ERROR);
             $this->redirect($this->getUrl('grid','product_media',['id' =>  $productId],true));
          }
 

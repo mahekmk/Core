@@ -39,13 +39,9 @@
 				<td width="10%">Status</td>
 				<td>
 					<select name="page[status]" value="<?php echo $page->status; ?>">
-						<?php if($page->status == 2): ?>
-				              <option value='2'>InActive</option>
-				              <option value='1'>Active</option>
-				          <?php else: ?>
-				              <option value='1'>Active</option>
-				              <option value='2'>InActive</option>
-				          <?php endif;?>
+						<?php foreach ($page->getStatus() as $key => $value): ?>
+              			<option <?php if($page->status == $key): ?> selected <?php endif; ?> value="<?php echo $key; ?>"> <?php echo $value; ?></option>
+            			<?php endforeach; ?>
 					</select>
 				</td>
 			</tr>

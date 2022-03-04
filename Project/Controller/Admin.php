@@ -24,14 +24,14 @@ class Controller_Admin extends Controller_Core_Action
             $id = (int) $this->getRequest()->getRequest('id');
             if(!$id){
                 $message->addMessage('Id not valid.',Model_Core_Message::ERROR);            
-                $this->redirect($this->getUrl('grid')); 
+                $this->redirect($this->getUrl('grid','config',null,true)); 
                 //throw new Exception("Id not valid.");
             }
             $admin = Ccc::getModel('Admin')->load($id);
             
             if(!$admin){
                 $message->addMessage('unable to load admin.',Model_Core_Message::ERROR);
-                $this->redirect($this->getUrl('grid')); 
+                $this->redirect($this->getUrl('grid','config',null,true)); 
                 //throw new Exception("unable to load admin.");
             }
             $content = $this->getLayout()->getContent();
@@ -63,13 +63,12 @@ class Controller_Admin extends Controller_Core_Action
 
             $admin = Ccc::getModel('Admin');
             date_default_timezone_set("Asia/Kolkata");
-            //$admin = $adminModel->getRow();
             $date = date('Y-m-d H:i:s');
             $row = $this->getRequest()->getRequest('admin');
             
             if (!isset($row)) {
                 $message->addMessage('Invalid Request.',Model_Core_Message::ERROR);         
-                $this->redirect($this->getUrl('grid')); 
+                $this->redirect($this->getUrl('grid','config',null,true)); 
                 //throw new Exception("Invalid Request.", 1);             
             }           
             if (array_key_exists('id',$row) && $row['id'] == NULL){
@@ -84,13 +83,13 @@ class Controller_Admin extends Controller_Core_Action
                 if (!$result)
                 {
                     $message->addMessage('System is unable to update information.',Model_Core_Message::ERROR);          
-                    $this->redirect($this->getUrl('grid')); 
+                    $this->redirect($this->getUrl('grid','config',null,true)); 
                    // throw new Exception("System is unable to update information.", 1);
                 }
 
                 if($result)
                 {
-                    $message->addMessage('Admin Data Added Successfully');
+                    $message->addMessage('Data Inserted Successfully');
                 }
             }
 
@@ -109,10 +108,10 @@ class Controller_Admin extends Controller_Core_Action
                 if (!$result)
                 {
                     $message->addMessage('System is unable to update information.',Model_Core_Message::ERROR);          
-                    $this->redirect($this->getUrl('grid')); 
+                    $this->redirect($this->getUrl('grid','config',null,true)); 
                    // throw new Exception("System is unable to update information.", 1);
                 }
-                $message->addMessage('Admin Data Edited Successfully');   
+                $message->addMessage('Data Updated Successfully');   
 
             }
            $this->redirect($this->getUrl('grid','admin',null,true));
@@ -135,7 +134,7 @@ class Controller_Admin extends Controller_Core_Action
             if (!isset($getId))
             {
                 $message->addMessage('Invalid Request.',Model_Core_Message::ERROR);         
-                $this->redirect($this->getUrl('grid')); 
+                $this->redirect($this->getUrl('grid','config',null,true)); 
                // throw new Exception("Invalid Request.", 1);
             }
             $id = $getId;
@@ -143,7 +142,7 @@ class Controller_Admin extends Controller_Core_Action
             if (!$result)
             {
                 $message->addMessage('System is unable to delete record.',Model_Core_Message::ERROR);           
-                $this->redirect($this->getUrl('grid')); 
+                $this->redirect($this->getUrl('grid','config',null,true)); 
                // throw new Exception("System is unable to delete record.", 1);
             }
             $message->addMessage('Admin Data Deleted Successfully');

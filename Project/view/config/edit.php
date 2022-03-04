@@ -39,13 +39,9 @@
 				<td width="10%">Status</td>
 				<td>
 					<select name="config[status]" value="<?php echo $config->status; ?>">
-						<?php if($config->status == 2): ?>
-				              <option value='2'>InActive</option>
-				              <option value='1'>Active</option>
-				          <?php else: ?>
-				              <option value='1'>Active</option>
-				              <option value='2'>InActive</option>
-				          <?php endif;?>
+						<?php foreach ($config->getStatus() as $key => $value): ?>
+              			<option <?php if($config->status == $key): ?> selected <?php endif; ?> value="<?php echo $key; ?>"> <?php echo $value; ?></option>
+            			<?php endforeach; ?>
 					</select>
 				</td>
 			</tr>

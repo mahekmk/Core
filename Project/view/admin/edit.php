@@ -37,13 +37,9 @@
 				<td width="10%">Status</td>
 				<td>
 					<select name="admin[status]" >
-						 <?php if($admin->status == 2): ?>
-				              <option value='2'>InActive</option>
-				              <option value='1'>Active</option>
-				          <?php else: ?>
-				              <option value='1'>Active</option>
-				              <option value='2'>InActive</option>
-				          <?php endif;?>
+						<?php foreach ($admin->getStatus() as $key => $value): ?>
+              			<option <?php if($admin->status == $key): ?> selected <?php endif; ?> value="<?php echo $key; ?>"> <?php echo $value; ?></option>
+            			<?php endforeach; ?>
 					</select>
 				</td>
 			</tr>

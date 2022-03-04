@@ -13,18 +13,23 @@ class Controller_Vendor extends Controller_Core_Action
 
 	public function editAction()
 	{
+		$message = Ccc::getModel('Core_Message');
 		try 
 		{
 			$id = (int) $this->getRequest()->getRequest('id');
 			if(!$id)
 			{
-				throw new Exception("Id not valid.");
+				$message->addMessage('Id not valid.',Model_Core_Message::ERROR);         
+                $this->redirect($this->getUrl('grid','vendor',null,true));
+				//throw new Exception("Id not valid.");
 			}
 			$vendorModel = Ccc::getModel('Vendor');
 			$vendor = $vendorModel->fetchRow("SELECT v.*, va.* FROM vendor v LEFT JOIN vendor_address va ON v.vendorId = va.vendorId WHERE v.vendorID = '$id'");
 			if(!$vendor)
 			{
-				throw new Exception("unable to load vendor.");
+				$message->addMessage('Unable to load vendor.',Model_Core_Message::ERROR);         
+                $this->redirect($this->getUrl('grid','vendor',null,true));
+				//throw new Exception("unable to load vendor.");
 			}
 			$content = $this->getLayout()->getContent();
             $vendorEdit = Ccc::getBlock("Vendor_Edit")->addData("vendor", $vendor);
@@ -48,6 +53,7 @@ class Controller_Vendor extends Controller_Core_Action
 
 	protected function saveVendor()
 	{
+
 		$vendor = Ccc::getModel('Vendor');
 		date_default_timezone_set("Asia/Kolkata");
 		$date = date('Y-m-d H:i:s');
@@ -62,6 +68,13 @@ class Controller_Vendor extends Controller_Core_Action
 				$vendor->status =  $row['status'];
 				$vendor->createdAt = $date;
 				$result = $vendor->save();
+
+				if(!$result)
+				{
+					$message->addMessage('System is unable to insert customer information.',Model_Core_Message::ERROR);          
+                    $this->redirect($this->getUrl('grid','vendor',null,true)); 
+
+				}
 				return $result;
 		}
 		else{
@@ -81,6 +94,7 @@ class Controller_Vendor extends Controller_Core_Action
 
 	protected function saveAddress($vendorId)	
 	{
+		$message = Ccc::getModel('Core_Message');
 		$address = Ccc::getModel('Vendor_Address');
 		date_default_timezone_set("Asia/Kolkata");
 		$date = date('Y-m-d H:i:s');
@@ -90,7 +104,8 @@ class Controller_Vendor extends Controller_Core_Action
 		
 		$addressData = $address->fetchRow("SELECT * FROM vendor_address WHERE vendorId = '$vendorId'");
 		
-		if(!$addressData):
+		if(!$addressData)
+		{
 
 			$address->vendorId = $vendorId;
 			$address->address = $row['address'];
@@ -99,8 +114,21 @@ class Controller_Vendor extends Controller_Core_Action
 			$address->state= $row['state'];
 			$address->country = $row['country'];
 			$result = $address->save();
+			if (!$result)
+                {
+                    $message->addMessage('System is unable to insert information.',Model_Core_Message::ERROR);          
+                    $this->redirect($this->getUrl('grid','vendor',null,true)); 
+                   // throw new Exception("System is unable to update information.", 1);
+                }
 
-		else:
+            if($result)
+            {
+                $message->addMessage('Data Inserted Successfully.');
+            }
+		}
+
+		else
+		{
 			$e = $address->load($row['id']);
 			$address->addressId = $row['id'];
 			$address->vendorId = $vendorId;
@@ -111,11 +139,15 @@ class Controller_Vendor extends Controller_Core_Action
 			$address->country = $row['country'];
 			$result = $address->save();
 
-			if(!$result):
-				throw new Exception("System is unable to update information.",1);
-			endif;
+		if (!$result)
+        {
+            $message->addMessage('System is unable to update information.',Model_Core_Message::ERROR);          
+            $this->redirect($this->getUrl('grid','vendor',null,true)); 
+           // throw new Exception("System is unable to update information.", 1);
+        }
+        $message->addMessage('Data Updated Successfully');
 			
-		endif;
+		}
 	}
 
 	public function saveAction()
@@ -135,20 +167,26 @@ class Controller_Vendor extends Controller_Core_Action
 
 	public function deleteAction()
 	{
+		$message = Ccc::getModel('Core_Message');
         $getId = $this->getRequest()->getRequest('id');
 		$vendor = Ccc::getModel('vendor')->load($getId);
 		try
 		{	
 			if (!isset($getId)) 
 			{
-				throw new Exception("Invalid Request.", 1);
+				$message->addMessage('Invalid Request.',Model_Core_Message::ERROR);         
+                $this->redirect($this->getUrl('grid','vendor',null,true));
+				//throw new Exception("Invalid Request.", 1);
 			}
 			$id = $getId;
 			$result=$vendor->delete();
 			if(!$result)
 			{
-				throw new Exception("System is unable to delete record.", 1);	
+				$message->addMessage('System is unable to delete record.',Model_Core_Message::ERROR);         
+                $this->redirect($this->getUrl('grid','vendor',null,true));
+				//throw new Exception("System is unable to delete record.", 1);	
 			}
+			$message->addMessage('Data Deleted Successfully');
 			$this->redirect($this->getUrl('grid','vendor',null,true));
 		}
 		catch (Exception $e)
