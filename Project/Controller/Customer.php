@@ -20,15 +20,13 @@ class Controller_Customer extends Controller_Core_Action
 			$id = (int) $this->getRequest()->getRequest('id');
 			if(!$id)
 			{
-				//throw new Exception("Id not valid.");
+				throw new Exception("Id not valid.");
 			}
 			$customerModel = Ccc::getModel('Customer');
 			$customer = $customerModel->fetchRow("SELECT c.*, a.* FROM customer c LEFT JOIN address a ON c.customerId = a.customerId WHERE c.customerID = '$id'");
 			if(!$customer)
 			{
-				$message->addMessage('unable to load customer.',Model_Core_Message::ERROR);         
-                $this->redirect($this->getUrl('grid','customer',null,true));
-				//throw new Exception("unable to load customer.");
+				throw new Exception("unable to load customer.");
 			}
 			$content = $this->getLayout()->getContent();
             $customerEdit = Ccc::getBlock("Customer_Edit")->addData("customer", $customer);
@@ -37,7 +35,8 @@ class Controller_Customer extends Controller_Core_Action
 		} 
 		catch (Exception $e) 
 		{
-			echo $e->getMessage();
+			$message->addMessage($e->getMessage(),Model_Core_Message::ERROR);         
+            $this->redirect($this->getUrl('grid','customer',null,true));
 		}
 	}
 
@@ -70,8 +69,7 @@ class Controller_Customer extends Controller_Core_Action
 
 				if(!$result)
 				{
-					$message->addMessage('System is unable to insert customer information.',Model_Core_Message::ERROR);          
-                    $this->redirect($this->getUrl('grid','customer',null,true)); 
+                    throw new Exception("System is unable to insert customer information.");
 
 				}
 				return $result;
@@ -128,9 +126,7 @@ class Controller_Customer extends Controller_Core_Action
 			$result = $address->save();
 			if (!$result)
                 {
-                    $message->addMessage('System is unable to insert information.',Model_Core_Message::ERROR);          
-                    $this->redirect($this->getUrl('grid','customer',null,true)); 
-                   // throw new Exception("System is unable to update information.", 1);
+                    throw new Exception("System is unable to update information.", 1);
                 }
 
                 if($result)
@@ -156,9 +152,7 @@ class Controller_Customer extends Controller_Core_Action
 		
 		if (!$result)
         {
-            $message->addMessage('System is unable to update information.',Model_Core_Message::ERROR);          
-            $this->redirect($this->getUrl('grid','customer',null,true)); 
-           // throw new Exception("System is unable to update information.", 1);
+            throw new Exception("System is unable to update information.", 1);
         }
         $message->addMessage('Data Updated Successfully');
 			
@@ -176,7 +170,8 @@ class Controller_Customer extends Controller_Core_Action
 		
 		catch (Exception $e) 
 		{
-			echo $e->getMessage();
+			$message->addMessage($e->getMessage(),Model_Core_Message::ERROR);         
+            $this->redirect($this->getUrl('grid','customer',null,true));
 		}
 	}
 
@@ -189,24 +184,21 @@ class Controller_Customer extends Controller_Core_Action
 		{	
 			if (!isset($getId)) 
 			{
-				$message->addMessage('Invalid Request.',Model_Core_Message::ERROR);         
-                $this->redirect($this->getUrl('grid','customer',null,true));
-				//throw new Exception("Invalid Request.", 1);
+				throw new Exception("Invalid Request.", 1);
 			}
 			$id = $getId;
 			$result=$customer->delete();
 			if(!$result)
 			{
-				$message->addMessage('System is unable to delete record.',Model_Core_Message::ERROR);           
-                $this->redirect($this->getUrl('grid','customer',null,true));
-				//throw new Exception("System is unable to delete record.", 1);	
+				throw new Exception("System is unable to delete record.", 1);	
 			}
 			$message->addMessage('Data Deleted Successfully');
 			$this->redirect($this->getUrl('grid','customer',null,true));
 		}
 		catch (Exception $e)
 		{
-			echo $e->getMessage(); 	
+			$message->addMessage($e->getMessage(),Model_Core_Message::ERROR);         
+            $this->redirect($this->getUrl('grid','customer',null,true));
 		}
 	}
 

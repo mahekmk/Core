@@ -21,18 +21,14 @@ class Controller_Category extends Controller_Core_Action
             $categoryId = (int)$this->getRequest()->getRequest('categoryId');
             if(!$categoryId)
             {
-                $message->addMessage('Error Processing Request edit.',Model_Core_Message::ERROR);            
-                $this->redirect($this->getUrl('grid','category',null,true));
-                //throw new Exception("Error Processing Request edit 1", 1);
+                throw new Exception("Error Processing Request edit 1", 1);
             }
             $category = Ccc::getModel('Category')->load($categoryId);
             //$category = $categoryModel->fetchRow("SELECT * FROM category WHERE categoryId = $categoryId");
             
             if(!$category)
             {
-                $message->addMessage('Error Processing Request edit. ',Model_Core_Message::ERROR);            
-                $this->redirect($this->getUrl('grid','category',null,true));
-                //throw new Exception("Error Processing Request edit 2", 1);
+                throw new Exception("Error Processing Request edit 2", 1);
             }
             $content = $this->getLayout()->getContent();
             $categoryEdit = Ccc::getBlock("Category_Edit")->addData("category", $category);
@@ -42,7 +38,8 @@ class Controller_Category extends Controller_Core_Action
         }
         catch(Exception $e)
         {
-            echo $e->getMessage();
+            $message->addMessage($e->getMessage(),Model_Core_Message::ERROR);         
+            $this->redirect($this->getUrl('grid','category',null,true));
         }
     }
 
@@ -53,24 +50,19 @@ class Controller_Category extends Controller_Core_Action
         $categoryAdd = Ccc::getBlock('Category_Edit')->addData('category',$category);
         $content->addChild($categoryAdd);
         $this->renderLayout();
-        //Ccc::getBlock('Category_Add')->toHtml();
+
     }
 
     public function saveAction()
     {
         $message = Ccc::getModel('Core_Message');
-        //global $adapter;
         $category = Ccc::getModel('Category');
-        //$category = $category -> getRow();
-        //$categoryData = $this->getRequest()->getRequest('category');
         try 
         {
             
             if (!$this->getRequest()->getRequest('category')) 
             {
-                $message->addMessage('Invalid Request.',Model_Core_Message::ERROR);            
-                $this->redirect($this->getUrl('grid','category',null,true));
-                //throw new Exception("Invalid Request.", 1);
+                throw new Exception("Invalid Request.", 1);
             }
             
             $date = date('Y-m-d H:i:s');
@@ -86,9 +78,7 @@ class Controller_Category extends Controller_Core_Action
                
                 if (!(int)$categoryData['categoryId'])
                 {
-                    $message->addMessage('Invalid Request.',Model_Core_Message::ERROR);            
-                    $this->redirect($this->getUrl('grid','category',null,true));
-                    //throw new Exception("Invalid Request.", 1);
+                    throw new Exception("Invalid Request.", 1);
                 }
                
                 $categoryId = $categoryData['categoryId'];
@@ -127,12 +117,9 @@ class Controller_Category extends Controller_Core_Action
                     $category->updatedAt = $date;
                     $result = $category->save();
 
-                   /* $result = $categoryModel->update(['name' => $name , 'parentId' => $parentId , 'status' => $status , 'updatedAt' => $updatedAt],['categoryId' => $categoryId]);*/
                     if(!$result) 
                     {
-                        $message->addMessage('System is unable to update the record.',Model_Core_Message::ERROR);            
-                        $this->redirect($this->getUrl('grid','category',null,true));
-                        //throw new Exception("System is unable to update the record.", 1);
+                        throw new Exception("System is unable to update the record.", 1);
                     }
                   
                     $this->updatePathIntoCategory($categoryId,$parentId);     
@@ -152,9 +139,7 @@ class Controller_Category extends Controller_Core_Action
 
                     if (!$insert)
                     {
-                        $message->addMessage('System is unable to insert.',Model_Core_Message::ERROR);            
-                        $this->redirect($this->getUrl('grid','category',null,true));
-                        //throw new Exception("System is unable to insert.", 1);
+                        throw new Exception("System is unable to insert.", 1);
                     }
                     else
                     {
@@ -165,9 +150,7 @@ class Controller_Category extends Controller_Core_Action
                    
                         if (!$result1)
                         {
-                            $message->addMessage('System is unable to insert.',Model_Core_Message::ERROR);            
-                            $this->redirect($this->getUrl('grid','category',null,true));
-                            //throw new Exception("System is unable to insert.", 1);
+                            throw new Exception("System is unable to insert.", 1);
                         }
                     }
                 }
@@ -181,9 +164,7 @@ class Controller_Category extends Controller_Core_Action
 
                     if (!$insert)
                     {
-                        $message->addMessage('System is unable to insert.',Model_Core_Message::ERROR);            
-                        $this->redirect($this->getUrl('grid','category',null,true));
-                        //throw new Exception("System is unable to insert.", 1);
+                        throw new Exception("System is unable to insert.", 1);
                     }
                     else
                     {
@@ -199,9 +180,7 @@ class Controller_Category extends Controller_Core_Action
 
                         if (!$result3)
                         {
-                            $message->addMessage('System is unable to insert.',Model_Core_Message::ERROR);            
-                            $this->redirect($this->getUrl('grid','category',null,true));
-                            //throw new Exception("System is unable to insert.", 1);
+                            throw new Exception("System is unable to insert.", 1);
                         }
                     }
                 }
@@ -213,6 +192,7 @@ class Controller_Category extends Controller_Core_Action
 
         catch (Exception $e) 
         {
+            $message->addMessage($e->getMessage(),Model_Core_Message::ERROR);         
             $this->redirect($this->getUrl('grid','category',null,true));
         }
     }
@@ -231,9 +211,7 @@ class Controller_Category extends Controller_Core_Action
 
             if (!isset($getId))
             {
-                $message->addMessage('Invalid Request.',Model_Core_Message::ERROR);            
-                $this->redirect($this->getUrl('grid','category',null,true));
-                //throw new Exception("Invalid Request.", 1);
+               throw new Exception("Invalid Request.", 1);
             }
 
             $result = $category->delete();
@@ -249,22 +227,21 @@ class Controller_Category extends Controller_Core_Action
 
             if (!$result)
             {
-                $message->addMessage('System is unable to delete record.',Model_Core_Message::ERROR);            
-                $this->redirect($this->getUrl('grid','category',null,true));
-                //throw new Exception("System is unable to delete record.", 1);
+                throw new Exception("System is unable to delete record.", 1);
             }
             $message->addMessage('Data Deleted Successfully.');
             $this->redirect($this->getUrl('grid','category',null,true));
         }
         catch(Exception $e)
         {
-            echo $e->getMessage();
+            $message->addMessage($e->getMessage(),Model_Core_Message::ERROR);         
+            $this->redirect($this->getUrl('grid','category',null,true));
         }
     }
 
     public function getCategoryWithPath()
     {
-        //global $adapter;
+        
         $category = [];
         $categoryIdName = $this->getAdapter()->fetchPairs('SELECT categoryId , name FROM category');
          if (!$this->getRequest()->getRequest('categoryId')) 

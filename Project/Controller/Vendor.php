@@ -19,17 +19,13 @@ class Controller_Vendor extends Controller_Core_Action
 			$id = (int) $this->getRequest()->getRequest('id');
 			if(!$id)
 			{
-				$message->addMessage('Id not valid.',Model_Core_Message::ERROR);         
-                $this->redirect($this->getUrl('grid','vendor',null,true));
-				//throw new Exception("Id not valid.");
+				throw new Exception("Id not valid.");
 			}
 			$vendorModel = Ccc::getModel('Vendor');
 			$vendor = $vendorModel->fetchRow("SELECT v.*, va.* FROM vendor v LEFT JOIN vendor_address va ON v.vendorId = va.vendorId WHERE v.vendorID = '$id'");
 			if(!$vendor)
 			{
-				$message->addMessage('Unable to load vendor.',Model_Core_Message::ERROR);         
-                $this->redirect($this->getUrl('grid','vendor',null,true));
-				//throw new Exception("unable to load vendor.");
+				throw new Exception("unable to load vendor.");
 			}
 			$content = $this->getLayout()->getContent();
             $vendorEdit = Ccc::getBlock("Vendor_Edit")->addData("vendor", $vendor);
@@ -38,13 +34,14 @@ class Controller_Vendor extends Controller_Core_Action
 		} 
 		catch (Exception $e) 
 		{
-			echo $e->getMessage();
+			$message->addMessage($e->getMessage(),Model_Core_Message::ERROR);         
+            $this->redirect($this->getUrl('grid','vendor',null,true));
 		}
 	}
 
 	public function addAction()
 	{
-		 $vendor = Ccc::getModel('vendor');
+		$vendor = Ccc::getModel('vendor');
         $content = $this->getLayout()->getContent();
         $vendorAdd = Ccc::getBlock('vendor_Edit')->addData('vendor',$vendor);
         $content->addChild($vendorAdd);
@@ -71,9 +68,7 @@ class Controller_Vendor extends Controller_Core_Action
 
 				if(!$result)
 				{
-					$message->addMessage('System is unable to insert customer information.',Model_Core_Message::ERROR);          
-                    $this->redirect($this->getUrl('grid','vendor',null,true)); 
-
+                    throw new Exception("System is unable to insert customer information.");
 				}
 				return $result;
 		}
@@ -116,9 +111,7 @@ class Controller_Vendor extends Controller_Core_Action
 			$result = $address->save();
 			if (!$result)
                 {
-                    $message->addMessage('System is unable to insert information.',Model_Core_Message::ERROR);          
-                    $this->redirect($this->getUrl('grid','vendor',null,true)); 
-                   // throw new Exception("System is unable to update information.", 1);
+                    throw new Exception("System is unable to update information.", 1);
                 }
 
             if($result)
@@ -141,9 +134,7 @@ class Controller_Vendor extends Controller_Core_Action
 
 		if (!$result)
         {
-            $message->addMessage('System is unable to update information.',Model_Core_Message::ERROR);          
-            $this->redirect($this->getUrl('grid','vendor',null,true)); 
-           // throw new Exception("System is unable to update information.", 1);
+            throw new Exception("System is unable to update information.", 1);
         }
         $message->addMessage('Data Updated Successfully');
 			
@@ -161,7 +152,8 @@ class Controller_Vendor extends Controller_Core_Action
 		
 		catch (Exception $e) 
 		{
-			echo $e->getMessage();
+			$message->addMessage($e->getMessage(),Model_Core_Message::ERROR);         
+            $this->redirect($this->getUrl('grid','vendor',null,true));
 		}
 	}
 
@@ -174,24 +166,21 @@ class Controller_Vendor extends Controller_Core_Action
 		{	
 			if (!isset($getId)) 
 			{
-				$message->addMessage('Invalid Request.',Model_Core_Message::ERROR);         
-                $this->redirect($this->getUrl('grid','vendor',null,true));
-				//throw new Exception("Invalid Request.", 1);
+				throw new Exception("Invalid Request.", 1);
 			}
 			$id = $getId;
 			$result=$vendor->delete();
 			if(!$result)
 			{
-				$message->addMessage('System is unable to delete record.',Model_Core_Message::ERROR);         
-                $this->redirect($this->getUrl('grid','vendor',null,true));
-				//throw new Exception("System is unable to delete record.", 1);	
+				throw new Exception("System is unable to delete record.", 1);	
 			}
 			$message->addMessage('Data Deleted Successfully');
 			$this->redirect($this->getUrl('grid','vendor',null,true));
 		}
 		catch (Exception $e)
 		{
-			echo $e->getMessage(); 	
+			$message->addMessage($e->getMessage(),Model_Core_Message::ERROR);         
+            $this->redirect($this->getUrl('grid','vendor',null,true)); 	
 		}
 	}
 
