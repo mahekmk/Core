@@ -25,14 +25,20 @@ class Controller_Product extends Controller_Core_Action{
 				 throw new Exception("Id not valid.");
 			}
 			$product = Ccc::getModel('Product')->load($id);
+			$categoryProduct = Ccc::getModel('Category_Product')->getAdapter()->fetchPairs("SELECT entityId,categoryId FROM category_product WHERE productId = {$id}");
+			
 			if(!$product)
 			{
 				 throw new Exception("unable to load product.");
 			}
 			$content = $this->getLayout()->getContent();
-            $productEdit = Ccc::getBlock("Product_Edit")->addData("product", $product);
-            $content->addChild($productEdit);
-            $this->renderLayout(); 		
+         $productEdit = Ccc::getBlock("Product_Edit");
+         $categoryPath = Ccc::getModel('Category');
+         $productEdit->addData("product", $product);
+         $productEdit->addData('categoryProductPair',$this->getAdapter()->fetchPairs("SELECT entityId,categoryId FROM category_product WHERE productId = {$id}"));
+         $productEdit->addData('categoryPath',$categoryPath);
+         $content->addChild($productEdit);
+         $this->renderLayout(); 		
 		} 
 		catch (Exception $e) 
 		{
@@ -46,6 +52,7 @@ class Controller_Product extends Controller_Core_Action{
 		 $product = Ccc::getModel('Product');
         $content = $this->getLayout()->getContent();
         $productAdd = Ccc::getBlock('Product_Edit')->addData('product',$product);
+        $productAdd->addData("categoryProductPair",[]);
         $content->addChild($productAdd);
         $this->renderLayout();
 	}
@@ -53,14 +60,24 @@ class Controller_Product extends Controller_Core_Action{
 	public function saveAction()
 	{
 		$message = Ccc::getModel('Core_Message');
+		 
 		try
 		{
 			$product = Ccc::getModel('Product');
+			$categoryProduct = Ccc::getModel('Category_Product');
 			date_default_timezone_set("Asia/Kolkata");
 			$date = date('Y-m-d H:i:s');
 			$row = $this->getRequest()->getRequest('product');
 
-			
+			$categoryIds = $row['category'];
+
+			$productId = $row['id'];
+			$row1 = $this->getRequest()->getRequest('categoryProduct');	
+			$row2 = $row1['checkbox'];
+
+			$query = "SELECT entityId,categoryId FROM category_product WHERE productId = {$row['id']}";
+			$categoryPair = $this->getAdapter()->fetchPairs($query);
+
 			if (!isset($row)) 
 			{
 			 	throw new Exception("Invalid Request.", 1);             
@@ -70,8 +87,11 @@ class Controller_Product extends Controller_Core_Action{
             	$product->name = $row['name'];
             	$product->price = $row['price'];
             	$product->quantity = $row['quantity'];
+            	$product->sku = $row['sku'];
             	$product->status = $row['status'];
             	$result = $product->save();
+            	$productId = $result;
+            	$product->saveCategories($categoryIds,$productId);
 
 				if(!$result)
 				{
@@ -88,9 +108,12 @@ class Controller_Product extends Controller_Core_Action{
 				$product->name = $row['name'];
          	$product->price = $row['price'];
          	$product->quantity = $row['quantity'];
+         	$product->sku = $row['sku'];
          	$product->status = $row['status'];
          	$product->updatedAt = $date;
          	$result = $product->save();
+         	$product->saveCategories($categoryIds);
+         		
 
 				if(!$result)
 				{
@@ -148,7 +171,6 @@ class Controller_Product extends Controller_Core_Action{
          $this->redirect($this->getUrl('grid','product',null,true));
 		}
 	}
-
 
 	public function errorAction()
 	{

@@ -1,13 +1,9 @@
 <?php $product = $this->getProduct(); ?>
+<?php $getCategoryWithPath = $this->getCategoryWithPath(); ?>
+<?php $categories = $this->getCategories();  ?>
+<?php $categoryProductPair = $this->getCategoryProductPair(); ?>
 <?php $controllerCoreAction = new Controller_Core_Action(); ?>
-<!DOCTYPE html>
-<html>
-<head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Product edit</title>
-</head>
-<body>
+
 
 <form action="<?php echo$controllerCoreAction->getUrl('save','product',['id' =>  $product->productId],true) ?>" method="POST">
 		<table border="1" width="100%" cellspacing="4">
@@ -31,6 +27,11 @@
 			</tr>
 
 			<tr>
+				<td width="10%">Sku</td>
+				<td><input type="text" name="product[sku]" value="<?php echo  $product->sku  ;?>"></td>
+			</tr>
+
+			<tr>
 				<td width="10%">Quantity</td>
 				<td><input type="text" name="product[quantity]" value="<?php echo $product->quantity  ; ?>"></td>
 			</tr>
@@ -47,6 +48,35 @@
 			</tr>
 
 			<tr>
+        <td width="10%">Categories</td>
+        <td>
+          <table border='1'>
+            <tr>
+              <th>Check Box</th>
+              <th>Category Id</th>
+              <th>Category Name</th>
+            </tr>
+              
+        <?php foreach ($categories as $categoryProduct): ?>
+        <tr>
+          <td><input type="checkbox" name="product[category][]" value="<?php echo $categoryProduct->categoryId ?>"<?php if($categoryProductPair):
+            if(in_array($categoryProduct->categoryId, $categoryProductPair)): ?>
+              checked
+            <?php endif; ?>
+            <?php endif; ?>></td>
+            <td><?php echo $categoryProduct->categoryId ?></td>
+            <td>
+						<?php $result = $getCategoryWithPath; 
+		    				echo $result[$categoryProduct->categoryId];
+			    		?>
+						</td>
+          </tr>
+        <?php endforeach; ?>
+          </table>
+        </td>
+      </tr>
+
+			<tr>
 			<td width="10%">&nbsp;</td>
 				<td>
 					<input type="submit" name="submit" value="Save">
@@ -55,6 +85,3 @@
 		</tr>
 		</table>
 	</form>
-
-</body>
-</html>

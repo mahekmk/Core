@@ -1,13 +1,6 @@
 <?php $medias = $this->getCategoryMedias(); 
 $id= $_GET['id'];?>	
 <?php $controllerCoreAction = new Controller_Core_Action(); ?>
-<html>
-<head>
-	<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0' />
-	
-</head>
-<body>
-	
 
 	<form action="<?php echo $controllerCoreAction->getUrl('save','category_media',['id' =>  $id],true) ?>" method="POST" align="center">
 		<input type="submit" name="update" value="UPDATE"> 
@@ -65,7 +58,3 @@ $id= $_GET['id'];?>
 
 </form>
 
-
-
-</body>
-</html>
