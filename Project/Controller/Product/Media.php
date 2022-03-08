@@ -27,7 +27,6 @@ class Controller_Product_Media extends Controller_Core_Action{
           }
 
          $rows = $this->getRequest()->getPost();
-
          $media = $rows['media'];
  //-------------------------------------------------------------------Remove--------------------------------
       

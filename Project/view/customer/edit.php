@@ -1,13 +1,6 @@
 <?php $customerAddress = $this->getCustomerAddress(); ?>
 <?php $controllerCoreAction = new Controller_Core_Action();?>
-<!DOCTYPE html>
-<html>
-<head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Customer edit</title>
-</head>
-<body>
+
 	<form action="<?php echo$controllerCoreAction->getUrl('save','customer',['id' =>  $customerAddress->customerId],true) ?>" method="POST">
 		<table border="1" width="100%" cellspacing="4">
 			<tr>
@@ -106,5 +99,3 @@
 
 		</table>
 	</form>
-</body>
-</html>

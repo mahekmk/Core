@@ -5,7 +5,7 @@ class Model_Core_Adapter{
 		'host' => 'localhost',
 		'user' => 'root',
 		'password' => '',
-		'dbname' => 'adapter'
+		'dbname' => 'project_mahek'
 	];
 
 	private $connect = NULL;

@@ -1,13 +1,5 @@
 <?php $page = $this->getPage(); ?>
 <?php $controllerCoreAction = new Controller_Core_Action(); ?>
-<!DOCTYPE html>
-<html>
-<head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Page edit</title>
-</head>
-<body>
 
 <form action="<?php echo$controllerCoreAction->getUrl('save','page',['id' =>  $page->pageId],true) ?>" method="POST">
 		<table border="1" width="100%" cellspacing="4">

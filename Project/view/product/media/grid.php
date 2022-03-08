@@ -1,12 +1,7 @@
 <?php $medias = $this->getProductMedias(); 
 $id= $_GET['id'];?>	
 <?php $controllerCoreAction = new Controller_Core_Action(); ?>
-<html>
-<head>
-	<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0' />
-	
-</head>
-<body>
+
 	
 
 	<form action="<?php echo $controllerCoreAction->getUrl('save','product_media',['id' =>  $id],true) ?>" method="POST" align="center">
@@ -70,8 +65,3 @@ $id= $_GET['id'];?>
 
 
 </form>
-
-
-
-</body>
-</html>
