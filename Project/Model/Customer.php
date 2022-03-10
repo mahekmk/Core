@@ -35,6 +35,22 @@ class Model_Customer extends Model_Core_Row
 
 		return self::STATUS_DEFAULT;
 	}
+
+	public function saveSalesmanInfo($customerIds)
+	{
+		$salesmanId = Ccc::getFront()->getRequest()->getRequest('id');
+		
+		foreach ($customerIds as $customerId) 
+		{		
+			$customer = Ccc::getModel('customer');
+			$customer->customerId = $customerId;
+			$customer->salesmanId = $salesmanId;
+			$result = $customer->save();
+
+		}
+		return $result;
+	}
+
 }
 
 

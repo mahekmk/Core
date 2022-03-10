@@ -47,7 +47,7 @@
 					<td><?php echo $customer->country;?></td>
 					<td><?php echo $customer->billing;?></td>
 					<td><?php echo $customer->shipping;?></td>
-					<td><a href="index.php?c=customer&a=edit&id=<?php echo $customer->customerId; ?>">Edit</a></td>
+					<td><a href="<?php echo $controllerCoreAction->getUrl('edit','customer',['id'=> $customer->customerId],true) ?>">Edit</a></td>
 					<td><a href="<?php echo $controllerCoreAction->getUrl('delete','customer',['id'=> $customer->customerId],true) ?>">Delete</a></td>
 				</tr>
 				<?php endforeach;	?>

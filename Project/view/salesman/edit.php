@@ -32,6 +32,11 @@
 				<td><input type="text" name="salesman[email]" value="<?php echo $salesman->email ; ?>"></td>
 			</tr>
 
+			<tr>
+				<td width="10%">percentage</td>
+				<td><input  type="number" step="0.01" name="salesman[percentage]" value="<?php echo $salesman->email ; ?>"></td>
+			</tr>
+
 
 			<tr>
 				<td width="10%">Status</td>
