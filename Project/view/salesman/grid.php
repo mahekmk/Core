@@ -10,9 +10,11 @@
 				<th>Last Name</th>
 				<th>Email</th>
 				<th>Mobile</th>
+				<th>Percentage</th>
 				<th>Status</th>
 				<th>Created Date</th>
 				<th>Updated Date</th>
+				<th>Customer</th>
 				<th>Edit</th>
 				<th>Delete</th>
 			</tr>
@@ -28,9 +30,11 @@
 					<td><?php echo $salesman->lastName;?></td>
 					<td><?php echo $salesman->email;?></td>
 					<td><?php echo $salesman->mobile;?></td>
+					<td><?php echo $salesman->percentage;?></td>
 					<td><?php echo $salesman->getStatus($salesman->status); ?></td>
 					<td><?php echo $salesman->createdAt;?></td>
 					<td><?php echo $salesman->updatedAt;?></td>
+					<td><a href="<?php echo $controllerCoreAction->getUrl('grid','salesman_customer',['id' =>  $salesman->salesmanId],true) ?>">Customer</a></td>
 					<td><a href="<?php echo $controllerCoreAction->getUrl('edit','salesman',['id'=> $salesman->salesmanId],true) ?>">Edit</a></td>
 					<td><a href="<?php echo $controllerCoreAction->getUrl('delete','salesman',['id'=> $salesman->salesmanId],true) ?>">Delete</a></td>
 				</tr>

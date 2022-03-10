@@ -67,6 +67,7 @@ class Controller_salesman extends Controller_Core_Action
                 $salesman->lastName = $row['lastName'];
                 $salesman->mobile = $row['mobile'];
                 $salesman->email = $row['email'];
+                $salesman->percentage = $row['percentage'];
                 $salesman->status = $row['status'];
                 $salesman->createdAt = $date;
                 $result = $salesman->save();
@@ -90,6 +91,7 @@ class Controller_salesman extends Controller_Core_Action
                 $salesman->lastName = $row['lastName'];
                 $salesman->mobile = $row['mobile'];
                 $salesman->email = $row['email'];
+                $salesman->percentage = $row['percentage'];
                 $salesman->status = $row['status'];
                 $salesman->updatedAt = $date;
                 $result = $salesman->save();
