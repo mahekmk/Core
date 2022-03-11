@@ -7,6 +7,30 @@ Ccc::loadClass('Model_Core_Request');
 class Controller_Admin extends Controller_Core_Action
 {
 
+    public function testAction()
+    {
+        echo "<pre>";
+        /*$adminSession = Ccc::getModel('Admin_Session');
+        $coreSession = Ccc::getModel('Core_Session');
+        $message1 = Ccc::getModel('Core_Message');*/
+        $message = $this->getMessage();
+       /* print_r($message);
+        print_r($message1);*/
+
+        //$adminMessage = Ccc::getModel('Admin_Message');
+        //$adminMessage = $this->getMessage();
+        //print_r($adminMessage);
+
+        $message->addMessage("helloooo");
+        $message->addMessage("heoo");
+        print_r($message->getSession());
+        //print_r($adminSession);
+        //print_r($coreSession);
+        //print_r($adminMessage);
+        //print_r($_SESSION);
+        die;
+    }
+
     public function gridAction()
     {
         $content = $this->getLayout()->getContent();
@@ -17,7 +41,7 @@ class Controller_Admin extends Controller_Core_Action
 
     public function editAction()
     {
-        $message = Ccc::getModel('Core_Message');
+        $message = $this->getMessage();
 
         try 
         {
@@ -54,7 +78,7 @@ class Controller_Admin extends Controller_Core_Action
 
     public function saveAction()
     {
-        $message = Ccc::getModel('Core_Message');
+       $message = $this->getMessage();
         try
         {
 
@@ -117,7 +141,7 @@ class Controller_Admin extends Controller_Core_Action
 
     public function deleteAction()
     {
-        $message = Ccc::getModel('Core_Message');
+        $message = $this->getMessage();
         $getId = $this->getRequest()->getRequest('id');
         $admin = Ccc::getModel('Admin')->load($getId);
         /*$adminTable = new Model_Admin();*/

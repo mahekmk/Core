@@ -2,13 +2,15 @@
 
 class Model_Core_Message
 {
-
 	const SUCCESS = 'success';
 	const ERROR = 'error' ;
 	const WARNING = 'warning';
 	protected $session = null;
-	//protected $messages = []; 
 
+	public function __construct()
+	{
+		
+	}
 
 	public function setSession($session)
 	{
@@ -32,22 +34,16 @@ class Model_Core_Message
 		$messages[$type] = $message;
 		$this->getSession()->messages = $messages;
 		return $this;
-		
 	}
 
 	public function getMessages()
 	{
 		return $this->getSession()->messages;
-		
 	}
 
-	
-	
 	public function unsetMessage()
 	{
 		unset($this->getSession()->messages);
-		
-		
 	}
 
 }

@@ -7,7 +7,7 @@ class Controller_Category_Media extends Controller_Core_Action{
 
    public function gridAction()
    { 
-         $content = $this->getLayout()->getContent();
+      $content = $this->getLayout()->getContent();
         $mediaGrid = Ccc::getBlock("Category_Media_Grid");
         $content->addChild($mediaGrid);
         $this->renderLayout();     
@@ -15,7 +15,7 @@ class Controller_Category_Media extends Controller_Core_Action{
 
    public function saveAction()
    {
-      $message = Ccc::getModel('Core_Message');
+      $message = $this->getMessage();
       try 
       {
           $categoryId = $this->getRequest()->getRequest('id');
@@ -33,7 +33,7 @@ class Controller_Category_Media extends Controller_Core_Action{
       
        if(array_key_exists('remove',$media))
          {
-            $message = Ccc::getModel('Core_Message');
+            $message = $this->getMessage();
             $removeArr = $rows['media']['remove'];
             $removeIds = [];
             foreach($removeArr as $key => $value)
@@ -153,7 +153,7 @@ class Controller_Category_Media extends Controller_Core_Action{
 
    public function addAction()
    {
-      $message = Ccc::getModel('Core_Message'); 
+      $message = $this->getMessage(); 
       try 
       {
       $categoryId = $_GET['id'];

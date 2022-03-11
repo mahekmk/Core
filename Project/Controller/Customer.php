@@ -14,7 +14,7 @@ class Controller_Customer extends Controller_Core_Action
 
 	public function editAction()
 	{
-		$message = Ccc::getModel('Core_Message');
+		$message = $this->getMessage();
 		try 
 		{
 			$id = (int) $this->getRequest()->getRequest('id');
@@ -51,7 +51,7 @@ class Controller_Customer extends Controller_Core_Action
 
 	protected function saveCustomer()
 	{
-		$message = Ccc::getModel('Core_Message');
+		$message = $this->getMessage();
 		$customer = Ccc::getModel('Customer');
 		//$customer = $customerModel->getRow();
 		date_default_timezone_set("Asia/Kolkata");
@@ -90,7 +90,7 @@ class Controller_Customer extends Controller_Core_Action
 
 	protected function saveAddress($customerId)	
 	{
-		$message = Ccc::getModel('Core_Message');
+		$message = $this->getMessage();
 		$address = Ccc::getModel('Customer_Address');
 		date_default_timezone_set("Asia/Kolkata");
 		$date = date('Y-m-d H:i:s');
@@ -177,7 +177,7 @@ class Controller_Customer extends Controller_Core_Action
 
 	public function deleteAction()
 	{
-		$message = Ccc::getModel('Core_Message');
+		$message = $this->getMessage();
         $getId = $this->getRequest()->getRequest('id');
 		$customer = Ccc::getModel('Customer')->load($getId);
 		try
