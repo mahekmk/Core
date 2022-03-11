@@ -8,6 +8,45 @@ class Controller_Core_Action
     
     protected $message = null; 
 
+    public function __construct()
+    {
+        $this->authenticate();
+    }
+
+    public function authenticate()
+    {
+        try 
+        {
+            $message = $this->getMessage();
+            $action = $this->getRequest()->getRequest('a');
+            $controller = ucwords($this->getRequest()->getRequest('c'),'_');
+
+            if($controller == 'Admin_Login' && ($action == 'login' || $action == 'loginPost'))
+            {
+                $login = Ccc::getModel('Admin_Login')->isLoggedIn();
+                if($login)
+                {
+                    $message->addMessage('Already LoggedIn.');
+                    $this->redirect($this->getUrl('grid','product',null,true));
+                }
+            }
+            else
+            {
+                $login = Ccc::getModel('Admin_Login')->isLoggedIn();
+                if(!$login)
+                {
+                    throw new Exception("Please Login",1);
+                    //$this->redirect($this->getUrl('grid','product',null,true));
+                }
+            }   
+
+        } catch (Exception $e) 
+        {
+            $message->addMessage($e->getMessage(),Model_Core_Message::ERROR);
+            $this->redirect($this->getUrl('login','Admin_Login',null,true));    
+        }    
+    }
+
     public function redirect($url)
     {
         header("location:$url");

@@ -8,5 +8,6 @@
 <button name='Product'><a href="<?php echo $controllerCoreAction->getUrl('grid','product',null,true) ?>">Product</a></button>
 <button name='Salesman'><a href="<?php echo $controllerCoreAction->getUrl('grid','salesman',null,true) ?>">Salesman</a></button>
 <button name='Vendor'><a href="<?php echo $controllerCoreAction->getUrl('grid','vendor',null,true) ?>">Vendor</a></button>
+<button name='Logout'><a href="<?php echo $controllerCoreAction->getUrl('logout','admin_login',null,true) ?>">Logout</a></button>
 <br>
 <br>
