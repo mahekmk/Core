@@ -17,7 +17,7 @@ class Controller_Category extends Controller_Core_Action
     {
         try
         {
-            $message = Ccc::getModel('Core_Message');
+            $message = $this->getMessage();
             $categoryId = (int)$this->getRequest()->getRequest('categoryId');
             if(!$categoryId)
             {
@@ -55,7 +55,7 @@ class Controller_Category extends Controller_Core_Action
 
     public function saveAction()
     {
-        $message = Ccc::getModel('Core_Message');
+        $message = $this->getMessage();
         $category = Ccc::getModel('Category');
         try 
         {
@@ -199,7 +199,7 @@ class Controller_Category extends Controller_Core_Action
 
     public function deleteAction()
     {
-        $message = Ccc::getModel('Core_Message');
+        $message = $this->getMessage();
         $getId = $this->getRequest()->getRequest('categoryId');
         $category = Ccc::getModel('Category')->load($getId);
         try
@@ -275,7 +275,7 @@ class Controller_Category extends Controller_Core_Action
 
     public function updatePathIntoCategory($categoryId, $parentId)
     {
-        $message = Ccc::getModel('Core_Message');
+        $message = $this->getMessage();
         $category = Ccc::getModel('Category');
         $query = "SELECT path FROM category WHERE categoryId = '$categoryId'";
         $result = $this->getAdapter()->fetchOne($query);

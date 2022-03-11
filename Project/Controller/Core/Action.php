@@ -1,36 +1,14 @@
-<?php 
-Ccc::loadClass('Block_Core_Layout');
-Ccc::loadClass('Model_Core_Request');
-?>
+<?php
 
-<?php 
-class Controller_Core_Action{
+Ccc::loadClass("Block_Core_Layout");
 
-    protected $layout = null; 
+class Controller_Core_Action
+{
+    protected $layout = null;
+    
     protected $message = null; 
 
-    public function getMessages()
-    {
-        if(!$this->message)
-        {
-            $this->setMessage(new Block_Core_Message());
-        }
-        return $this->message;
-    }
-
-     public function addMessage($message)
-    {
-        $this->message = $message;
-        return $this;
-    }
-
-    public function getAdapter()
-    {
-        global $adapter;
-        return $adapter;
-    }
-
-	public function redirect($url)
+    public function redirect($url)
     {
         header("location:$url");
         exit();
@@ -38,7 +16,7 @@ class Controller_Core_Action{
 
     public function getLayout()
     {
-        if(!$this->layout)
+        if (!$this->layout) 
         {
             $this->setLayout(new Block_Core_Layout());
         }
@@ -51,62 +29,97 @@ class Controller_Core_Action{
         return $this;
     }
 
+     public function getRequest()
+    {
+        return Ccc::getFront()->getRequest();
+    }
+
+
+    public function setRequest($request)
+    {
+        $this->request = $request;
+        return $this;
+    }
+
+    public function getAdapter()
+    {
+        $adapter = new Model_Core_Adapter();
+        return $adapter;
+    }
+
     public function renderLayout()
     {
         return $this->getLayout()->toHtml();
     }
 
-    public function getRequest()
+    public function getUrl($action = null, $controller = null, array $parameters = null, $reset = false) 
     {
-        return Ccc::getFront()->getRequest();
-    }
-
-    public function getUrl($action=null,$controller=null,array $parameters=null,$reset=false)
-    {
-       $tempArray = [];
+        $resultUrl = [];
         if(!$controller)
         {
-            $tempArray['c'] = $this->getRequest()->getRequest('c'); 
+            $resultUrl['c'] = $this->getRequest()->getRequest('c'); 
         }
+
         else
         {
-            $tempArray['c'] = $controller;
+            $resultUrl['c'] = $controller;
         }
 
         if(!$action)
         {
-            $tempArray['a'] = $this->getRequest()->getRequest('a'); 
+            $resultUrl['a'] = $this->getRequest()->getRequest('a'); 
         }
+        
         else
         {
-            $tempArray['a'] = $action;
+            $resultUrl['a'] = $action;
         }
 
         if($reset)
         {
             if($parameters)
             {
-                $tempArray = array_merge($tempArray,$parameters);
+                $resultUrl = array_merge($resultUrl, $parameters);
             }
         }
+        
         else
         {
-            $tempArray = array_merge($this->getRequest()->getRequest(),$tempArray);
+            $resultUrl = array_merge($this->getRequest()->getRequest(), $resultUrl);
+        
             if($parameters)
             {
-                $tempArray = array_merge($tempArray,$parameters);
+                $resultUrl = array_merge($resultUrl, $parameters);
             }
         }
-        $url = 'index.php?'.http_build_query($tempArray);
+        
+        $url = 'index.php?'.http_build_query($resultUrl);
         return $url;
     }
 
     public function getBaseUrl($subUrl = null)
     {
-        $url = "E:/xampp/htdocs/Cybercom/Core/Project";
+        $url = "C:/xampp-php/htdocs/Cybercom/Core-PHP";
         if($subUrl){
             $url = $url."/".$subUrl;
         }
         return $url;
     }
+
+    public function getMessage()
+    {
+        if(!$this->message)
+        {
+            $this->setMessage(Ccc::getModel('Admin_Message'));
+        }
+        return $this->message;
+    }
+
+     public function setMessage($message)
+    {
+        $this->message = $message;
+        return $this;
+    }
 }
+
+?>

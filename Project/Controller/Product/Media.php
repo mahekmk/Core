@@ -15,7 +15,7 @@ class Controller_Product_Media extends Controller_Core_Action{
 
    public function saveAction()
    {
-      $message = Ccc::getModel('Core_Message');
+      $message = $this->getMessage();
       try 
       {
           $productId = $this->getRequest()->getRequest('id');
@@ -32,7 +32,7 @@ class Controller_Product_Media extends Controller_Core_Action{
       
        if(array_key_exists('remove',$media))
          {
-            $message = Ccc::getModel('Core_Message');
+            $message = $this->getMessage();
             $removeArr = $rows['media']['remove'];
             $removeIds = [];
             foreach($removeArr as $key => $value)
@@ -154,7 +154,7 @@ class Controller_Product_Media extends Controller_Core_Action{
 
       try 
       {
-         $message = Ccc::getModel('Core_Message');  
+         $message = $this->getMessage();  
          $productId = $_GET['id'];
          $imageName1 = $_FILES['image']['name'];
          $imageAddress1 = $_FILES['image']['tmp_name'];
