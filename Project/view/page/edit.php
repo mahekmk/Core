@@ -1,7 +1,7 @@
 <?php $page = $this->getPage(); ?>
 <?php $controllerCoreAction = new Controller_Core_Action(); ?>
 
-<form action="<?php echo$controllerCoreAction->getUrl('save','page',['id' =>  $page->pageId],true) ?>" method="POST">
+<form action="<?php echo$controllerCoreAction->getUrl('save','page',null,false) ?>" method="POST">
 		<table border="1" width="100%" cellspacing="4">
 			<tr>
 				<td colspan="2"> Page Information</td>
@@ -9,7 +9,7 @@
 
 			<tr>
 				<td width="10%">Page Id</td>
-				<td><input type="text" name="page[id]" value="<?php echo $page->pageId ; ?>" readonly></td>
+				<td><input type="text" name="page[id]" value="<?php echo $page->pageId ; ?>" placeholder="Not for user." readonly></td>
 			</tr>
 
 			<tr>
