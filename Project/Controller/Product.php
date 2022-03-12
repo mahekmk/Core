@@ -34,9 +34,7 @@ class Controller_Product extends Controller_Core_Action{
 			$content = $this->getLayout()->getContent();
          $productEdit = Ccc::getBlock("Product_Edit");
          $categoryPath = Ccc::getModel('Category');
-         $productEdit->addData("product", $product);
-         $productEdit->addData('categoryProductPair',$this->getAdapter()->fetchPairs("SELECT entityId,categoryId FROM category_product WHERE productId = {$id}"));
-         $productEdit->addData('categoryPath',$categoryPath);
+         $productEdit->setData(['product' => $product , 'categoryProductPair' => $this->getAdapter()->fetchPairs("SELECT entityId,categoryId FROM category_product WHERE productId = {$id}") , 'categoryPath' => $categoryPath ]);
          $content->addChild($productEdit);
          $this->renderLayout(); 		
 		} 
@@ -51,8 +49,7 @@ class Controller_Product extends Controller_Core_Action{
 	{
 		 $product = Ccc::getModel('Product');
         $content = $this->getLayout()->getContent();
-        $productAdd = Ccc::getBlock('Product_Edit')->addData('product',$product);
-        $productAdd->addData("categoryProductPair",[]);
+        $productAdd = Ccc::getBlock('Product_Edit')->setData(['product' => $product, 'categoryProductPair' => []]);
         $content->addChild($productAdd);
         $this->renderLayout();
 	}
@@ -80,7 +77,7 @@ class Controller_Product extends Controller_Core_Action{
 
 			if (!isset($row)) 
 			{
-			 	throw new Exception("Invalid Request.", 1);             
+			 	throw new Exception("Invalid Request.");             
          }           
             if (array_key_exists('id',$row) && $row['id'] == NULL){
 
@@ -95,7 +92,7 @@ class Controller_Product extends Controller_Core_Action{
 
 				if(!$result)
 				{
-					 throw new Exception("System is unable to insert information.",1);
+					 throw new Exception("System is unable to insert information.");
 				}
 				 $message->addMessage('Data Added Successfully');
 				$this->redirect($this->getUrl('grid','product',null,true));
@@ -117,7 +114,7 @@ class Controller_Product extends Controller_Core_Action{
 
 				if(!$result)
 				{
-					 throw new Exception("System is unable to update information.",1);
+					 throw new Exception("System is unable to update information.");
 				}
 				$message->addMessage('Data Updated Successfully');
 				$this->redirect($this->getUrl('grid','product',null,true));
@@ -145,7 +142,7 @@ class Controller_Product extends Controller_Core_Action{
 			
 			if (!isset($getId)) 
 			{
-				 throw new Exception("Invalid Request.", 1);
+				 throw new Exception("Invalid Request.");
 			}
 			$id = $getId;
 			$result = $product->delete(); 
@@ -160,7 +157,7 @@ class Controller_Product extends Controller_Core_Action{
 
 			if(!$result)
 			{
-				 throw new Exception("System is unable to delete record.", 1);
+				 throw new Exception("System is unable to delete record.");
 			}
 			$message->addMessage('Data Deleted Successfully');
 			$this->redirect($this->getUrl('grid','product',null,true));

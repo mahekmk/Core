@@ -2,6 +2,7 @@
 class Controller_Core_Front
 {
 	protected $request = NULL;
+	protected $response = NULL;
 
 	public function getRequest()
 	{
@@ -18,6 +19,22 @@ class Controller_Core_Front
 		$this->request = $request;
 		return $this;
 	}
+
+	public function setResponse($response)
+    {
+        $this->response = $response;
+        return $this;
+    }
+
+    public function getResponse()
+    {
+        if(!$this->response)
+        {
+            $response = new Model_Core_Response();
+            $this->setResponse($response);
+        }
+        return$this->response();
+    }
 	
 	public function init()
 	{
@@ -37,5 +54,3 @@ class Controller_Core_Front
 		return $name;
 	}
 }
-
-?>

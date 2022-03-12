@@ -30,7 +30,7 @@ class Controller_salesman extends Controller_Core_Action
                  throw new Exception("unable to load salesman.");
             }
             $content = $this->getLayout()->getContent();
-            $salesmanEdit = Ccc::getBlock("Salesman_Edit")->addData("salesman", $salesman);
+            $salesmanEdit = Ccc::getBlock("Salesman_Edit")->setData(['salesman' => $salesman]);
             $content->addChild($salesmanEdit);
             $this->renderLayout();        
         } 
@@ -44,8 +44,12 @@ class Controller_salesman extends Controller_Core_Action
     public function addAction()
     {
         $salesman = Ccc::getModel('Salesman');
-        Ccc::getBlock('salesman_Edit')->addData('salesman',$salesman)->toHtml(); 
+        $content = $this->getLayout()->getContent();
+        $salesmanAdd = Ccc::getBlock('Salesman_Edit')->setData(['salesman' => $salesman]);
+        $content->addChild($salesmanAdd);
+        $this->renderLayout();
     }
+
 
     public function saveAction()
     {
@@ -58,7 +62,7 @@ class Controller_salesman extends Controller_Core_Action
             $row = $this->getRequest()->getRequest('salesman');
             if (!isset($row)) 
             {
-                throw new Exception("Invalid Request.", 1);             
+                throw new Exception("Invalid Request.");             
             }           
             if (array_key_exists('id',$row) && $row['id'] == NULL)
             {
@@ -74,7 +78,7 @@ class Controller_salesman extends Controller_Core_Action
 
                 if (!$result)
                 {
-                    throw new Exception("System is unable to update information.", 1);
+                    throw new Exception("System is unable to update information.");
                 }
 
                 if($result)
@@ -98,7 +102,7 @@ class Controller_salesman extends Controller_Core_Action
 
                 if (!$result)
                 {
-                    throw new Exception("System is unable to update information.", 1);
+                    throw new Exception("System is unable to update information.");
                 }
                 $message->addMessage('Data Updated Successfully'); 
             }
@@ -121,13 +125,13 @@ class Controller_salesman extends Controller_Core_Action
         {
             if (!isset($getId))
             {
-                throw new Exception("Invalid Request.", 1);
+                throw new Exception("Invalid Request.");
             }
             $id = $getId;
             $result = $salesman->delete(); 
             if (!$result)
             {
-                throw new Exception("System is unable to delete record.", 1);
+                throw new Exception("System is unable to delete record.");
             }
             $message->addMessage('Data Deleted Successfully');
             $this->redirect($this->getUrl('grid','salesman',null,true));

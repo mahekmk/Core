@@ -10,7 +10,7 @@
 
 			<tr>
 				<td width="10%">Admin Id</td>
-				<td><input type="text" name="admin[id]" value="<?php echo $admin->adminId ; ?>" readonly></td>
+				<td><input type="text" name="admin[id]" value="<?php echo $admin->adminId ; ?>" placeholder="Not for user." readonly></td>
 			</tr>
 
 			<tr>

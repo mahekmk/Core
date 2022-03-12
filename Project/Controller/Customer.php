@@ -29,7 +29,7 @@ class Controller_Customer extends Controller_Core_Action
 				throw new Exception("unable to load customer.");
 			}
 			$content = $this->getLayout()->getContent();
-            $customerEdit = Ccc::getBlock("Customer_Edit")->addData("customer", $customer);
+            $customerEdit = Ccc::getBlock("Customer_Edit")->setData(['customer' => $customer]);
             $content->addChild($customerEdit);
             $this->renderLayout();		
 		} 
@@ -44,7 +44,7 @@ class Controller_Customer extends Controller_Core_Action
 	{
 		$customer = Ccc::getModel('Customer');
         $content = $this->getLayout()->getContent();
-        $customerAdd = Ccc::getBlock('Customer_Edit')->addData('customer',$customer);
+        $customerAdd = Ccc::getBlock('Customer_Edit')->setData(['customer' => $customer]);
         $content->addChild($customerAdd);
         $this->renderLayout();
 	}
@@ -53,11 +53,9 @@ class Controller_Customer extends Controller_Core_Action
 	{
 		$message = $this->getMessage();
 		$customer = Ccc::getModel('Customer');
-		//$customer = $customerModel->getRow();
 		date_default_timezone_set("Asia/Kolkata");
 		$date = date('Y-m-d H:i:s');
 		$row = $this->getRequest()->getRequest('customer');
-		//$customer = $customerModel->load($row['id']);
 		if(array_key_exists('id',$row) && $row['id'] == NULL)
 		{
 				$customer->firstName = $row['firstName'];
@@ -126,7 +124,7 @@ class Controller_Customer extends Controller_Core_Action
 			$result = $address->save();
 			if (!$result)
                 {
-                    throw new Exception("System is unable to update information.", 1);
+                    throw new Exception("System is unable to update information.");
                 }
 
                 if($result)
@@ -152,7 +150,7 @@ class Controller_Customer extends Controller_Core_Action
 		
 		if (!$result)
         {
-            throw new Exception("System is unable to update information.", 1);
+            throw new Exception("System is unable to update information.");
         }
         $message->addMessage('Data Updated Successfully');
 			
@@ -184,13 +182,13 @@ class Controller_Customer extends Controller_Core_Action
 		{	
 			if (!isset($getId)) 
 			{
-				throw new Exception("Invalid Request.", 1);
+				throw new Exception("Invalid Request.");
 			}
 			$id = $getId;
 			$result=$customer->delete();
 			if(!$result)
 			{
-				throw new Exception("System is unable to delete record.", 1);	
+				throw new Exception("System is unable to delete record.");	
 			}
 			$message->addMessage('Data Deleted Successfully');
 			$this->redirect($this->getUrl('grid','customer',null,true));

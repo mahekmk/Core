@@ -19,13 +19,12 @@ class Controller_Customer_Price extends Controller_Core_Action
         {
             if (!$this->getRequest()->getPost('price')) 
             {
-                throw new Exception("Invalid Request", 1);
+                throw new Exception("Invalid Request");
             }
             $postData = $this->getRequest()->getPost();
             $customerId = (int)$this->getRequest()->getRequest('customerId');
             if(array_key_exists('exists',$postData['price']))
             {
-                //update case
                 foreach ($postData['price']['exists'] as $productId => $price) 
                 {
                     $customerPrice = Ccc::getModel('Customer_Price')->fetchRow("SELECT * FROM customer_price WHERE customerId = {$customerId} AND productId = {$productId}");
@@ -33,15 +32,13 @@ class Controller_Customer_Price extends Controller_Core_Action
                     $result = $customerPrice->save();
                     if(!$result)
                     {
-                        throw new Exception("Customer Price not updated.", 1);
+                        throw new Exception("Customer Price not updated.");
                     }
                 }
-
             }
            
             if(array_key_exists('new', $postData['price']))
             {
-                //insert case
                 foreach ($postData['price']['new'] as $productId => $price) 
                 {
                     $customerPrice = Ccc::getModel('Customer_Price');
@@ -61,8 +58,5 @@ class Controller_Customer_Price extends Controller_Core_Action
             $message->addMessage($e->getMessage(), Model_Core_Message::ERROR);
             $this->redirect($this->getUrl('grid'));
         }
-
-
     }
-    
 }

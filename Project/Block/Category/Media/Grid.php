@@ -9,7 +9,6 @@ class Block_Category_Media_Grid extends Block_Core_Template
 
    public function getCategoryMedias()
    {	
-
    		$front = Ccc::getFront();
    		$id = $front->getRequest()->getRequest('id');
    		$categoryMedia = Ccc::getModel('Category_Media');

@@ -10,7 +10,7 @@
 
 			<tr>
 				<td width="10%">config Id</td>
-				<td><input type="text" name="config[id]" value="<?php echo $config->configId ; ?>" readonly></td>
+				<td><input type="text" name="config[id]" value="<?php echo $config->configId ; ?>" placeholder="Not for user." readonly></td>
 			</tr>
 
 			<tr>

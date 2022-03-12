@@ -21,7 +21,6 @@ class Controller_Salesman_Customer extends Controller_Core_Action
             $customerIds = $customer['customer']; 
             $customer = Ccc::getModel('customer');
             $result = $customer->saveSalesmanInfo($customerIds);
-
             if(!$result)
             {
                throw new Exception('No record.'); 
@@ -29,10 +28,10 @@ class Controller_Salesman_Customer extends Controller_Core_Action
 
             $message->addMessage('Data Updated Successfully');
             $this->redirect($this->getUrl('grid','Salesman_Customer',null,false));
-        } catch (Exception $e) {
-            $message->addMessage($e->getMessage(),Model_Core_Message::ERROR);         
+        } catch (Exception $e) 
+        {
+            $message->addMessage($e->getMessage(),Model_Core_Message::ERROR);     
             $this->redirect($this->getUrl('grid','Salesman_Customer',null,true));
-        }
-        
+        }    
     }
 }

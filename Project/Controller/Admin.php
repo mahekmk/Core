@@ -8,6 +8,7 @@ class Controller_Admin extends Controller_Core_Action
 {
     public function gridAction()
     {
+        $this->setTitle('Admin Grid');
         $content = $this->getLayout()->getContent();
         $adminGrid = Ccc::getBlock("Admin_Grid");
         $content->addChild($adminGrid);
@@ -16,6 +17,7 @@ class Controller_Admin extends Controller_Core_Action
 
     public function editAction()
     {
+        $this->setTitle('Admin Edit');
         $message = $this->getMessage();
 
         try 
@@ -30,7 +32,7 @@ class Controller_Admin extends Controller_Core_Action
                 throw new Exception("unable to load admin.");
             }
             $content = $this->getLayout()->getContent();
-            $adminEdit = Ccc::getBlock("Admin_Edit")->addData("admin", $admin);
+            $adminEdit = Ccc::getBlock("Admin_Edit")->setData(["admin" => $admin]);
             $content->addChild($adminEdit);
             $this->renderLayout();       
         } 
@@ -43,9 +45,10 @@ class Controller_Admin extends Controller_Core_Action
 
     public function addAction()
     {
+        $this->setTitle('Admin Add');
         $admin = Ccc::getModel('Admin');
         $content = $this->getLayout()->getContent();
-        $adminAdd = Ccc::getBlock('Admin_Edit')->addData('admin',$admin);
+        $adminAdd = Ccc::getBlock('Admin_Edit')->setData(["admin" => $admin]);
         $content->addChild($adminAdd);
         $this->renderLayout(); 
       
@@ -63,7 +66,7 @@ class Controller_Admin extends Controller_Core_Action
             $row = $this->getRequest()->getRequest('admin');
             
             if (!isset($row)) {
-                throw new Exception("Invalid Request.", 1);             
+                throw new Exception("Invalid Request.");             
             }           
             if (array_key_exists('id',$row) && $row['id'] == NULL){
 
@@ -76,7 +79,7 @@ class Controller_Admin extends Controller_Core_Action
 
                 if (!$result)
                 {
-                     throw new Exception("System is unable to update information.", 1);
+                     throw new Exception("System is unable to update information.");
                 }
 
                 if($result)
@@ -99,7 +102,7 @@ class Controller_Admin extends Controller_Core_Action
 
                 if (!$result)
                 {
-                    throw new Exception("System is unable to update information.", 1);
+                    throw new Exception("System is unable to update information.");
                 }
                 $message->addMessage('Data Updated Successfully');   
 
@@ -119,18 +122,18 @@ class Controller_Admin extends Controller_Core_Action
         $message = $this->getMessage();
         $getId = $this->getRequest()->getRequest('id');
         $admin = Ccc::getModel('Admin')->load($getId);
-        /*$adminTable = new Model_Admin();*/
+        
         try
         {
             if (!isset($getId))
             {
-                 throw new Exception("Invalid Request.", 1);
+                 throw new Exception("Invalid Request.");
             }
             $id = $getId;
             $result = $admin->delete(); 
             if (!$result)
             {
-                throw new Exception("System is unable to delete record.", 1);
+                throw new Exception("System is unable to delete record.");
             }
             $message->addMessage('Admin Data Deleted Successfully');
             $this->redirect($this->getUrl('grid','admin',null,true));
