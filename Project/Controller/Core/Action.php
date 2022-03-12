@@ -4,8 +4,7 @@ Ccc::loadClass("Block_Core_Layout");
 
 class Controller_Core_Action
 {
-    protected $layout = null;
-    
+    protected $layout = null;  
     protected $message = null; 
 
     public function __construct()
@@ -35,16 +34,20 @@ class Controller_Core_Action
                 $login = Ccc::getModel('Admin_Login')->isLoggedIn();
                 if(!$login)
                 {
-                    throw new Exception("Please Login",1);
-                    //$this->redirect($this->getUrl('grid','product',null,true));
+                    throw new Exception("Please Login");
                 }
             }   
-
         } catch (Exception $e) 
         {
             $message->addMessage($e->getMessage(),Model_Core_Message::ERROR);
             $this->redirect($this->getUrl('login','Admin_Login',null,true));    
         }    
+    }
+
+    protected function setTitle($title)
+    {
+        $this->getLayout()->getHead()->setTitle($title);
+        return $this;
     }
 
     public function redirect($url)
@@ -68,11 +71,15 @@ class Controller_Core_Action
         return $this;
     }
 
-     public function getRequest()
+    public function getRequest()
     {
         return Ccc::getFront()->getRequest();
     }
 
+    public function getResponse()
+    {
+        return Ccc::getFront()->getResponse();
+    }
 
     public function setRequest($request)
     {
@@ -88,7 +95,7 @@ class Controller_Core_Action
 
     public function renderLayout()
     {
-        return $this->getLayout()->toHtml();
+        echo $this->getLayout()->toHtml();
     }
 
     public function getUrl($action = null, $controller = null, array $parameters = null, $reset = false) 
@@ -138,7 +145,7 @@ class Controller_Core_Action
 
     public function getBaseUrl($subUrl = null)
     {
-        $url = "C:/xampp-php/htdocs/Cybercom/Core-PHP";
+        $url = "E:/xampp/htdocs/Cybercom/Core/Project";
         if($subUrl){
             $url = $url."/".$subUrl;
         }
@@ -161,4 +168,3 @@ class Controller_Core_Action
     }
 }
 
-?>

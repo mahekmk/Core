@@ -15,5 +15,4 @@ class Block_Admin_Login extends Block_Core_Template
 		$model->unsetMessage();
 		return $messages;
 	}
-
 }

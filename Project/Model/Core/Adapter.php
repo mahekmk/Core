@@ -1,14 +1,14 @@
 <?php
 class Model_Core_Adapter{
 
-	public $config = [
-		'host' => 'localhost',
-		'user' => 'root',
-		'password' => '',
-		'dbname' => 'project_mahek'
-	];
+	public $config = [];
 
 	private $connect = NULL;
+
+	public function __construct()
+	{
+		$this->config = Ccc::getConfig('connection');
+	}
 
 	public function connect()
 	{
@@ -129,24 +129,6 @@ class Model_Core_Adapter{
 		return $popElement;
 	}
 
-	/*public function redirect($url)
-	{
-		header("location :$url");	
-		exit();			
-	}*/
 }
 $adapter = new Model_Core_Adapter();
 
-/*
-$query = "SELECT productId , name FROM product";
-$result = $adapter->fetchPairs($query);
-print_r($result);
-*/
-
-
-//$adapter->insert("INSERT INTO `product`(`ID`, `name`, `price`, `quantity`, `status`, `created_date`, `updated_at`) VALUES ('3','tablet','6000','2','2','2022-01-10','2022-01-11')");
-//$adapter->insert("INSERT INTO category(name,status,created_at,updated_at) VALUES('electronics',1,'2022-01-10','2022-01-12')");
-/*$data = $adapter->fetchAll("SELECT * FROM product");
-print_r($data);*/
- //$del = $adapter->delete("DELETE FROM category WHERE id = 2");
-//var_dump($del);

@@ -30,7 +30,6 @@ class Model_Core_Message
 	public function addMessage($message , $type = self::SUCCESS)
 	{
 		$messages = ($this->getSession()->messages) ? $this->getSession()->messages : [];
-
 		$messages[$type] = $message;
 		$this->getSession()->messages = $messages;
 		return $this;

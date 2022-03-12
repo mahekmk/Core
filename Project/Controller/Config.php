@@ -1,7 +1,5 @@
-<?php
-Ccc::loadClass('Controller_Core_Action');
-Ccc::loadClass('Model_Core_Request');
-?>
+<?php Ccc::loadClass('Controller_Core_Action'); ?>
+<?php Ccc::loadClass('Model_Core_Request'); ?>
 
 <?php
 class Controller_Config extends Controller_Core_Action
@@ -28,13 +26,13 @@ class Controller_Config extends Controller_Core_Action
                 throw new Exception("unable to load config.");
             }
             $content = $this->getLayout()->getContent();
-            $configEdit = Ccc::getBlock("Config_Edit")->addData("config", $config);
+            $configEdit = Ccc::getBlock("Config_Edit")->setData(["config" => $config]);
             $content->addChild($configEdit);
             $this->renderLayout();        
         } 
         catch (Exception $e) 
         {
-            $message->addMessage($e->getMessage(),Model_Core_Message::ERROR);         
+            $message->addMessage($e->getMessage(),Model_Core_Message::ERROR);     
             $this->redirect($this->getUrl('grid','config',null,true));
         }
     }
@@ -43,7 +41,7 @@ class Controller_Config extends Controller_Core_Action
     {
         $config = Ccc::getModel('Config');
         $content = $this->getLayout()->getContent();
-        $configAdd = Ccc::getBlock('Config_Edit')->addData('config',$config);
+        $configAdd = Ccc::getBlock('Config_Edit')->setData(["config" => $config]);
         $content->addChild($configAdd);
         $this->renderLayout();
     }
@@ -60,7 +58,7 @@ class Controller_Config extends Controller_Core_Action
             $row = $this->getRequest()->getRequest('config');
             
             if (!isset($row)) {
-                throw new Exception("Invalid Request.", 1);             
+                throw new Exception("Invalid Request.");             
             }           
             if (array_key_exists('id',$row) && $row['id'] == NULL){
             
@@ -73,7 +71,7 @@ class Controller_Config extends Controller_Core_Action
 
                 if (!$result)
                 {
-                    throw new Exception("System is unable to update information.", 1);
+                    throw new Exception("System is unable to update information.");
                 }
 
                 if($result)
@@ -93,7 +91,7 @@ class Controller_Config extends Controller_Core_Action
                 $result = $config->save();
                 if (!$result)
                 {
-                    throw new Exception("System is unable to update information.", 1);
+                    throw new Exception("System is unable to update information.");
                 }
                 $message->addMessage('Data Updated Successfully'); 
             }
@@ -112,18 +110,17 @@ class Controller_Config extends Controller_Core_Action
         $message = $this->getMessage();
         $getId = $this->getRequest()->getRequest('id');
         $config = Ccc::getModel('Config')->load($getId);
-        /*$configTable = new Model_config();*/
         try
         {
             if (!isset($getId))
             {
-                throw new Exception("Invalid Request.", 1);
+                throw new Exception("Invalid Request.");
             }
             $id = $getId;
             $result = $config->delete(); 
             if (!$result)
             {
-                throw new Exception("System is unable to delete record.", 1);
+                throw new Exception("System is unable to delete record.");
             }
             $message->addMessage('Data Deleted Successfully');
             $this->redirect($this->getUrl('grid','config',null,true));

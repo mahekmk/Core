@@ -22,5 +22,3 @@ class Block_Category_Edit extends Block_Core_Template
 		return $categoryPath;
 	}
 }
-
-?>

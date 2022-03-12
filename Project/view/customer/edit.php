@@ -9,7 +9,8 @@
 
 			<tr>
 				<td width="10%">Customer Id</td>
-				<td><input type="text" name="customer[id]" value="<?php echo $customerAddress->customerId; ?>" readonly></td>
+				<td><input type="text" name="customer[id]" value="<?php echo $customerAddress->customerId; ?>" placeholder="Not for user."
+					readonly></td>
 			</tr>
 
 			<tr>
