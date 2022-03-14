@@ -6,14 +6,16 @@ class Controller_Category extends Controller_Core_Action
 {
     public function gridAction()
     {
+        $this->setTitle('Category Grid');
         $content = $this->getLayout()->getContent();
         $categoryGrid = Ccc::getBlock("Category_Grid");
         $content->addChild($categoryGrid);
         $this->renderLayout();
     }
 
-   public function editAction()
+    public function editAction()
     {
+        $this->setTitle('Category Edit');
         try
         {
             $message = $this->getMessage();
@@ -42,6 +44,7 @@ class Controller_Category extends Controller_Core_Action
 
     public function addAction()
     {
+        $this->setTitle('Category Add');
         $category = Ccc::getModel('Category');
         $content = $this->getLayout()->getContent();
         $categoryAdd = Ccc::getBlock('Category_Edit')->setData(["category" => $category]);
@@ -118,6 +121,7 @@ class Controller_Category extends Controller_Core_Action
                     $category->name = $categoryData['name'];
                     $category->status = $categoryData['status'];
                     $insert = $category->save();
+                    $insert = $insert->categoryId;
                     if (!$insert)
                     {
                         throw new Exception("System is unable to insert.");
@@ -141,6 +145,7 @@ class Controller_Category extends Controller_Core_Action
                     $category->status = $categoryData['status'];
                     $category->createdAt = $date;
                     $insert = $category->save();
+                    $insert = $insert->categoryId;
                     if (!$insert)
                     {
                         throw new Exception("System is unable to insert.");
@@ -181,7 +186,7 @@ class Controller_Category extends Controller_Core_Action
             $query1 = "SELECT imageId,image FROM category c LEFT JOIN category_media cm ON c.categoryId = cm.categoryId  WHERE c.categoryId = $getId;";
             $result1 = $this->getAdapter()->fetchPairs($query1);
 
-            if (!isset($getId))
+            if (!$getId)
             {
                throw new Exception("Invalid Request.");
             }
@@ -212,10 +217,10 @@ class Controller_Category extends Controller_Core_Action
     public function getCategoryWithPath()
     {    
         $category = [];
-        $categoryIdName = $this->getAdapter()->fetchPairs('SELECT categoryId , name FROM category');
+        $categoryIdName = $this->getAdapter()->fetchPairs('SELECT `categoryId` , `name` FROM `category`');
          if (!$this->getRequest()->getRequest('categoryId')) 
         {
-            $query = "SELECT categoryId, path FROM category ORDER BY path"; 
+            $query = "SELECT `categoryId`, `path` FROM `category` ORDER BY `path`"; 
         }
         else 
         {
@@ -245,10 +250,10 @@ class Controller_Category extends Controller_Core_Action
     {
         $message = $this->getMessage();
         $category = Ccc::getModel('Category');
-        $query = "SELECT path FROM category WHERE categoryId = '$categoryId'";
+        $query = "SELECT `path` FROM `category` WHERE `categoryId` = {$categoryId}";
         $result = $this->getAdapter()->fetchOne($query);   
         $output = $result . '/%';
-        $path = $this->getAdapter()->fetchOne("SELECT path FROM category WHERE categoryId = '$parentId'");
+        $path = $this->getAdapter()->fetchOne("SELECT `path` FROM `category` WHERE `categoryId` = {$parentId}");
         if (!$path) 
         {
             $newPath = $categoryId; 
@@ -265,8 +270,8 @@ class Controller_Category extends Controller_Core_Action
         $categories = $category->fetchAll($query);
         if(!$categories) 
         { 
+            $message->addMessage('Data Updated Successfully.');
             $this->redirect($this->getUrl('grid','category',null,true));
-            echo 'No others paths found....';
         }
         else
         {
@@ -277,7 +282,7 @@ class Controller_Category extends Controller_Core_Action
                 $categoryId = $res['categoryId'];
                 $newParentId = $parentId;
                 $newCategoryId = $categoryId;
-                $getParentPath = $this->getAdapter()->fetchOne("SELECT path FROM category WHERE categoryId='$newParentId'");
+                $getParentPath = $this->getAdapter()->fetchOne("SELECT `path` FROM `category` WHERE `categoryId`={$newParentId}");
                 $updatedPath = $getParentPath . '/' . $categoryId;   
                 $category->load($newCategoryId);
                 $category->categoryId = $newCategoryId;
@@ -285,7 +290,7 @@ class Controller_Category extends Controller_Core_Action
                 $updateResult = $category->save();
             }
         }
-        $message->addMessage('Data Updated Successfully'); 
+        $message->addMessage('Data Updated Successfully.'); 
         $this->redirect($this->getUrl('grid','category',null,true)); 
     }
 

@@ -12,7 +12,7 @@ class Block_Category_Media_Grid extends Block_Core_Template
    		$front = Ccc::getFront();
    		$id = $front->getRequest()->getRequest('id');
    		$categoryMedia = Ccc::getModel('Category_Media');
-		$categoryMedias = $categoryMedia->fetchAll("SELECT * FROM category_media WHERE categoryId = $id");
+		$categoryMedias = $categoryMedia->fetchAll("SELECT * FROM `category_media` WHERE `categoryId` = {$id}");
 		return $categoryMedias;
    }
 }

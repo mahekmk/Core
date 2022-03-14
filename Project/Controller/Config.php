@@ -51,53 +51,35 @@ class Controller_Config extends Controller_Core_Action
         $message = $this->getMessage();
         try
         {
-
-            $config = Ccc::getModel('Config');
             date_default_timezone_set("Asia/Kolkata");
             $date = date('Y-m-d H:i:s');
-            $row = $this->getRequest()->getRequest('config');
-            
-            if (!isset($row)) {
+            $row = $this->getRequest()->getPost('config');
+            if (!$row) 
+            {
                 throw new Exception("Invalid Request.");             
-            }           
-            if (array_key_exists('id',$row) && $row['id'] == NULL){
-            
-                $config->name = $row['name'];
-                $config->value = $row['value'];
-                $config->code = $row['code'];
-                $config->status = $row['status'];
+            } 
+
+            $configId = (int)$this->getRequest()->getRequest('id');
+            $config = Ccc::getModel('Config')->load($configId);
+            if(!$config)
+            {
+                $config = Ccc::getModel('Config');
+                $config->setData($row);
                 $config->createdAt = $date;
-                $result = $config->save();
-
-                if (!$result)
-                {
-                    throw new Exception("System is unable to update information.");
-                }
-
-                if($result)
-                {
-                    $message->addMessage('Data Added Successfully');
-                }
             }
-
             else
             {
-                $config->load($row['id']);
-                $config->configId = $row["id"];
-                $config->name = $row['name'];
-                $config->value = $row['value'];
-                $config->code = $row['code'];
-                $config->status = $row['status'];
-                $result = $config->save();
-                if (!$result)
-                {
-                    throw new Exception("System is unable to update information.");
-                }
-                $message->addMessage('Data Updated Successfully'); 
+                $config->setData($row);
             }
-           $this->redirect($this->getUrl('grid','config',null,true));
-        }
+            $result = $config->save();
 
+            if (!$result)
+            {
+                throw new Exception("System is unable to update information.");
+            }
+            $message->addMessage('Data Saved Successfully'); 
+            $this->redirect($this->getUrl('grid','config',null,true));
+        }
         catch(Exception $e)
         {
             $message->addMessage($e->getMessage(),Model_Core_Message::ERROR);         
@@ -112,7 +94,7 @@ class Controller_Config extends Controller_Core_Action
         $config = Ccc::getModel('Config')->load($getId);
         try
         {
-            if (!isset($getId))
+            if (!$getId)
             {
                 throw new Exception("Invalid Request.");
             }
@@ -138,4 +120,4 @@ class Controller_Config extends Controller_Core_Action
     }
 }
 
-?>
+

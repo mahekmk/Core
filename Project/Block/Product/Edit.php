@@ -15,7 +15,7 @@ class Block_Product_Edit extends Block_Core_Template
    public function getCategories()
 	{
 		$categoryModel = Ccc::getModel('Category');
-		$categories = $categoryModel->fetchAll("SELECT * from category WHERE status = 1 ");
+		$categories = $categoryModel->fetchAll("SELECT * from `category` WHERE status = 1 ");
 		return $categories;
 	}
 

@@ -8,14 +8,16 @@ class Controller_salesman extends Controller_Core_Action
 {
     public function gridAction()
     {
+        $this->setTitle('Salesman Grid');
         $content = $this->getLayout()->getContent();
-         $salesmanGrid = Ccc::getBlock("Salesman_Grid");
-         $content->addChild($salesmanGrid);
-         $this->renderLayout();      
+        $salesmanGrid = Ccc::getBlock("Salesman_Grid");
+        $content->addChild($salesmanGrid);
+        $this->renderLayout();      
     }
 
     public function editAction()
     {
+        $this->setTitle('Salesman Edit');
         $message = $this->getMessage();
         try 
         {
@@ -43,6 +45,7 @@ class Controller_salesman extends Controller_Core_Action
 
     public function addAction()
     {
+        $this->setTitle('Salesman Add');
         $salesman = Ccc::getModel('Salesman');
         $content = $this->getLayout()->getContent();
         $salesmanAdd = Ccc::getBlock('Salesman_Edit')->setData(['salesman' => $salesman]);
@@ -60,55 +63,33 @@ class Controller_salesman extends Controller_Core_Action
             date_default_timezone_set("Asia/Kolkata");
             $date = date('Y-m-d H:i:s');
             $row = $this->getRequest()->getRequest('salesman');
-            if (!isset($row)) 
+            if (!$row) 
             {
                 throw new Exception("Invalid Request.");             
-            }           
-            if (array_key_exists('id',$row) && $row['id'] == NULL)
+            }     
+
+            $salesmanId = (int)$this->getRequest()->getRequest('id');
+            $salesman = Ccc::getModel('Salesman')->load($salesmanId);
+            if(!$salesman)
             {
-
-                $salesman->firstName = $row['firstName'];
-                $salesman->lastName = $row['lastName'];
-                $salesman->mobile = $row['mobile'];
-                $salesman->email = $row['email'];
-                $salesman->percentage = $row['percentage'];
-                $salesman->status = $row['status'];
+                $salesman = Ccc::getModel('Salesman');
+                $salesman->setData($row);
                 $salesman->createdAt = $date;
-                $result = $salesman->save();
-
-                if (!$result)
-                {
-                    throw new Exception("System is unable to update information.");
-                }
-
-                if($result)
-                {
-                    $message->addMessage('Data Added Successfully');
-                }
             }
-
             else
             {
-                $salesman->load($row['id']);
-                $salesman->salesmanId = $row["id"];
-                $salesman->firstName = $row['firstName'];
-                $salesman->lastName = $row['lastName'];
-                $salesman->mobile = $row['mobile'];
-                $salesman->email = $row['email'];
-                $salesman->percentage = $row['percentage'];
-                $salesman->status = $row['status'];
+                $salesman->setData($row);
                 $salesman->updatedAt = $date;
-                $result = $salesman->save();
-
-                if (!$result)
-                {
-                    throw new Exception("System is unable to update information.");
-                }
-                $message->addMessage('Data Updated Successfully'); 
             }
-           $this->redirect($this->getUrl('grid','salesman',null,true));
-        }
+            $result = $salesman->save();
 
+            if (!$result)
+            {
+                throw new Exception("System is unable to update information.");
+            }
+            $message->addMessage('Data Saved Successfully'); 
+            $this->redirect($this->getUrl('grid','salesman',null,true));
+        }      
         catch(Exception $e)
         {
             $message->addMessage($e->getMessage(),Model_Core_Message::ERROR);         
@@ -123,7 +104,7 @@ class Controller_salesman extends Controller_Core_Action
         $salesman = Ccc::getModel('salesman')->load($getId);
         try
         {
-            if (!isset($getId))
+            if (!$getId)
             {
                 throw new Exception("Invalid Request.");
             }

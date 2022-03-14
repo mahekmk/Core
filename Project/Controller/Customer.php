@@ -5,15 +5,16 @@ class Controller_Customer extends Controller_Core_Action
 {
 	public function gridAction()
 	{
+		$this->setTitle('Customer Grid');
 		$content = $this->getLayout()->getContent();
         $customerGrid = Ccc::getBlock("Customer_Grid");
         $content->addChild($customerGrid);
         $this->renderLayout();
-
 	}
 
 	public function editAction()
 	{
+		$this->setTitle('Customer Edit');
 		$message = $this->getMessage();
 		try 
 		{
@@ -42,6 +43,7 @@ class Controller_Customer extends Controller_Core_Action
 
 	public function addAction()
 	{
+		$this->setTitle('Customer Add');
 		$customer = Ccc::getModel('Customer');
         $content = $this->getLayout()->getContent();
         $customerAdd = Ccc::getBlock('Customer_Edit')->setData(['customer' => $customer]);
@@ -56,34 +58,21 @@ class Controller_Customer extends Controller_Core_Action
 		date_default_timezone_set("Asia/Kolkata");
 		$date = date('Y-m-d H:i:s');
 		$row = $this->getRequest()->getRequest('customer');
-		if(array_key_exists('id',$row) && $row['id'] == NULL)
-		{
-				$customer->firstName = $row['firstName'];
-				$customer->lastName =  $row['lastName'];
-				$customer->email =  $row['email'];
-				$customer->mobile =  $row['mobile'];
-				$customer->status =  $row['status'];
-				$result = $customer->save();
-
-				if(!$result)
-				{
-                    throw new Exception("System is unable to insert customer information.");
-
-				}
-				return $result;
-		}
-		else{
-				$customer->load($row['id']);
-				$customer->customerId = $row["id"];
-				$customer->firstName = $row['firstName'];
-				$customer->lastName =  $row['lastName'];
-				$customer->email =  $row['email'];
-				$customer->mobile =  $row['mobile'];
-				$customer->status =  $row['status'];
-				$customer->updatedAt =  $date;
-				$result = $customer->save();
-				return $row['id'];
-		}
+		$customerId = (int)$this->getRequest()->getRequest('id');
+        $customer = Ccc::getModel('Customer')->load($customerId);
+        if(!$customer)
+        {
+            $customer = Ccc::getModel('Customer');
+            $customer->setData($row);
+            $customer->createdAt = $date;
+        }
+        else
+        {
+            $customer->setData($row);
+            $customer->updatedAt = $date;
+        }
+        $result = $customer->save();
+        return $result->customerId;	
 	}
 
 	protected function saveAddress($customerId)	
@@ -107,54 +96,29 @@ class Controller_Customer extends Controller_Core_Action
         {
             $shipping = 1;
         }
-		
-
-		$addressData = $address->fetchRow("SELECT * FROM address WHERE customerId = '$customerId'");
-		
-		if(!$addressData){
-
-			$address->customerId = $customerId;
-			$address->address = $row['address'];
-			$address->postalCode = $row['postalCode'];
-			$address->city = $row['city'];
-			$address->state= $row['state'];
-			$address->country = $row['country'];
-			$address->billing = $row['billing'];
-			$address->shipping = $row['shipping'];
-			$result = $address->save();
-			if (!$result)
-                {
-                    throw new Exception("System is unable to update information.");
-                }
-
-                if($result)
-                {
-                    $message->addMessage('Data Inserted Successfully.');
-                }
+		$addressData = $address->fetchRow("SELECT * FROM `address` WHERE `customerId` = {$customerId}");
+		if(!$addressData)
+		{	
+          	$address = Ccc::getModel('Customer_Address');
+            $address->setData($row);
+            $address->customerId = $customerId;
+            $result = $address->save();	
 		}
 
 		else
 		{
-			$e = $address->load($row['id']);
-			$address->addressId = $row['id'];
-			$address->customerId = $customerId;
-			$address->address = $row['address'];
-			$address->postalCode = $row['postalCode'];
-			$address->city = $row['city'];
-			$address->state= $row['state'];
-			$address->country = $row['country'];
-			$address->billing = $row['billing'];
-			$address->shipping = $row['shipping'];
+			$address->setData($row);
+            $address->customerId = $customerId;
+            $address->billing = $row['billing'];
+            $address->shipping = $row['shipping'];
 			$result = $address->save();
-		
-		
+		}
+
 		if (!$result)
         {
             throw new Exception("System is unable to update information.");
         }
         $message->addMessage('Data Updated Successfully');
-			
-		}
 	}
 
 	public function saveAction()
@@ -180,7 +144,7 @@ class Controller_Customer extends Controller_Core_Action
 		$customer = Ccc::getModel('Customer')->load($getId);
 		try
 		{	
-			if (!isset($getId)) 
+			if (!$getId) 
 			{
 				throw new Exception("Invalid Request.");
 			}
