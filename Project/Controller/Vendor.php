@@ -5,6 +5,7 @@ class Controller_Vendor extends Controller_Core_Action
 {
 	public function gridAction()
 	{
+		$this->setTitle('Vendor Grid');
 		$content = $this->getLayout()->getContent();
         $vendorGrid = Ccc::getBlock("Vendor_Grid");
         $content->addChild($vendorGrid);
@@ -13,6 +14,7 @@ class Controller_Vendor extends Controller_Core_Action
 
 	public function editAction()
 	{
+		$this->setTitle('Vendor Edit');
 		$message = $this->getMessage();
 		try 
 		{
@@ -41,6 +43,7 @@ class Controller_Vendor extends Controller_Core_Action
 
 	public function addAction()
 	{
+		$this->setTitle('Vendor Add');
 		$vendor = Ccc::getModel('vendor');
         $content = $this->getLayout()->getContent();
         $vendorAdd = Ccc::getBlock('vendor_Edit')->setData(['vendor' => $vendor]);
@@ -54,34 +57,21 @@ class Controller_Vendor extends Controller_Core_Action
 		date_default_timezone_set("Asia/Kolkata");
 		$date = date('Y-m-d H:i:s');
 		$row = $this->getRequest()->getRequest('vendor');
-		if(array_key_exists('id',$row) && $row['id'] == NULL)
-		{
-			$vendor->firstName = $row['firstName'];
-			$vendor->lastName =  $row['lastName'];
-			$vendor->email =  $row['email'];
-			$vendor->mobile =  $row['mobile'];
-			$vendor->status =  $row['status'];
-			$vendor->createdAt = $date;
-			$result = $vendor->save();
-			if(!$result)
-			{
-                throw new Exception("System is unable to insert customer information.");
-			}
-			return $result;
-		}
-		else
-		{
-			$vendor->load($row['id']);
-			$vendor->vendorId = $row['id'];
-			$vendor->firstName = $row['firstName'];
-			$vendor->lastName =  $row['lastName'];
-			$vendor->email =  $row['email'];
-			$vendor->mobile =  $row['mobile'];
-			$vendor->status =  $row['status'];
-			$vendor->updatedAt =  $date;
-			$vendor->save();
-			return $row['id'];
-		}	
+		$vendorId = (int)$this->getRequest()->getRequest('id');
+        $vendor = Ccc::getModel('Vendor')->load($vendorId);
+        if(!$vendor)
+        {
+            $vendor = Ccc::getModel('Vendor');
+            $vendor->setData($row);
+            $vendor->createdAt = $date;
+        }
+        else
+        {
+            $vendor->setData($row);
+            $vendor->updatedAt = $date;
+        }
+        $result = $vendor->save();
+        return $result->vendorId;	
 	}
 
 	protected function saveAddress($vendorId)	
@@ -94,42 +84,30 @@ class Controller_Vendor extends Controller_Core_Action
 		$addressId = $row['id'];
 		$addressData = $address->fetchRow("SELECT * FROM vendor_address WHERE vendorId = '$vendorId'");
 		if(!$addressData)
-		{
-			$address->vendorId = $vendorId;
-			$address->address = $row['address'];
-			$address->postalCode = $row['postalCode'];
-			$address->city = $row['city'];
-			$address->state= $row['state'];
-			$address->country = $row['country'];
-			$result = $address->save();
-			if (!$result)
-            {
-                throw new Exception("System is unable to update information.");
-            }
-            $message->addMessage('Data Inserted Successfully.');
+		{	
+          	$address = Ccc::getModel('Vendor_Address');
+            $address->setData($row);
+            $address->vendorId = $vendorId;
+            $result = $address->save();	
 		}
 
 		else
 		{
-			$e = $address->load($row['id']);
-			$address->addressId = $row['id'];
-			$address->vendorId = $vendorId;
-			$address->address = $row['address'];
-			$address->postalCode = $row['postalCode'];
-			$address->city = $row['city'];
-			$address->state= $row['state'];
-			$address->country = $row['country'];
+			$address->setData($row);
+            $address->vendorId = $vendorId;
 			$result = $address->save();
-			if (!$result)
-	        {
-	            throw new Exception("System is unable to update information.");
-	        }
-	        $message->addMessage('Data Updated Successfully');		
 		}
+
+		if (!$result)
+        {
+            throw new Exception("System is unable to update information.");
+        }
+        $message->addMessage('Data Updated Successfully');		
 	}
 
 	public function saveAction()
 	{
+		$message = $this->getMessage();
 		try
 		{
 			$vendorId = $this->savevendor();
@@ -151,7 +129,7 @@ class Controller_Vendor extends Controller_Core_Action
 		$vendor = Ccc::getModel('vendor')->load($getId);
 		try
 		{	
-			if (!isset($getId)) 
+			if (!$getId) 
 			{
 				throw new Exception("Invalid Request.");
 			}

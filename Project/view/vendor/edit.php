@@ -9,7 +9,7 @@
 
 			<tr>
 				<td width="10%">Vendor Id</td>
-				<td><input type="text" name="vendor[id]" value="<?php echo $vendorAddress->vendorId; ?>" readonly></td>
+				<td><input type="text" name="vendor[vendorId]" value="<?php echo $vendorAddress->vendorId; ?>" placeholder="Not for user." readonly></td>
 			</tr>
 
 			<tr>
@@ -24,7 +24,7 @@
 
 			<tr>
 				<td width="10%">email</td>
-				<td><input type="text" name="vendor[email]" value="<?php echo $vendorAddress->email ; ?>"></td>
+				<td><input type="email" name="vendor[email]" value="<?php echo $vendorAddress->email ; ?>"></td>
 			</tr>
 
 			<tr>
@@ -45,7 +45,7 @@
 
 			<tr>
 				<td width="10%">Address Id</td>
-				<td><input type="text" name="address[id]" value="<?php echo $vendorAddress->addressId; ?>" readonly></td>
+				<td><input type="text" name="address[addressId]" value="<?php echo $vendorAddress->addressId; ?>" placeholder="Not for user." readonly></td>
 			</tr>
 
 			<tr>

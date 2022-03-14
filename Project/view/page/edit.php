@@ -9,7 +9,7 @@
 
 			<tr>
 				<td width="10%">Page Id</td>
-				<td><input type="text" name="page[id]" value="<?php echo $page->pageId ; ?>" placeholder="Not for user." readonly></td>
+				<td><input type="text" name="page[pageId]" value="<?php echo $page->pageId ; ?>" placeholder="Not for user." readonly></td>
 			</tr>
 
 			<tr>
@@ -48,6 +48,3 @@
 		</tr>
 		</table>
 	</form>
-
-</body>
-</html>

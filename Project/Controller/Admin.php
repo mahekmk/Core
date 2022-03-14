@@ -63,9 +63,9 @@ class Controller_Admin extends Controller_Core_Action
             $admin = Ccc::getModel('Admin');
             date_default_timezone_set("Asia/Kolkata");
             $date = date('Y-m-d H:i:s');
-            $row = $this->getRequest()->getRequest('admin');
+            $row = $this->getRequest()->getPost('admin');
             
-            if (!isset($row)) {
+            if (!$row) {
                 throw new Exception("Invalid Request.");             
             }           
             if (array_key_exists('id',$row) && $row['id'] == NULL){
@@ -82,16 +82,13 @@ class Controller_Admin extends Controller_Core_Action
                      throw new Exception("System is unable to update information.");
                 }
 
-                if($result)
-                {
-                    $message->addMessage('Data Inserted Successfully');
-                }
+                $message->addMessage('Data Inserted Successfully');
             }
 
             else
             {
                 $admin->load($row['id']);
-                $admin->adminId = $row["id"];
+                $admin->adminId = $row['id'];
                 $admin->firstName = $row['firstName'];
                 $admin->lastName = $row['lastName'];
                 $admin->email = $row['email'];
@@ -125,7 +122,7 @@ class Controller_Admin extends Controller_Core_Action
         
         try
         {
-            if (!isset($getId))
+            if (!$getId)
             {
                  throw new Exception("Invalid Request.");
             }

@@ -9,7 +9,7 @@
 
 			<tr>
 				<td width="10%">salesman Id</td>
-				<td><input type="text" name="salesman[id]" value="<?php echo $salesman->salesmanId ; ?>" readonly></td>
+				<td><input type="text" name="salesman[salesmanId]" value="<?php echo $salesman->salesmanId ; ?>" placeholder="Not for user." readonly></td>
 			</tr>
 
 			<tr>
@@ -29,12 +29,12 @@
 
 			<tr>
 				<td width="10%">email</td>
-				<td><input type="text" name="salesman[email]" value="<?php echo $salesman->email ; ?>"></td>
+				<td><input type="email" name="salesman[email]" value="<?php echo $salesman->email ; ?>"></td>
 			</tr>
 
 			<tr>
 				<td width="10%">percentage</td>
-				<td><input  type="number" step="0.01" name="salesman[percentage]" value="<?php echo $salesman->email ; ?>"></td>
+				<td><input  type="number" step="0.01" name="salesman[percentage]" value="<?php echo $salesman->percentage ; ?>"></td>
 			</tr>
 
 

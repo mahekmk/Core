@@ -8,6 +8,7 @@ class Controller_Page extends Controller_Core_Action
 {
     public function gridAction()
     {
+        $this->setTitle('Page Grid');
         $content = $this->getLayout()->getContent();
         $pageGrid = Ccc::getBlock("Page_Grid");
         $content->addChild($pageGrid);
@@ -16,6 +17,7 @@ class Controller_Page extends Controller_Core_Action
 
     public function editAction()
     {
+        $this->setTitle('Page Edit');
         $message = $this->getMessage();
         try 
         {
@@ -41,6 +43,7 @@ class Controller_Page extends Controller_Core_Action
 
     public function addAction()
     {
+        $this->setTitle('Page Add');
         $page = Ccc::getModel('Page');
         $content = $this->getLayout()->getContent();
         $pageAdd = Ccc::getBlock('Page_Edit')->setData(['page' => $page]);
@@ -61,49 +64,33 @@ class Controller_Page extends Controller_Core_Action
             if (!$row) {
                 throw new Exception("Invalid Request.");             
             }           
-            if (array_key_exists('id',$row) && $row['id'] == NULL)
+            $pageId = (int)$this->getRequest()->getRequest('id');
+            $page = Ccc::getModel('Page')->load($pageId);
+            if(!$page)
             {
-            
-                $page->name = $row['name'];
-                $page->code = $row['code'];
-                $page->content = $row['content'];
-                $page->status = $row['status'];
+                $page = Ccc::getModel('Page');
+                $page->setData($row);
                 $page->createdAt = $date;
-                $result = $page->save();
-
-                if (!$result)
-                {
-                     throw new Exception("System is unable to update information.");
-                }
-                $message->addMessage('Data Added Successfully');
-                
             }
             else
             {
-
-                $page->load($row['id']);
-                $page->pageId = $row["id"];
-                $page->name = $row['name'];
-                $page->code = $row['code'];
-                $page->content = $row['content'];
-                $page->status = $row['status'];
+                $page->setData($row);
                 $page->updatedAt = $date;
-                $result = $page->save();
-
+            }
+            $result = $page->save();
                 if (!$result)
                 {
                     throw new Exception("System is unable to update information.");
                 }
                 $message->addMessage('Data Updated Successfully'); 
-            }
 
-           $this->redirect($this->getUrl('grid',null,['id' => null],false));
+           $this->redirect($this->getUrl('grid',null,['id' => null]));
         }
 
         catch(Exception $e)
         {
             $message->addMessage($e->getMessage(),Model_Core_Message::ERROR);         
-            $this->redirect($this->getUrl('grid',null,['id' => null],false));
+            $this->redirect($this->getUrl('grid',null,null,false));
         }
     }
 

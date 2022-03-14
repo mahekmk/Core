@@ -8,14 +8,16 @@ class Controller_Product extends Controller_Core_Action{
 
 	public function gridAction()
 	{
-		  $content = $this->getLayout()->getContent();
-	     $productGrid = Ccc::getBlock("Product_Grid");
-	     $content->addChild($productGrid);
-	     $this->renderLayout();
+		$this->setTitle('Product Grid');
+		$content = $this->getLayout()->getContent();
+		$productGrid = Ccc::getBlock("Product_Grid");
+		$content->addChild($productGrid);
+		$this->renderLayout();
 	}
 
 	public function editAction()
 	{	
+		$this->setTitle('Product Edit');
 		$message = $this->getMessage();
 		try 
 		{
@@ -47,11 +49,12 @@ class Controller_Product extends Controller_Core_Action{
 
 	public function addAction()
 	{
-		 $product = Ccc::getModel('Product');
-        $content = $this->getLayout()->getContent();
-        $productAdd = Ccc::getBlock('Product_Edit')->setData(['product' => $product, 'categoryProductPair' => []]);
-        $content->addChild($productAdd);
-        $this->renderLayout();
+		$this->setTitle('Product Add');
+		$product = Ccc::getModel('Product');
+		$content = $this->getLayout()->getContent();
+		$productAdd = Ccc::getBlock('Product_Edit')->setData(['product' => $product, 'categoryProductPair' => []]);
+		$content->addChild($productAdd);
+		$this->renderLayout();
 	}
 
 	public function saveAction()
@@ -64,7 +67,7 @@ class Controller_Product extends Controller_Core_Action{
 			$categoryProduct = Ccc::getModel('Category_Product');
 			date_default_timezone_set("Asia/Kolkata");
 			$date = date('Y-m-d H:i:s');
-			$row = $this->getRequest()->getRequest('product');
+			$row = $this->getRequest()->getPost('product');
 
 			$categoryIds = $row['category'];
 
@@ -75,26 +78,26 @@ class Controller_Product extends Controller_Core_Action{
 			$query = "SELECT entityId,categoryId FROM category_product WHERE productId = {$row['id']}";
 			$categoryPair = $this->getAdapter()->fetchPairs($query);
 
-			if (!isset($row)) 
+			if (!$row) 
 			{
 			 	throw new Exception("Invalid Request.");             
          }           
-            if (array_key_exists('id',$row) && $row['id'] == NULL){
+         if (array_key_exists('id',$row) && $row['id'] == NULL)
+         {
 
-            	$product->name = $row['name'];
-            	$product->price = $row['price'];
-            	$product->quantity = $row['quantity'];
-            	$product->sku = $row['sku'];
-            	$product->status = $row['status'];
-            	$result = $product->save();
-            	$productId = $result;
-            	$product->saveCategories($categoryIds,$productId);
-
+         	$product->name = $row['name'];
+         	$product->price = $row['price'];
+         	$product->quantity = $row['quantity'];
+         	$product->sku = $row['sku'];
+         	$product->status = $row['status'];
+         	$result = $product->save();
+         	$productId = $result->productId;
+         	$product->saveCategories($categoryIds,$productId);
 				if(!$result)
 				{
 					 throw new Exception("System is unable to insert information.");
 				}
-				 $message->addMessage('Data Added Successfully');
+				$message->addMessage('Data Added Successfully');
 				$this->redirect($this->getUrl('grid','product',null,true));
 			}
 			else
@@ -140,7 +143,7 @@ class Controller_Product extends Controller_Core_Action{
 
 			$result1 = $this->getAdapter()->fetchPairs($query1);
 			
-			if (!isset($getId)) 
+			if (!$getId) 
 			{
 				 throw new Exception("Invalid Request.");
 			}
