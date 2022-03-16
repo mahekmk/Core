@@ -3,6 +3,13 @@ Ccc::loadClass('Controller_Core_Action');
 Ccc::loadClass('Model_Core_Request');
 class Controller_Vendor extends Controller_Core_Action
 {
+
+	public function testAction()
+	{
+		$vendor = Ccc::getModel('Vendor_Address')->getVendor();
+		
+	}
+
 	public function gridAction()
 	{
 		$this->setTitle('Vendor Grid');
@@ -23,30 +30,32 @@ class Controller_Vendor extends Controller_Core_Action
 			{
 				throw new Exception("Id not valid.");
 			}
-			$vendorModel = Ccc::getModel('Vendor');
-			$vendor = $vendorModel->fetchRow("SELECT v.*, va.* FROM vendor v LEFT JOIN vendor_address va ON v.vendorId = va.vendorId WHERE v.vendorID = '$id'");
+			$vendorModel = Ccc::getModel('Vendor')->load($id);
+			$vendor = $vendorModel->fetchRow("SELECT * FROM `vendor` WHERE vendorId = {$id}");
+			$vendorAddress = $vendorModel->getVendorAddress();
 			if(!$vendor)
 			{
 				throw new Exception("unable to load vendor.");
 			}
 			$content = $this->getLayout()->getContent();
-            $vendorEdit = Ccc::getBlock("Vendor_Edit")->setData(['vendor' => $vendor]);
+            $vendorEdit = Ccc::getBlock("Vendor_Edit")->setData(['vendor' => $vendor , 'vendorAddress' => $vendorAddress]);
             $content->addChild($vendorEdit);
             $this->renderLayout(); 		
 		} 
 		catch (Exception $e) 
 		{
 			$message->addMessage($e->getMessage(),Model_Core_Message::ERROR);    
-            $this->redirect($this->getUrl('grid','vendor',null,true));
+            $this->redirect($this->getUrl('grid',null,['id' => null],false));
 		}
 	}
 
 	public function addAction()
 	{
 		$this->setTitle('Vendor Add');
-		$vendor = Ccc::getModel('vendor');
+		$vendorModel = Ccc::getModel('vendor');
         $content = $this->getLayout()->getContent();
-        $vendorAdd = Ccc::getBlock('vendor_Edit')->setData(['vendor' => $vendor]);
+        $vendorAddress = $vendorModel->getVendorAddress();
+        $vendorAdd = Ccc::getBlock("Vendor_Edit")->setData(['vendor' => $vendorModel , 'vendorAddress' => $vendorAddress]);
         $content->addChild($vendorAdd);
         $this->renderLayout();
 	}
@@ -82,7 +91,8 @@ class Controller_Vendor extends Controller_Core_Action
 		$date = date('Y-m-d H:i:s');
 		$row = $this->getRequest()->getRequest('address');
 		$addressId = $row['id'];
-		$addressData = $address->fetchRow("SELECT * FROM vendor_address WHERE vendorId = '$vendorId'");
+		$vendorModel = Ccc::getModel('Vendor')->load($vendorId);
+        $addressData = $vendorModel->getVendorAddress();
 		if(!$addressData)
 		{	
           	$address = Ccc::getModel('Vendor_Address');
@@ -102,7 +112,8 @@ class Controller_Vendor extends Controller_Core_Action
         {
             throw new Exception("System is unable to update information.");
         }
-        $message->addMessage('Data Updated Successfully');		
+        $message->addMessage('Data Updated Successfully');
+        $this->redirect($this->getUrl('grid',null,['id' => null],false));
 	}
 
 	public function saveAction()
@@ -112,13 +123,13 @@ class Controller_Vendor extends Controller_Core_Action
 		{
 			$vendorId = $this->savevendor();
 			$this->saveAddress($vendorId);
-			$this->redirect($this->getUrl('grid','vendor',null,true));
+			$this->redirect($this->getUrl('grid',null,['id' => null],false));
 		} 
 		
 		catch (Exception $e) 
 		{
 			$message->addMessage($e->getMessage(),Model_Core_Message::ERROR);      
-            $this->redirect($this->getUrl('grid','vendor',null,true));
+           	$this->redirect($this->getUrl('grid',null,['id' => null],false));
 		}
 	}
 
@@ -140,12 +151,12 @@ class Controller_Vendor extends Controller_Core_Action
 				throw new Exception("System is unable to delete record.");	
 			}
 			$message->addMessage('Data Deleted Successfully');
-			$this->redirect($this->getUrl('grid','vendor',null,true));
+			$this->redirect($this->getUrl('grid',null,['id' => null],false));
 		}
 		catch (Exception $e)
 		{
 			$message->addMessage($e->getMessage(),Model_Core_Message::ERROR);     
-            $this->redirect($this->getUrl('grid','vendor',null,true)); 	
+            $this->redirect($this->getUrl('grid',null,['id' => null],false)); 	
 		}
 	}
 

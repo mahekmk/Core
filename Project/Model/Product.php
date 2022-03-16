@@ -2,6 +2,11 @@
 Ccc::loadClass('Model_Core_Row');
 class Model_Product extends Model_Core_Row
 {
+    protected $medias;
+    protected $base;
+    protected $thumb;
+    protected $small;
+    protected $gallery;
 
 	const STATUS_ENABLED = 1;
 	const STATUS_DISABLED = 2;
@@ -33,6 +38,152 @@ class Model_Product extends Model_Core_Row
 
 		return self::STATUS_DEFAULT;
 	}	
+
+
+
+    public function getMedias($reload = false)
+    {
+        $mediasModel = Ccc::getModel('Product_Media');
+        
+        if(!$this->productId)
+        {
+            return $mediasModel;
+        }
+
+        if($this->medias && !$reload)
+        { 
+            return $this->medias;
+        }
+        $medias = $mediasModel->fetchAll("SELECT * from product_media");
+        if(!$medias)
+        {
+            return $mediasModel;
+        }
+        $this->setMedias($medias);
+        return $medias;
+    }
+
+    public function setMedias(Model_Product_Media $medias)
+    {
+        $this->medias = $medias;
+        return $this;
+    }
+
+
+    public function getBase($reload = false)
+    {
+        $baseModel = Ccc::getModel('Product_Media');
+        
+        if(!$this->productId)
+        {
+            return $baseModel;
+        }
+
+        if($this->base && !$reload)
+        { 
+            return $this->base;
+        }
+        $base = $baseModel->fetchRow("SELECT * from product_media WHERE base = 1");
+        if(!$base)
+        {
+            return $baseModel;
+        }
+        $this->setBase($base);
+        return $base;
+    }
+
+    public function setBase(Model_Product_Media $base)
+    {
+        $this->base = $base;
+        return $this;
+    }
+
+
+    public function getThumb($reload = false)
+    {
+        $thumbModel = Ccc::getModel('Product_Media');
+        
+        if(!$this->productId)
+        {
+            return $thumbModel;
+        }
+
+        if($this->thumb && !$reload)
+        { 
+            return $this->thumb;
+        }
+        $thumb = $thumbModel->fetchRow("SELECT * from product_media WHERE thumb = 1");
+        if(!$thumb)
+        {
+            return $thumbModel;
+        }
+        $this->setThumb($thumb);
+        return $thumb;
+    }
+
+    public function setThumb(Model_Product_Media $thumb)
+    {
+        $this->thumb = $thumb;
+        return $this;
+    }
+
+
+    public function getSmall($reload = false)
+    {
+        $smallModel = Ccc::getModel('Product_Media');
+        
+        if(!$this->productId)
+        {
+            return $smallModel;
+        }
+
+        if($this->small && !$reload)
+        { 
+            return $this->small;
+        }
+        $small = $smallModel->fetchRow("SELECT * from product_media WHERE small = 1");
+        if(!$small)
+        {
+            return $smallModel;
+        }
+        $this->setSmall($small);
+        return $small;
+    }
+
+    public function setSmall(Model_Product_Media $small)
+    {
+        $this->small = $small;
+        return $this;
+    }
+
+
+    public function getGallery($reload = false)
+    {
+        $galleryModel = Ccc::getModel('Product_Media');
+        
+        if(!$this->productId)
+        {
+            return $galleryModel;
+        }
+
+        if($this->gallery && !$reload)
+        { 
+            return $this->gallery;
+        }
+        $gallery = $galleryModel->fetchRow("SELECT * from product_media WHERE gallery = 1");
+        if(!$gallery)
+        {
+            return $galleryModel;
+        }
+        $this->setGallery($gallery);
+        return $gallery;
+    }
+
+    public function setGallery(Model_Product_Media $gallery)
+    {
+        $this->gallery = $gallery;
+        return $this;
+    }
 
 	public function saveCategories($categoryIds , $productId = null)
 	{

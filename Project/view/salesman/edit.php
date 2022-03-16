@@ -1,7 +1,7 @@
 <?php $salesman = $this->getSalesman(); ?>
 <?php $controllerCoreAction = new Controller_Core_Action(); ?>
 
-<form action="<?php echo$controllerCoreAction->getUrl('save','salesman',['id' =>  $salesman->salesmanId],true) ?>" method="POST">
+<form action="<?php echo$controllerCoreAction->getUrl('save','salesman',['id' =>  $salesman->salesmanId],false) ?>" method="POST">
 		<table border="1" width="100%" cellspacing="4">
 			<tr>
 				<td colspan="2"> salesman Information</td>
@@ -54,7 +54,7 @@
 			<td width="10%">&nbsp;</td>
 				<td>
 					<input type="submit" name="submit" value="Save">
-					<button type="button"><a href="<?php echo $controllerCoreAction->getUrl('grid','salesman',null,true) ?>">Cancel</a></button>
+					<button type="button"><a href="<?php echo $controllerCoreAction->getUrl('grid','salesman',null,false) ?>">Cancel</a></button>
 				</td>
 		</tr>
 		</table>
