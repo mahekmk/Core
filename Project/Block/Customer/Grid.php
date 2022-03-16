@@ -10,7 +10,7 @@ class Block_Customer_Grid extends Block_Core_Template{
 	public function getCustomerAddresses()
 	{
 		$customerModel = Ccc::getModel('Customer');
-		$customers = $customerModel->fetchAll("SELECT c.*, a.* from customer c left join address a on c.customerId = a.customerId");
+		$customers = $customerModel->fetchAll("SELECT c.*, a.* from customer c left join address a on c.customerId = a.customerId WHERE a.billing = 1");
 			return $customers;
 	}
 }

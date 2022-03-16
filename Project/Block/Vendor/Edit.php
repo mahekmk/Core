@@ -8,7 +8,10 @@ class Block_Vendor_Edit extends Block_Core_Template{
 	}
 	public function getVendorAddress()
 	{
-		return $this->getData('vendor');
+		$vendor = $this->getData('vendor');
+		$vendorAddress = $this->getData('vendorAddress');
+		return ['vendor' => $vendor , 'vendorAddress' => $vendorAddress];
+
 	}
 }
 

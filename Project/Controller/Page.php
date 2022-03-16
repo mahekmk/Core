@@ -84,7 +84,7 @@ class Controller_Page extends Controller_Core_Action
                 }
                 $message->addMessage('Data Updated Successfully'); 
 
-           $this->redirect($this->getUrl('grid',null,['id' => null]));
+           $this->redirect($this->getUrl('grid',null,['id' => null],false));
         }
 
         catch(Exception $e)

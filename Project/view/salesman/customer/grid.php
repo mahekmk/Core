@@ -54,7 +54,7 @@
 	<?php endif;  ?>
 		<tr>
 			<td colspan="6"><input type="submit" name="submit" value="Save">
-			<button type="button"><a href="<?php echo $controllerCoreAction->getUrl('grid','salesman',null,true) ?>">Cancel</a></button>
+			<button type="button"><a href="<?php echo $controllerCoreAction->getUrl('grid','salesman',null,false) ?>">Cancel</a></button>
 			</td>
 		</tr>
 </table>

@@ -2,7 +2,7 @@
 <?php $controllerCoreAction = new Controller_Core_Action(); ?>
 
 
-<form action="<?php echo$controllerCoreAction->getUrl('save','config',['id' =>  $config->configId],true) ?>" method="POST">
+<form action="<?php echo$controllerCoreAction->getUrl('save','config',null,false) ?>" method="POST">
 		<table border="1" width="100%" cellspacing="4">
 			<tr>
 				<td colspan="2"> Config Information</td>
