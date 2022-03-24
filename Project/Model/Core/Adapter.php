@@ -72,11 +72,11 @@ class Model_Core_Adapter{
 		return $result;
 	}
 
-	public function select($query)
+	/*public function select($query)
 	{
 		$result = $this->query($query);
 		return $result;
-	}
+	}*/
 
 	public function fetchRow($query)
 	{
@@ -128,6 +128,15 @@ class Model_Core_Adapter{
 		$popElement = array_pop($result);
 		return $popElement;
 	}
+
+	public function escapString($value)
+    {
+        if(!$this->getConnect())
+        {
+            $this->connect();
+        }
+        return mysqli_real_escape_string($this->getConnect(),$value);
+    }
 
 }
 $adapter = new Model_Core_Adapter();

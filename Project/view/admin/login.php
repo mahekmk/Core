@@ -1,4 +1,4 @@
-<?php $controllerCoreAction = new Controller_Core_Action();?>
+<?php //$this = new Controller_Core_Action();?>
 <?php 
 	$messages = $this->getMessages();
 	if($messages) {
@@ -7,7 +7,7 @@
 	    }
 	} 
 ?>
-<form action="<?php echo $controllerCoreAction->getUrl('loginPost') ?>" method="POST">
+<form action="<?php echo $this->getUrl('loginPost') ?>" method="POST">
 	<table border="1" width="100%">
 		<tr>
 			<th colspan="2">Login Page</th>

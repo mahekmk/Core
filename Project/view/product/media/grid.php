@@ -1,9 +1,9 @@
 <?php $medias = $this->getProductMedias(); ?>	
-<?php $controllerCoreAction = new Controller_Core_Action(); ?>
+<?php $mediaModel = Ccc::getModel('Product_Media')?>
 
-<form action="<?php echo $controllerCoreAction->getUrl('save','product_media',null,false) ?>" method="POST" align="center">
+<form action="<?php echo $this->getUrl('save','product_media',null,false) ?>" method="POST" align="center">
 	<input type="submit" name="update" value="UPDATE"> 
-<button ><a href="<?php echo $controllerCoreAction->getUrl('grid','product',null,false) ?>">Cancel</a>
+<button ><a href="<?php echo $this->getUrl('grid','product',null,false) ?>">Cancel</a>
 </button>
 <br>
 <br>
@@ -19,12 +19,12 @@
 				<th>Remove</th>
 		</tr>
 		<?php if($medias): ?>
-		
+		<?php?>
 			<?php foreach ($medias as $media): ?>	
 
 				<tr>
 		    		<td><?php echo $media->imageId ; ?></td>
-					<td><img src="<?php echo 'Media/product/' . $media->image; ?>" width="100px" height="100px" alt="image"></td>
+					<td><img src="<?php echo  $mediaModel->getImageUrl()  . $media->image; ?>" width="100px" height="100px" alt="image"></td>
 					<input type="hidden" name="media[imageId]" value="<?php echo $media->imageId?>">
 					<td><input type="radio" name="media[base]" value="<?php echo $media->imageId?>"<?php echo ($media->base==1) ? 'checked' : '' ; ?>></td>
 					<td><input type="radio" name="media[thumb]" value="<?php echo $media->imageId?>"<?php echo ($media->thumb==1) ? 'checked' : '' ;?>></td>
@@ -42,7 +42,7 @@
 <br>
 <br>
 	
-<form align="center" action="<?php echo $controllerCoreAction->getUrl('add','product_media',null,false) ?>" method="POST" enctype="multipart/form-data">
+<form align="center" action="<?php echo $this->getUrl('add','product_media',null,false) ?>" method="POST" enctype="multipart/form-data">
 	<table width="50%" border="1px" align="center">
 		<tr>
 			<td><label>Select File</label></td>

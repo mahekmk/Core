@@ -38,7 +38,7 @@ class Controller_Category extends Controller_Core_Action
         catch(Exception $e)
         {
             $message->addMessage($e->getMessage(),Model_Core_Message::ERROR);         
-            $this->redirect($this->getUrl('grid','category',null,true));
+            $this->redirect($this->getLayout()->getUrl('grid','category',null,true));
         }
     }
 
@@ -91,7 +91,6 @@ class Controller_Category extends Controller_Core_Action
                     if(!$updateResult)
                     {
                         $message->addMessage('System is unable to update the record.',Model_Core_Message::ERROR);            
-                        $this->redirect($this->getUrl('grid','category',null,true));
                     }
                     $parentId = null;
                     $this->updatePathIntoCategory($categoryId,$parentId);
@@ -167,18 +166,19 @@ class Controller_Category extends Controller_Core_Action
                 }     
             }
             $message->addMessage('Data Inserted Successfully.');
-            $this->redirect($this->getUrl('grid','category',null,true));
+            $this->redirect($this->getLayout()->getUrl('grid','category',null,true));
         } 
         catch (Exception $e) 
         {
             $message->addMessage($e->getMessage(),Model_Core_Message::ERROR);         
-            $this->redirect($this->getUrl('grid','category',null,true));
+            $this->redirect($this->getLayout()->getUrl('grid','category',null,true));
         }
     }
 
     public function deleteAction()
     {
         $message = $this->getMessage();
+        $mediaModel = Ccc::getModel('Category_Media');
         $getId = $this->getRequest()->getRequest('categoryId');
         $category = Ccc::getModel('Category')->load($getId);
         try
@@ -196,7 +196,7 @@ class Controller_Category extends Controller_Core_Action
             {
                if($result)
                {  
-                  unlink($this->getBaseUrl('Media/category/') . $value);
+                  unlink($mediaModel->getImagePath() . $value);
                }
             }
 
@@ -205,12 +205,12 @@ class Controller_Category extends Controller_Core_Action
                 throw new Exception("System is unable to delete record.");
             }
             $message->addMessage('Data Deleted Successfully.');
-            $this->redirect($this->getUrl('grid','category',null,true));
+            $this->redirect($this->getLayout()->getUrl('grid',null,['id' => null],false));
         }
         catch(Exception $e)
         {
             $message->addMessage($e->getMessage(),Model_Core_Message::ERROR);     
-            $this->redirect($this->getUrl('grid','category',null,true));
+            $this->redirect($this->getLayout()->getUrl('grid','category',null,true));
         }
     }
 
@@ -271,7 +271,7 @@ class Controller_Category extends Controller_Core_Action
         if(!$categories) 
         { 
             $message->addMessage('Data Updated Successfully.');
-            $this->redirect($this->getUrl('grid','category',null,true));
+            $this->redirect($this->getLayout()->getUrl('grid','category',null,true));
         }
         else
         {
@@ -291,7 +291,7 @@ class Controller_Category extends Controller_Core_Action
             }
         }
         $message->addMessage('Data Updated Successfully.'); 
-        $this->redirect($this->getUrl('grid','category',null,true)); 
+        $this->redirect($this->getLayout()->getUrl('grid',null,['id' => null],false)); 
     }
 
     public function errorAction()

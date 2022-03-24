@@ -2,10 +2,13 @@
 	Ccc::loadClass('Controller_Core_Front');
 	Ccc::loadClass('Controller_Core_Action');
 	Ccc::loadClass('Model_Core_Request');
-   date_default_timezone_set("Asia/Kolkata");
+    date_default_timezone_set("Asia/Kolkata");
     ?>
 
 <?php
+
+define('DS',DIRECTORY_SEPARATOR);
+
 class Ccc
 {
 	public static $front = null;
@@ -62,7 +65,7 @@ class Ccc
 
 	public static function loadFile($path)
 	{
-		return require_once($path);
+		return require_once(getcwd().DIRECTORY_SEPARATOR.$path);
 	}
 
 	public static function loadClass($className)
@@ -83,6 +86,29 @@ class Ccc
 		$className='Block_'.$className;
 		self::loadClass($className);
 		return new $className();
+	}
+
+	public static function getPath()
+	{
+		return getcwd().DIRECTORY_SEPARATOR;
+	}
+
+	public static function getBaseUrl($subUrl)
+	{
+		$url = self::getConfig('baseUrl');
+        if($subUrl){
+            $url = $url.$subUrl;
+        }
+        return $url;
+	}
+
+	public static function getBasePath($subPath)
+	{
+		$path = self::getConfig('basePath');
+        if($subPath){
+            $path = $path.$subPath;
+        }
+        return $path;
 	}
 
 	public static function init()

@@ -28,11 +28,11 @@ class Controller_Salesman_Customer extends Controller_Core_Action
             }
 
             $message->addMessage('Data Updated Successfully');
-            $this->redirect($this->getUrl('grid','Salesman_Customer',null,false));
+            $this->redirect($this->getLayout()->getUrl('grid','Salesman_Customer',null,false));
         } catch (Exception $e) 
         {
             $message->addMessage($e->getMessage(),Model_Core_Message::ERROR);     
-            $this->redirect($this->getUrl('grid','Salesman_Customer',null,true));
+            $this->redirect($this->getLayout()->getUrl('grid','Salesman_Customer',null,true));
         }    
     }
 }

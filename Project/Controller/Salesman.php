@@ -39,7 +39,7 @@ class Controller_salesman extends Controller_Core_Action
         catch (Exception $e) 
         {
             $message->addMessage($e->getMessage(),Model_Core_Message::ERROR);         
-            $this->redirect($this->getUrl('grid','salesman',null,true));
+            $this->redirect($this->getLayout()->getUrl('grid','salesman',null,true));
         }
     }
 
@@ -88,12 +88,12 @@ class Controller_salesman extends Controller_Core_Action
                 throw new Exception("System is unable to update information.");
             }
             $message->addMessage('Data Saved Successfully'); 
-            $this->redirect($this->getUrl('grid',null,['id' => null],false));
+            $this->redirect($this->getLayout()->getUrl('grid',null,['id' => null],false));
         }      
         catch(Exception $e)
         {
             $message->addMessage($e->getMessage(),Model_Core_Message::ERROR);         
-            $this->redirect($this->getUrl('grid',null,['id' => null],false));
+            $this->redirect($this->getLayout()->getUrl('grid',null,['id' => null],false));
         }
     }
 
@@ -115,12 +115,12 @@ class Controller_salesman extends Controller_Core_Action
                 throw new Exception("System is unable to delete record.");
             }
             $message->addMessage('Data Deleted Successfully');
-             $this->redirect($this->getUrl('grid',null,['id' => null],false));
+             $this->redirect($this->getLayout()->getUrl('grid',null,['id' => null],false));
         }
         catch(Exception $e)
         {
             $message->addMessage($e->getMessage(),Model_Core_Message::ERROR);         
-             $this->redirect($this->getUrl('grid',null,['id' => null],false));
+             $this->redirect($this->getLayout()->getUrl('grid',null,['id' => null],false));
         }
     }
 

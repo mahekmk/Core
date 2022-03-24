@@ -21,7 +21,7 @@ class Controller_Product_Media extends Controller_Core_Action
       {
           $productId = $this->getRequest()->getRequest('id');
 
-          $media = Ccc::getModel('Product_Media');
+          $mediaModel = Ccc::getModel('Product_Media');
 
           if(!$this->getRequest()->isPost()){
             throw new Exception("Invalid Request" );
@@ -54,7 +54,7 @@ class Controller_Product_Media extends Controller_Core_Action
             {
                if($result)
                {
-                  unlink($this->getBaseUrl('Media/product/') . $value);
+                  unlink( $mediaModel->getImagePath() . $value);
                }
             }
          }
@@ -130,12 +130,12 @@ class Controller_Product_Media extends Controller_Core_Action
          }
 
          $message->addMessage('Data Updated Successfully'); 
-         $this->redirect($this->getUrl('grid','product_media',['id'=> $productId]));
+         $this->redirect($this->getLayout()->getUrl('grid','product_media',['id'=> $productId]));
 
       } catch (Exception $e) 
       {
          $message->addMessage($e->getMessage(),Model_Core_Message::ERROR);         
-         $this->redirect($this->getUrl('grid','product_media',['id'=> $productId]));
+         $this->redirect($this->getLayout()->getUrl('grid','product_media',['id'=> $productId]));
       }
    }
 
@@ -150,8 +150,9 @@ class Controller_Product_Media extends Controller_Core_Action
          $imageName = implode("", $imageName1);
          $imageName = date("mjYhis")."-".$imageName;
          $imageAddress = implode("", $imageAddress1);
+         $mediaModel = Ccc::getModel('Product_Media');
      
-         if(move_uploaded_file($imageAddress , $this->getBaseUrl('Media/product/') . $imageName))
+         if(move_uploaded_file($imageAddress , $mediaModel->getImagePath() . $imageName))
          {
             $query =  "INSERT INTO `product_media`( `productId`, `image`, `base`, `thumb`, `small`, `gallery`, `status`) VALUES ($productId,'$imageName',0,0,0,0,0)";
             $result = $this->getAdapter()->insert($query);
@@ -160,18 +161,18 @@ class Controller_Product_Media extends Controller_Core_Action
                throw new Exception("Image not added." );
             }
             $message->addMessage('Image added Successfully.');
-            $this->redirect($this->getUrl('grid','product_media',['id'=> $productId]));
+            $this->redirect($this->getLayout()->getUrl('grid','product_media',['id'=> $productId]));
          }
          else
          {
             $message->addMessage('Image not selected.',Model_Core_Message::ERROR);
-            $this->redirect($this->getUrl('grid','product_media',['id' =>  $productId],true));
+            $this->redirect($this->getLayout()->getUrl('grid','product_media',['id' =>  $productId],true));
          }
 
       } catch (Exception $e) 
       {
          $message->addMessage($e->getMessage(),Model_Core_Message::ERROR);         
-         $this->redirect($this->getUrl('grid','product_media',['id'=> $productId]));
+         $this->redirect($this->getLayout()->getUrl('grid','product_media',['id'=> $productId]));
       } 
    }
 }

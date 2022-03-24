@@ -2,7 +2,7 @@
 <?php $products = $productsPercentage['products'];?>
 <?php $percentage = $productsPercentage['percentage'];?>
 <?php $prices = $this->getPrices();?>
-<?php $controllerCoreAction = new Controller_Core_Action();?>
+<?php //$this = new Controller_Core_Action();?>
 
 <table border="1" width="100%" cellspacing="4">
 	<tr>
@@ -13,7 +13,7 @@
 		<th>Salesman Price</th>
 		<th>Customer Price</th>
 	</tr>
-	<form action="<?php echo $controllerCoreAction->getUrl('save','customer_price'); ?>" method="POST">
+	<form action="<?php echo $this->getUrl('save','customer_price'); ?>" method="POST">
 		<?php 
 			
 			if(!$products):
@@ -37,7 +37,7 @@
 		<tr>
 			<td colspan="6">
 				<input type="submit" name="save" value="Save">
-				<button type="button"><a href="<?php echo $controllerCoreAction->getUrl('grid','salesman_customer',['id'=>Ccc::getFront()->getRequest()->getRequest('id')],true) ?>">Cancel</a></button>
+				<button type="button"><a href="<?php echo $this->getUrl('grid','salesman_customer',['id'=>Ccc::getFront()->getRequest()->getRequest('id')],true) ?>">Cancel</a></button>
 			</td>
 		</tr>
 	</form>

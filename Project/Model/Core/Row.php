@@ -29,7 +29,7 @@ class Model_Core_Row
 
 	public function setData(array $data)
 	{
-		$this->data = $data;
+		$this->data = array_merge($this->data,$data);
 		return $this;
 	}
 
@@ -71,7 +71,7 @@ class Model_Core_Row
 	public function save()
 	{	
 		if(array_key_exists($this->getTable()->getPrimaryKey(),$this->data) && $this->data[$this->getTable()->getPrimaryKey()]!= null)
-		{
+		{	
 			$tableName = $this->getTable()->getPrimaryKey();	
 			$id = $this->data[$this->getTable()->getPrimaryKey()];
 			$this->getTable()->update($this->data,[$tableName => $id]);
