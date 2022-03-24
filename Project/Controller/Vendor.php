@@ -45,7 +45,7 @@ class Controller_Vendor extends Controller_Core_Action
 		catch (Exception $e) 
 		{
 			$message->addMessage($e->getMessage(),Model_Core_Message::ERROR);    
-            $this->redirect($this->getUrl('grid',null,['id' => null],false));
+            $this->redirect($this->getLayout()->getUrl('grid',null,['id' => null],false));
 		}
 	}
 
@@ -113,7 +113,7 @@ class Controller_Vendor extends Controller_Core_Action
             throw new Exception("System is unable to update information.");
         }
         $message->addMessage('Data Updated Successfully');
-        $this->redirect($this->getUrl('grid',null,['id' => null],false));
+        $this->redirect($this->getLayout()->getUrl('grid',null,['id' => null],false));
 	}
 
 	public function saveAction()
@@ -156,7 +156,7 @@ class Controller_Vendor extends Controller_Core_Action
 		catch (Exception $e)
 		{
 			$message->addMessage($e->getMessage(),Model_Core_Message::ERROR);     
-            $this->redirect($this->getUrl('grid',null,['id' => null],false)); 	
+            $this->redirect($this->getLayout()->getUrl('grid',null,['id' => null],false)); 	
 		}
 	}
 

@@ -14,6 +14,12 @@ class Model_Product extends Model_Core_Row
 	const STATUS_ENABLED_LBL = 'Active';
 	const STATUS_DISABLED_LBL = 'InActive';
 
+    const DISCOUNT_MODE_PER = 1;
+    const DISCOUNT_MODE_PRICE = 2;
+    const DISCOUNT_MODE_DEFAULT = 1;
+    const DISCOUNT_MODE_PER_LBL = 'In Percentage';
+    const DISCOUNT_MODE_PRICE_LBL = 'In Price';
+
 	public function __construct()
 	{
 		$this->setResourceClassName('Product_Resource');
@@ -39,7 +45,24 @@ class Model_Product extends Model_Core_Row
 		return self::STATUS_DEFAULT;
 	}	
 
+    public function getDiscountMode($key = null)
+    {       
+        
+        $discountModes = [self::DISCOUNT_MODE_PER => self::DISCOUNT_MODE_PER_LBL,
+                    self::DISCOUNT_MODE_PRICE => self::DISCOUNT_MODE_PRICE_LBL];
 
+        if(!$key)
+        {
+            return $discountModes;
+        }
+
+        if(array_key_exists($key , $discountModes))
+        {
+            return $discountModes[$key];
+        }
+
+        return self::STATUS_DEFAULT;
+    }
 
     public function getMedias($reload = false)
     {

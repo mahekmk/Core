@@ -1,10 +1,10 @@
 <?php $category = $this->getCategory();?>
-<?php $UrlAction = new Controller_Core_Action();?>
+<?php //$controllerCoreAction = new Controller_Core_Action();?>
 <?php $getCategoryWithPath = $this->getCategoryWithPath(); ?>
 <?php $result = $getCategoryWithPath;  ?>
 
 <table border="1" width="100%">
-	<form method="post" action="<?php echo $UrlAction->getUrl('save','category',['categoryId' =>  $category->categoryId],true) ?>
+	<form method="post" action="<?php echo $this->getUrl('save','category',['id' => null],false) ?>
 ">
 		<tr>
             <td>Id</td>
@@ -49,7 +49,7 @@
 <tr>
 	<td>&nbsp;</td>
 	<td><input type="submit" name="submit" value="Submit">
-		<button type="button"><a href="<?php echo $UrlAction->getUrl('grid','category',null,true) ?>">Cancel</a></button></td>
+		<button type="button"><a href="<?php echo $this->getUrl('grid','category',null,true) ?>">Cancel</a></button></td>
 	</tr>
 </form>        
 </table>

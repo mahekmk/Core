@@ -22,7 +22,6 @@ class Model_Vendor extends Model_Core_Row
 		$vendorAddressModel = Ccc::getModel('Vendor_Address');
 		if(!$this->vendorId)
 		{ 
-			
 			return $vendorAddressModel;
 		}
 		if($this->vendorAddress && !$reload)

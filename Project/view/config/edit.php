@@ -1,8 +1,8 @@
 <?php $config = $this->getConfig(); ?>
-<?php $controllerCoreAction = new Controller_Core_Action(); ?>
+<?php //$controllerCoreAction = new Controller_Core_Action(); ?>
 
 
-<form action="<?php echo$controllerCoreAction->getUrl('save','config',null,false) ?>" method="POST">
+<form action="<?php echo$this->getUrl('save','config',null,false) ?>" method="POST">
 		<table border="1" width="100%" cellspacing="4">
 			<tr>
 				<td colspan="2"> Config Information</td>
@@ -44,7 +44,7 @@
 			<td width="10%">&nbsp;</td>
 				<td>
 					<input type="submit" name="submit" value="Save">
-					<button type="button"><a href="<?php echo $controllerCoreAction->getUrl('grid','config',null,true) ?>">Cancel</a></button>
+					<button type="button"><a href="<?php echo $this->getUrl('grid','config',null,true) ?>">Cancel</a></button>
 				</td>
 		</tr>
 		</table>

@@ -2,9 +2,9 @@
 <?php $vendorAddress = $this->getVendorAddress(); //print_r($vendorAddress); die;?>
 <?php $vendor = $vendorAddress['vendor']; //print_r($vendor); die;?>
 <?php $address = $vendorAddress['vendorAddress']; //print_r($vendorAddress); die;?>
-<?php $controllerCoreAction = new Controller_Core_Action();?>
+<?php //$controllerCoreAction = new Controller_Core_Action();?>
 
-	<form action="<?php echo$controllerCoreAction->getUrl('save','vendor',['id' =>  $vendor->vendorId],false) ?>" method="POST">
+	<form action="<?php echo$this->getUrl('save','vendor',['id' =>  $vendor->vendorId],false) ?>" method="POST">
 		<table border="1" width="100%" cellspacing="4">
 			<tr>
 				<td colspan="2"> Vendor Information</td>
@@ -80,7 +80,7 @@
 				<td width="10%">&nbsp;</td>
 				<td>
 					<input type="submit" name="submit" value="Save">
-					<button type="button"><a href=" <?php echo $controllerCoreAction->getUrl('grid','vendor',null,true) ?>">Cancel</a></button>
+					<button type="button"><a href=" <?php echo $this->getUrl('grid','vendor',null,true) ?>">Cancel</a></button>
 				</td>
 			</tr>
 

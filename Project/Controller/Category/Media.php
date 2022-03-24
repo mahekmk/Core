@@ -20,7 +20,7 @@ class Controller_Category_Media extends Controller_Core_Action
       try 
       {
          $categoryId = $this->getRequest()->getRequest('id');
-         $media = Ccc::getModel('Category_Media');
+         $mediaModel = Ccc::getModel('Category_Media');
          if(!$this->getRequest()->isPost())
          {
             throw new Exception("Invalid Request." );
@@ -52,7 +52,7 @@ class Controller_Category_Media extends Controller_Core_Action
             {
                if($result)
                {
-                  unlink($this->getBaseUrl('Media/category/') . $value);
+                  unlink($mediaModel->getImagePath() . $value);
                }
             }
          }
@@ -127,12 +127,12 @@ class Controller_Category_Media extends Controller_Core_Action
          }
 
          $message->addMessage('Data Updated Successfully'); 
-         $this->redirect($this->getUrl('grid','category_media',['id'=> $categoryId]));
+         $this->redirect($this->getLayout()->getUrl('grid','category_media',['id'=> $categoryId]));
 
       } catch (Exception $e) 
       {
          $message->addMessage($e->getMessage(),Model_Core_Message::ERROR);
-         $this->redirect($this->getUrl('grid','category_media',['id'=> $categoryId])); 
+         $this->redirect($this->getLayout()->getUrl('grid','category_media',['id'=> $categoryId])); 
       }
    }
 
@@ -142,13 +142,14 @@ class Controller_Category_Media extends Controller_Core_Action
       try 
       {
          $categoryId = $_GET['id'];
+         $mediaModel = Ccc::getModel('Category_Media');
          $imageName1 = $_FILES['image']['name'];
          $imageAddress1 = $_FILES['image']['tmp_name'];
          $imageName = implode("", $imageName1);
          $imageName = date("mjYhis")."-".$imageName;
          $imageAddress = implode("", $imageAddress1);
             
-         if(move_uploaded_file($imageAddress , $this->getBaseUrl('Media/category/') . $imageName))
+         if(move_uploaded_file($imageAddress , $mediaModel->getImagePath() . $imageName))
          {
             $query =  "INSERT INTO `category_media`( `categoryId`, `image`, `base`, `thumb`, `small`, `gallery`, `status`) VALUES ($categoryId,'$imageName',0,0,0,0,0)";
             $result = $this->getAdapter()->insert($query);
@@ -158,17 +159,17 @@ class Controller_Category_Media extends Controller_Core_Action
             }
 
             $message->addMessage('Image added Successfully.');
-            $this->redirect($this->getUrl('grid','category_media',['id'=> $categoryId]));
+            $this->redirect($this->getLayout()->getUrl('grid','category_media',['id'=> $categoryId]));
          }
          else
          {
             $message->addMessage('Image not selected.',Model_Core_Message::ERROR);
-            $this->redirect($this->getUrl('grid','category_media',['id' =>  $categoryId],true));
+            $this->redirect($this->getLayout()->getUrl('grid','category_media',['id' =>  $categoryId],true));
          }
       } catch (Exception $e) 
       {
          $message->addMessage($e->getMessage(),Model_Core_Message::ERROR);
-         $this->redirect($this->getUrl('grid','category_media',['id'=> $categoryId]));
+         $this->redirect($this->getLayout()->getUrl('grid','category_media',['id'=> $categoryId]));
       } 
    }
 }

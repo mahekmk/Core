@@ -43,7 +43,7 @@ class Controller_Product extends Controller_Core_Action{
 		catch (Exception $e) 
 		{
 			$message->addMessage($e->getMessage(),Model_Core_Message::ERROR);         
-         $this->redirect($this->getUrl('grid','product',null,true));
+         $this->redirect($this->getLayout()->getUrl('grid','product',null,true));
 		}
 	}
 
@@ -68,7 +68,7 @@ class Controller_Product extends Controller_Core_Action{
 			date_default_timezone_set("Asia/Kolkata");
 			$date = date('Y-m-d H:i:s');
 			$row = $this->getRequest()->getPost('product');
-
+//print_r($row); exit();
 			$categoryIds = $row['category'];
 
 			$productId = $row['id'];
@@ -87,7 +87,11 @@ class Controller_Product extends Controller_Core_Action{
 
          	$product->name = $row['name'];
          	$product->price = $row['price'];
+         	$product->tax = $row['tax'];
          	$product->quantity = $row['quantity'];
+         	$product->cost =  $row['cost'];
+            $product->discount =  $row['discount'];
+            $product->discountMode =  $row['discountMode'];
          	$product->sku = $row['sku'];
          	$product->status = $row['status'];
          	$result = $product->save();
@@ -98,7 +102,7 @@ class Controller_Product extends Controller_Core_Action{
 					 throw new Exception("System is unable to insert information.");
 				}
 				$message->addMessage('Data Added Successfully');
-				$this->redirect($this->getUrl('grid',null,['id' => null],false));
+				$this->redirect($this->getLayout()->getUrl('grid',null,['id' => null],false));
 			}
 			else
 			{
@@ -107,7 +111,11 @@ class Controller_Product extends Controller_Core_Action{
 				$product->productId = $row["id"];
 				$product->name = $row['name'];
          	$product->price = $row['price'];
+         	$product->tax = $row['tax'];
          	$product->quantity = $row['quantity'];
+         	$product->cost =  $row['cost'];
+            $product->discount =  $row['discount'];
+            $product->discountMode =  $row['discountMode'];
          	$product->sku = $row['sku'];
          	$product->status = $row['status'];
          	$product->updatedAt = $date;
@@ -120,13 +128,13 @@ class Controller_Product extends Controller_Core_Action{
 					 throw new Exception("System is unable to update information.");
 				}
 				$message->addMessage('Data Updated Successfully');
-				$this->redirect($this->getUrl('grid',null,['id' => null],false));
+				$this->redirect($this->getLayout()->getUrl('grid',null,['id' => null],false));
 			}
 		}
 		catch (Exception $e) 
 		{
 			$message->addMessage($e->getMessage(),Model_Core_Message::ERROR);         
-         $this->redirect($this->getUrl('grid',null,['id' => null],false));
+         $this->redirect($this->getLayout()->getUrl('grid',null,['id' => null],false));
 		}
 
 	}
@@ -135,6 +143,7 @@ class Controller_Product extends Controller_Core_Action{
 	public function deleteAction()
 	{
 		$message = $this->getMessage();
+		$mediaModel = Ccc::getModel('Product_Media');
       $getId = $this->getRequest()->getRequest('id');
 		$product = Ccc::getModel('Product')->load($getId);
 		try 
@@ -154,7 +163,7 @@ class Controller_Product extends Controller_Core_Action{
 			{
                if($result)
                {
-                  unlink($this->getBaseUrl('Media/product/') . $value);
+                  unlink($mediaModel->getImagePath() . $value);
                }
             }
 
@@ -163,12 +172,12 @@ class Controller_Product extends Controller_Core_Action{
 				 throw new Exception("System is unable to delete record.");
 			}
 			$message->addMessage('Data Deleted Successfully');
-			$this->redirect($this->getUrl('grid',null,['id' => null],false));
+			$this->redirect($this->getLayout()->getUrl('grid',null,['id' => null],false));
 		}
 		catch (Exception $e) 
 		{
 			$message->addMessage($e->getMessage(),Model_Core_Message::ERROR);         
-         $this->redirect($this->getUrl('grid',null,['id' => null],false));
+         $this->redirect($this->getLayout()->getUrl('grid',null,['id' => null],false));
 		}
 	}
 

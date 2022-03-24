@@ -26,7 +26,7 @@ class Controller_Core_Action
                 if($login)
                 {
                     $message->addMessage('Already LoggedIn.');
-                    $this->redirect($this->getUrl('grid','product',null,true));
+                    $this->redirect($this->getLayout()->getUrl('grid','product',null,true));
                 }
             }
             else
@@ -40,7 +40,7 @@ class Controller_Core_Action
         } catch (Exception $e) 
         {
             $message->addMessage($e->getMessage(),Model_Core_Message::ERROR);
-            $this->redirect($this->getUrl('login','Admin_Login',null,true));    
+            $this->redirect($this->getLayout()->getUrl('login','Admin_Login',null,true));    
         }    
     }
 
@@ -98,7 +98,7 @@ class Controller_Core_Action
         echo $this->getLayout()->toHtml();
     }
 
-    public function getUrl($action = null, $controller = null, array $parameters = null, $reset = false) 
+   /* public function getUrl($action = null, $controller = null, array $parameters = null, $reset = false) 
     {
         $resultUrl = [];
         if(!$controller)
@@ -150,7 +150,7 @@ class Controller_Core_Action
             $url = $url."/".$subUrl;
         }
         return $url;
-    }
+    }*/
 
     public function getMessage()
     {

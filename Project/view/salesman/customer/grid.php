@@ -1,9 +1,9 @@
 <?php $salesmanCustomers = $this->getSalesmanCustomers(); ?>
 <?php $customersWithNoSalesman = $this->getCustomersWithNoSalesman(); ?>
-<?php $controllerCoreAction = new Controller_Core_Action();?>
+<?php //$controllerCoreAction = new Controller_Core_Action();?>
 
 
-<form action="<?php echo $controllerCoreAction->getUrl('save',null,null,false) ?>" method="POST">
+<form action="<?php echo $this->getUrl('save',null,null,false) ?>" method="POST">
 <table border="1" width="100%">
 	<tr>
 		<th>Customer ID</th>
@@ -27,7 +27,7 @@
 			<td><?php echo $salesmanCustomer->lastName; ?></td>
 			<td><?php echo $salesmanCustomer->email; ?></td>
 			<td><input type="checkbox" name="salesmanCustomer[customer][]" value="" disabled></td>
-			<td><a href="<?php echo $controllerCoreAction->getUrl('grid','customer_price',['id' => Ccc::getFront()->getRequest()->getRequest('id') , 'customerId' => $salesmanCustomer->customerId],true); ?>">Price</a></td>
+			<td><a href="<?php echo $this->getUrl('grid','customer_price',['id' => Ccc::getFront()->getRequest()->getRequest('id') , 'customerId' => $salesmanCustomer->customerId],true); ?>">Price</a></td>
 		</tr>
 	<?php endforeach; ?>
 	<?php endif;  ?>
@@ -54,7 +54,7 @@
 	<?php endif;  ?>
 		<tr>
 			<td colspan="6"><input type="submit" name="submit" value="Save">
-			<button type="button"><a href="<?php echo $controllerCoreAction->getUrl('grid','salesman',null,false) ?>">Cancel</a></button>
+			<button type="button"><a href="<?php echo $this->getUrl('grid','salesman',null,false) ?>">Cancel</a></button>
 			</td>
 		</tr>
 </table>

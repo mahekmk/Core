@@ -33,7 +33,7 @@ class Controller_Config extends Controller_Core_Action
         catch (Exception $e) 
         {
             $message->addMessage($e->getMessage(),Model_Core_Message::ERROR);     
-            $this->redirect($this->getUrl('grid',null,null,true));
+            $this->redirect($this->getLayout()->getUrl('grid',null,null,true));
         }
     }
 
@@ -78,12 +78,12 @@ class Controller_Config extends Controller_Core_Action
                 throw new Exception("System is unable to update information.");
             }
             $message->addMessage('Data Saved Successfully'); 
-            $this->redirect($this->getUrl('grid',null,['id' => null],false));
+            $this->redirect($this->getLayout()->getUrl('grid',null,['id' => null],false));
         }
         catch(Exception $e)
         {
             $message->addMessage($e->getMessage(),Model_Core_Message::ERROR);         
-            $this->redirect($this->getUrl('grid',null,['id' => null],false));
+            $this->redirect($this->getLayout()->getUrl('grid',null,['id' => null],false));
         }
     }
 
@@ -92,6 +92,7 @@ class Controller_Config extends Controller_Core_Action
         $message = $this->getMessage();
         $getId = $this->getRequest()->getRequest('id');
         $config = Ccc::getModel('Config')->load($getId);
+        //print_r($config);
         try
         {
             if (!$getId)
@@ -100,17 +101,18 @@ class Controller_Config extends Controller_Core_Action
             }
             $id = $getId;
             $result = $config->delete(); 
+            //print_r($result); die;
             if (!$result)
             {
                 throw new Exception("System is unable to delete record.");
             }
             $message->addMessage('Data Deleted Successfully');
-           $this->redirect($this->getUrl('grid',null,['id' => null],false));
+           $this->redirect($this->getLayout()->getUrl('grid',null,['id' => null],false));
         }
         catch(Exception $e)
         {
             $message->addMessage($e->getMessage(),Model_Core_Message::ERROR);         
-            $this->redirect($this->getUrl('grid',null,['id' => null],false));
+            $this->redirect($this->getLayout()->getUrl('grid',null,['id' => null],false));
         }
     }
 

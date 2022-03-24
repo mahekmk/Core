@@ -2,10 +2,10 @@
 <?php $getCategoryWithPath = $this->getCategoryWithPath(); ?>
 <?php $categories = $this->getCategories();  ?>
 <?php $categoryProductPair = $this->getCategoryProductPair(); ?>
-<?php $controllerCoreAction = new Controller_Core_Action(); ?>
+<?php //$this = new Controller_Core_Action(); ?>
 
 
-<form action="<?php echo$controllerCoreAction->getUrl('save','product',['id' =>  $product->productId],false) ?>" method="POST">
+<form action="<?php echo$this->getUrl('save','product',['id' =>  $product->productId],false) ?>" method="POST">
 		<table border="1" width="100%" cellspacing="4">
 			<tr>
 				<td colspan="2"> Product Information</td>
@@ -27,6 +27,11 @@
 			</tr>
 
 			<tr>
+				<td width="10%">Tax</td>
+				<td><input type="number" name="product[tax]" value="<?php echo  $product->tax  ;?>"></td>
+			</tr>
+
+			<tr>
 				<td width="10%">Sku</td>
 				<td><input type="text" name="product[sku]" value="<?php echo  $product->sku  ;?>"></td>
 			</tr>
@@ -35,6 +40,25 @@
 				<td width="10%">Quantity</td>
 				<td><input type="text" name="product[quantity]" value="<?php echo $product->quantity  ; ?>"></td>
 			</tr>
+
+			<tr>
+          <td width="10%"> Cost</td>
+          <td><input type="number" name="product[cost]" value="<?php echo $product->cost ?>"></td>
+        </tr>
+        <tr>
+          <td width="10%"> Discount</td>
+          <td><input type="number" name="product[discount]" value="<?php echo $product->discount ?>"></td>
+        </tr>
+        <tr>
+          <td width="10%">Discount Mode</td>
+          <td>
+            <select name="product[discountMode]">
+             <?php foreach ($product->getdiscountMode() as $key => $value): ?>
+              <option <?php if($product->discountMode == $key): ?> selected <?php endif; ?> value="<?php echo $key; ?>"> <?php echo $value; ?></option>
+            <?php endforeach; ?>
+            </select>
+          </td>
+        </tr>
 
 			<tr>
 				<td width="10%">Status</td>
@@ -80,7 +104,7 @@
 			<td width="10%">&nbsp;</td>
 				<td>
 					<input type="submit" name="submit" value="Save">
-					<button type="button"><a href="<?php echo $controllerCoreAction->getUrl('grid','product',null,true) ?>">Cancel</a></button>
+					<button type="button"><a href="<?php echo $this->getUrl('grid','product',null,true) ?>">Cancel</a></button>
 				</td>
 		</tr>
 		</table>

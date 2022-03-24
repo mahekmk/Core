@@ -52,6 +52,7 @@ class Model_Core_Row_Resource
         $value = '\''.implode("','", array_values($queryInsert)).'\'';
 
         $sqlResult = "INSERT INTO `{$this->getTableName()}` ({$key}) VALUES ({$value});";
+        //print_r($sqlResult); //die;
         $result = $this->getAdapter()->insert($sqlResult);
         return $result;
     }
@@ -67,23 +68,40 @@ class Model_Core_Row_Resource
 		return $result;
 	}
 
-	public function update(array $updateArr , array $whereArr)
-	{
-		date_default_timezone_set("Asia/Kolkata");
-        $date = date('Y-m-d H:i:s');
-		$set = [];
-		$tableName = $this->getTableName();
-		$key = key($whereArr);
-		$value = $whereArr[$this->primaryKey];
-		foreach($updateArr as $k => $v)
-		{
-			$set[] = "$k='$v'";
-		}
-		$imp = implode(',', $set);
-		$update = "UPDATE $tableName SET $imp WHERE $key = $value;";
-		$result = $this->getAdapter()->update($update);
-		return $result;
-	}
+	public function update($data,$id)
+    {
+        $whereClause = null;
+        $fields = null;     
+        if(!is_array($id))
+        {
+            $whereClause = '`'.$this->getPrimaryKey().'`'." = '".$this->getAdapter()->escapString($id)."'";
+        }
+        else
+        {
+            foreach ($id as $key => $value) 
+            {
+                $whereClause = $whereClause .'`'.$key.'`'. " = '".$value."' and ";
+            }
+            $whereClause = rtrim($whereClause,' and ');
+        }
+        foreach ($data as $col => $value) 
+        {
+            if($value != null)
+            {
+                $fields = $fields .'`'.$col.'`'. " = '".$this->getAdapter()->escapString($value)."',";
+
+            }
+            else
+            {
+                $fields = $fields . $col . ' = null ,';
+            }
+        }
+
+        $fields = rtrim($fields,',');
+        $query = "UPDATE ".'`'.$this->getTableName().'`'." SET ".$fields." WHERE ".$whereClause;
+        //print_r($query);
+        return $this->getAdapter()->update($query);
+    }
 
 	public function fetchRow($queryFetchRow)
   	{

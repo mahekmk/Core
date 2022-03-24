@@ -17,12 +17,12 @@ class Model_Core_Pager
 	public function execute($totalCount , $current)
 	{
 		$rpp = Ccc::getFront()->getRequest()->getRequest('rpp');
-		
+
 		if(!in_array($rpp,$this->getPerPageCountOptions()))
 		{
-			$this->setPerPageCount(200);
-			$controllerCoreAction = new Controller_Core_Action();
-			$controllerCoreAction->redirect(($controllerCoreAction->getUrl('grid',null,['p' => 1 ,'rpp' => 10],false)));
+			$this->setPerPageCount(10);
+			$viewModel = Ccc::getModel('Core_View');
+			$viewModel->getUrl('grid',null,['p' => 1 ,'rpp' => 10],false);
 		}
 		else
 		{

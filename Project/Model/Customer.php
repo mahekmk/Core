@@ -8,6 +8,8 @@ class Model_Customer extends Model_Core_Row
     protected $shippingAddress;
     protected $salesman;
     protected $price;
+    protected $cart = null;
+    protected $order = null;
 
 	const STATUS_ENABLED = 1;
 	const STATUS_DISABLED = 2;
@@ -55,61 +57,62 @@ class Model_Customer extends Model_Core_Row
 		return $result;
 	}
 
-    
+
     public function getBillingAddress($reload = false)
     {
-        $billingAddressModel = Ccc::getModel('Customer_Address');
-        
+        /*echo "<pre>";
+        print_r($this->id);*/
+        $addressModel = Ccc::getModel('Customer_Address');
         if(!$this->customerId)
         {
-            return $billingAddressModel;
+            echo 22;
+            return $addressModel;
         }
-
         if($this->billingAddress && !$reload)
-        { 
+        {
+            echo 33;
             return $this->billingAddress;
         }
 
-        $billingAddress = $billingAddressModel->fetchRow("SELECT * from address WHERE customerId = {$this->customerId} AND billing = 1");
-        if(!$billingAddress)
+        $address = $addressModel->fetchRow("SELECT * FROM `address` WHERE `customerId` = {$this->customerId} AND `billing` = 1");
+        if(!$address)
         {
-            return $billingAddressModel;
+            return $addressModel;
         }
-        $this->setBillingAddress($billingAddress);
-        return $billingAddress;
+
+        $this->setBillingAddress($address);
+        //print_r($this->billingAddress);
+        return $this->billingAddress;
     }
 
-    public function setBillingAddress(Model_customer_Address $address)
+    public function setBillingAddress(Model_Customer_Address $address)
     {
         $this->billingAddress = $address;
         return $this;
     }
 
-    
     public function getShippingAddress($reload = false)
     {
-        $shippingAddressModel = Ccc::getModel('Customer_Address');
-        
+        $addressModel = Ccc::getModel('Customer_Address');
         if(!$this->customerId)
         {
-            return $shippingAddressModel;
+            return $addressModel;
         }
-
         if($this->shippingAddress && !$reload)
-        { 
+        {
             return $this->shippingAddress;
         }
-
-        $shippingAddress = $shippingAddressModel->fetchRow("SELECT * from address WHERE customerId = {$this->customerId}  AND shipping = 1");
-        if(!$shippingAddress)
+        $address = $addressModel->fetchRow("SELECT * FROM `address` WHERE `customerId` = {$this->customerId} AND `shipping` = 1");
+        if(!$address)
         {
-            return $shippingAddressModel;
+            return $addressModel;
         }
-        $this->setShippingAddress($shippingAddress);
-        return $shippingAddress;
+
+        $this->setShippingAddress($address);
+        return $this->shippingAddress;
     }
 
-    public function setShippingAddress(Model_customer_Address $address)
+    public function setShippingAddress(Model_Customer_Address $address)
     {
         $this->shippingAddress = $address;
         return $this;
@@ -172,6 +175,66 @@ class Model_Customer extends Model_Core_Row
         $this->price = $price;
         return $this;
     }
+
+    public function getCart($reload = false)
+    {
+        $cartModel = Ccc::getModel('Cart');
+        
+        if(!$this->customerId)
+        {
+            return $cartModel;
+        }
+
+        if($this->cart && !$reload)
+        { 
+            return $this->cartModel;
+        }
+
+        $cart = $cartModel->fetchRow("SELECT * from cart WHERE customerId = {$this->customerId};");
+        if(!$cart)
+        {
+            return $this->cartModel;
+        }
+        $this->setCart($cart);
+        return $cart;
+    }
+
+    public function setCart(Model_Cart $cart)
+    {
+        $this->cart = $cart;
+        return $this;
+    }
+
+    public function getOrder($reload = false)
+    {
+       // print_r($this);
+        $orderModel = Ccc::getModel('Order');
+        
+        if(!$this->customerId)
+        {
+            return $orderModel;
+        }
+
+        if($this->order && !$reload)
+        { 
+            return $this->orderModel;
+        }
+
+        $order = $orderModel->fetchRow("SELECT * from orders WHERE customerId = {$this->customerId};");
+        if(!$order)
+        {
+            return $this->orderModel;
+        }
+        $this->setorder($order);
+        return $order;
+    }
+
+    public function setorder(Model_order $order)
+    {
+        $this->order = $order;
+        return $this;
+    }
+
 
 }
 
