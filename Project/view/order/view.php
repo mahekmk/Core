@@ -92,13 +92,12 @@
 </table>
 <hr>
 
-<?php $cartItems = $this->getCartItems(); //print_r($cartItems); die; ?>
-<?php $cart = $this->getCart(); //print_r($cart); die; ?>
+<?php $cartItems = $this->getCartItems();  ?>
+<?php $cart = $this->getCart();  ?>
 <?php $totalDiscount = 0; ?>
 <?php foreach ($cartItems as $cartItem)
     {
-        $totalDiscount = $totalDiscount + $cartItem->discount;
-        //print_r($totalDiscount); die;
+        $totalDiscount = $totalDiscount + $cartItem->discount * $cartItem->quantity;
     } 
 ?>
 <h2>Order Details</h2>
