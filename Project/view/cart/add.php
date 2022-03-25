@@ -7,8 +7,8 @@
         <select name="customerId" onchange="url(this)">
             <option>Select Customer</option>
             <?php foreach ($customers as $customer):?>
-                <option value="<?php echo $customer->customerId?>">
-                	<?php echo $customer->customerId; ?>
+                <option value="<?php echo $customer->customerId ?>">
+                	<?php echo $customer->customerId . " - " . $customer->firstName; ?>
                 </option>
              <?php endforeach; ?>            
         </select>
