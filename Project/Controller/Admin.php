@@ -32,7 +32,8 @@ class Controller_Admin extends Controller_Core_Action
                 throw new Exception("unable to load admin.");
             }
             $content = $this->getLayout()->getContent();
-            $adminEdit = Ccc::getBlock("Admin_Edit")->setData(["admin" => $admin]);
+            Ccc::register('admin' , $admin);
+            $adminEdit = Ccc::getBlock("Admin_Edit");//->setData(["admin" => $admin]);
             $content->addChild($adminEdit);
             $this->renderLayout();       
         } 
@@ -48,7 +49,8 @@ class Controller_Admin extends Controller_Core_Action
         $this->setTitle('Admin Add');
         $admin = Ccc::getModel('Admin');
         $content = $this->getLayout()->getContent();
-        $adminAdd = Ccc::getBlock('Admin_Edit')->setData(["admin" => $admin]);
+        Ccc::register('admin' , $admin);
+        $adminAdd = Ccc::getBlock('Admin_Edit');//->setData(["admin" => $admin]);
         $content->addChild($adminAdd);
         $this->renderLayout(); 
       
