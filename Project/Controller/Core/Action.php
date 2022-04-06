@@ -93,64 +93,25 @@ class Controller_Core_Action
         return $adapter;
     }
 
-    public function renderLayout()
+   /* public function renderLayout()
     {
         echo $this->getLayout()->toHtml();
-    }
-
-   /* public function getUrl($action = null, $controller = null, array $parameters = null, $reset = false) 
-    {
-        $resultUrl = [];
-        if(!$controller)
-        {
-            $resultUrl['c'] = $this->getRequest()->getRequest('c'); 
-        }
-
-        else
-        {
-            $resultUrl['c'] = $controller;
-        }
-
-        if(!$action)
-        {
-            $resultUrl['a'] = $this->getRequest()->getRequest('a'); 
-        }
-        
-        else
-        {
-            $resultUrl['a'] = $action;
-        }
-
-        if($reset)
-        {
-            if($parameters)
-            {
-                $resultUrl = array_merge($resultUrl, $parameters);
-            }
-        }
-        
-        else
-        {
-            $resultUrl = array_merge($this->getRequest()->getRequest(), $resultUrl);
-        
-            if($parameters)
-            {
-                $resultUrl = array_merge($resultUrl, $parameters);
-            }
-        }
-        
-        $url = 'index.php?'.http_build_query($resultUrl);
-        return $url;
-    }
-
-    public function getBaseUrl($subUrl = null)
-    {
-        $url = "E:/xampp/htdocs/Cybercom/Core/Project";
-        if($subUrl){
-            $url = $url."/".$subUrl;
-        }
-        return $url;
     }*/
+
+   public function renderLayout()
+    {
+       echo $this->getResponse()
+            ->setHeader('content-type','text/html')
+            ->render($this->getLayout()->toHtml());
+    }
+
+    public function renderJson($content)
+    {
+       echo $this->getResponse()
+            ->setHeader('content-type','application/json')
+            ->render(json_encode($content));
+    }
+
 
     public function getMessage()
     {

@@ -9,13 +9,8 @@ class Block_Admin_Edit extends Block_Core_Edit
 		parent::__construct();
 		//$this->setTemplate('view/admin/edit.php');
 	}
-
-	/*public function getAdmin()
-	{
-		return $this->getData('admin');
-	}
-	*/
-	public function getEditUrl()
+	
+	public function getSaveUrl()
 	{
 		return $this->getUrl('save');
 	}

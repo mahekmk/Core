@@ -12,6 +12,60 @@ class Controller_Config extends Controller_Core_Action
         $this->renderLayout();         
     }
 
+    public function indexAction()
+    {
+        $content = $this->getLayout()->getContent();
+        $configGrid = Ccc::getBlock('Config_Index');
+        $content->addChild($configGrid);
+        $this->renderLayout();
+    }
+
+    public function gridBlockAction()
+    {
+        $configGrid = Ccc::getBlock("Config_Grid")->toHtml();
+        $messageBlock = Ccc::getBlock('Core_Message')->toHtml();
+        $response = [
+            'status' => 'success',
+            'content' => $configGrid,
+            'message' => $messageBlock,
+        ] ;
+        $this->renderJson($response);
+    }
+
+    public function editBlockAction()
+    {
+        $id = (int) $this->getRequest()->getRequest('id');
+        if(!$id)
+        {
+            throw new Exception("Id not valid.");
+        }
+        $config = Ccc::getModel('config')->load($id);
+        if(!$config)
+        {
+            throw new Exception("unable to load config.");
+        }
+        $content = $this->getLayout()->getContent();
+        Ccc::register('config',$config);
+        $configEdit = Ccc::getBlock("Config_Edit")->toHtml();
+        $response = [
+            'status' => 'success',
+            'content' => $configEdit
+        ] ;
+        $this->renderJson($response);          
+    }
+
+     public function addBlockAction()
+    {
+        $config = Ccc::getModel('Config');
+        Ccc::register('config',$config);
+        $configAdd =$this->getLayout()->getBlock('Config_Edit')->toHtml();
+        $response = [
+            'status' => 'success',
+            'content' => $configAdd
+         ] ;
+        $this->renderJson($response);
+    }
+
     public function editAction()
     {
         $message = $this->getMessage();
@@ -26,14 +80,15 @@ class Controller_Config extends Controller_Core_Action
                 throw new Exception("unable to load config.");
             }
             $content = $this->getLayout()->getContent();
-            $configEdit = Ccc::getBlock("Config_Edit")->setData(["config" => $config]);
+            Ccc::register('config' , $config);
+            $configEdit = Ccc::getBlock("Config_Edit");//->setData(["config" => $config]);
             $content->addChild($configEdit);
             $this->renderLayout();        
         } 
         catch (Exception $e) 
         {
             $message->addMessage($e->getMessage(),Model_Core_Message::ERROR);     
-            $this->redirect($this->getLayout()->getUrl('grid',null,null,true));
+            $this->redirect($this->getLayout()->getUrl('gridBlock',null,null,true));
         }
     }
 
@@ -41,7 +96,8 @@ class Controller_Config extends Controller_Core_Action
     {
         $config = Ccc::getModel('Config');
         $content = $this->getLayout()->getContent();
-        $configAdd = Ccc::getBlock('Config_Edit')->setData(["config" => $config]);
+        Ccc::register('config' , $config);
+        $configAdd = Ccc::getBlock('Config_Edit');//->setData(["config" => $config]);
         $content->addChild($configAdd);
         $this->renderLayout();
     }
@@ -78,12 +134,12 @@ class Controller_Config extends Controller_Core_Action
                 throw new Exception("System is unable to update information.");
             }
             $message->addMessage('Data Saved Successfully'); 
-            $this->redirect($this->getLayout()->getUrl('grid',null,['id' => null],false));
+            $this->redirect($this->getLayout()->getUrl('gridBlock',null,['id' => null],false));
         }
         catch(Exception $e)
         {
             $message->addMessage($e->getMessage(),Model_Core_Message::ERROR);         
-            $this->redirect($this->getLayout()->getUrl('grid',null,['id' => null],false));
+            $this->redirect($this->getLayout()->getUrl('gridBlock',null,['id' => null],false));
         }
     }
 
@@ -107,12 +163,12 @@ class Controller_Config extends Controller_Core_Action
                 throw new Exception("System is unable to delete record.");
             }
             $message->addMessage('Data Deleted Successfully');
-           $this->redirect($this->getLayout()->getUrl('grid',null,['id' => null],false));
+           $this->redirect($this->getLayout()->getUrl('gridBlock',null,['id' => null],false));
         }
         catch(Exception $e)
         {
             $message->addMessage($e->getMessage(),Model_Core_Message::ERROR);         
-            $this->redirect($this->getLayout()->getUrl('grid',null,['id' => null],false));
+            $this->redirect($this->getLayout()->getUrl('gridBlock',null,['id' => null],false));
         }
     }
 

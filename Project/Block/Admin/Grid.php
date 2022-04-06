@@ -1,7 +1,7 @@
-<?php Ccc::loadClass('Block_Core_Grid_Collection'); ?>
+<?php Ccc::loadClass('Block_Core_Grid'); ?>
 
 <?php 
-class Block_Admin_Grid extends Block_Core_Grid_Collection
+class Block_Admin_Grid extends Block_Core_Grid
 {
 	public function __construct()
 	{
@@ -17,25 +17,61 @@ class Block_Admin_Grid extends Block_Core_Grid_Collection
 	{
 		return $this->getUrl('delete',null,['id'=>$admin->adminId]);
 	}
+
 	public function prepareActions()
 	{
-		$this->addAction([
+		$this->setActions([
 			['title'=>'Edit','method'=>'getEditUrl'],
 			['title'=>'Delete','method'=>'getDeleteUrl']
-			],'actions');
+			]);
 		return $this;
 	}
 
 	public function prepareCollections()
 	{
-		$this->addCollection([$this->getAdmins() ],'collection');
+		$this->setCollections($this->getAdmins());
 	}
 
 	public function prepareColumns()
 	{
-		$this->addColumn([
-			'AdminId','First Name', 'Last Name','Email','Status','Created Date','Updated Date'
-		],'columns');
+		parent::prepareColumns();
+
+		$this->addColumn('adminId', [
+			'title' => 'Admin Id',
+			'type' => 'int',
+		]);
+
+		$this->addColumn('firstName',[
+			'title' => 'First Name',
+			'type' => 'varchar',
+		]);
+
+		$this->addColumn('lastName',[
+			'title' => 'Last Name',
+			'type' => 'varchar',
+		]);
+
+		$this->addColumn('email',[
+			'title' => 'Email',
+			'type' => 'varchar',
+		]);
+
+		$this->addColumn('status',[
+			'title' => 'Status',
+			'type' => 'int',
+		]);
+
+		$this->addColumn('createdAt',[
+			'title' => 'Created At',
+			'type' => 'datetime',
+		]);
+
+		$this->addColumn('updatedAt',[
+			'title' => 'UpdatedAt',
+			'type' => 'datetime',
+		]);
+
+		return $this;
 	}
 	
 	public function getAdmins()

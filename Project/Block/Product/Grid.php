@@ -1,14 +1,113 @@
-<?php
-Ccc::loadClass('Block_Core_Template');
-class Block_Product_Grid extends Block_Core_Template   
-{ 
-	protected $pager;
+<?php 
+
+Ccc::loadClass('Block_Core_Grid');
+class Block_Product_Grid extends Block_Core_Grid
+{
 	public function __construct()
 	{
-		$this->setTemplate('view/product/grid.php');
+		parent::__construct();
 	}
 
-   public function getProducts()
+	public function getEditUrl($product)
+	{
+		return $this->getUrl('edit',null,['id'=>$product->productId]);
+	}
+	
+	public function getDeleteUrl($product)
+	{
+		return $this->getUrl('delete',null,['id'=>$product->productId]);
+	}
+	public function prepareActions()
+	{
+		$this->setActions([
+			['title'=>'Edit','method'=>'getEditUrl'],
+			['title'=>'Delete','method'=>'getDeleteUrl']
+			]);
+		return $this;
+	}
+
+	public function prepareCollections()
+	{
+		$this->setCollections($this->getProducts());
+	}
+
+	public function prepareColumns()
+	{
+		parent::prepareColumns();
+
+		$this->addColumn('productId', [
+			'title' => 'Product Id',
+			'type' => 'int',
+		]);
+
+		$this->addColumn('name',[
+			'title' => 'Name',
+			'type' => 'varchar',
+		]);
+
+		$this->addColumn('sku',[
+			'title' => 'Sku',
+			'type' => 'int',
+		]);
+
+		$this->addColumn('price',[
+			'title' => 'Price',
+			'type' => 'int',
+		]);
+
+		$this->addColumn('cost',[
+			'title' => 'Cost',
+			'type' => 'float',
+		]);
+
+		$this->addColumn('quantity',[
+			'title' => 'Quantity',
+			'type' => 'int',
+		]);
+
+		$this->addColumn('tax',[
+			'title' => 'Tax',
+			'type' => 'decimal',
+		]);
+
+		$this->addColumn('discountMode',[
+			'title' => 'Discount Mode',
+			'type' => 'tinyInt',
+		]);
+
+		$this->addColumn('baseImage',[
+			'title' => 'Base Image',
+			'type' => 'tinyInt',
+		]);
+
+		$this->addColumn('smallImage',[
+			'title' => 'Small Image',
+			'type' => 'tinyInt',
+		]);
+
+		$this->addColumn('thumbImage',[
+			'title' => 'Thumb Image',
+			'type' => 'tinyInt',
+		]);
+
+		$this->addColumn('status',[
+			'title' => 'Status',
+			'type' => 'int',
+		]);
+
+		$this->addColumn('createdAt',[
+			'title' => 'Created At',
+			'type' => 'datetime',
+		]);
+
+		$this->addColumn('updatedAt',[
+			'title' => 'UpdatedAt',
+			'type' => 'datetime',
+		]);
+
+		return $this;
+	}
+	public function getProducts()
    {
    		$product = Ccc::getFront()->getRequest()->getRequest('p',1);
 		$perPageCount = Ccc::getFront()->getRequest()->getRequest('rpp',10);
@@ -25,7 +124,7 @@ class Block_Product_Grid extends Block_Core_Template
 		return $products;
    }
 
-    public function getPager()
+	public function getPager()
 	{
 		return $this->pager;
 	}
@@ -37,6 +136,6 @@ class Block_Product_Grid extends Block_Core_Template
 	}
 }
 
-
-
+?>
+	
 

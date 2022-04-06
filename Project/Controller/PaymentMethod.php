@@ -12,6 +12,61 @@ class Controller_PaymentMethod extends Controller_Core_Action
         $this->renderLayout();         
     }
 
+     public function indexAction()
+    {
+        $content = $this->getLayout()->getContent();
+        $paymentMethodGrid = Ccc::getBlock('PaymentMethod_Index');
+        $content->addChild($paymentMethodGrid);
+        $this->renderLayout();
+    }
+
+    public function gridBlockAction()
+    {
+        $paymentMethodGrid = Ccc::getBlock("PaymentMethod_Grid")->toHtml();
+        $messageBlock = Ccc::getBlock('Core_Message')->toHtml();
+        $response = [
+            'status' => 'success',
+            'content' => $paymentMethodGrid,
+            'message' => $messageBlock,
+        ] ;
+        $this->renderJson($response);
+
+    }
+
+    public function editBlockAction()
+    {
+        $id = (int) $this->getRequest()->getRequest('id');
+        if(!$id)
+        {
+            throw new Exception("Id not valid.");
+        }
+        $paymentMethod = Ccc::getModel('paymentMethod')->load($id);
+        if(!$paymentMethod)
+        {
+            throw new Exception("unable to load paymentMethod.");
+        }
+        $content = $this->getLayout()->getContent();
+        Ccc::register('paymentMethod',$paymentMethod);
+        $paymentMethodEdit = Ccc::getBlock("PaymentMethod_Edit")->toHtml();
+        $response = [
+            'status' => 'success',
+            'content' => $paymentMethodEdit
+        ] ;
+        $this->renderJson($response);          
+    }
+
+    public function addBlockAction()
+    {
+        $paymentMethod = Ccc::getModel('PaymentMethod');
+        Ccc::register('paymentMethod',$paymentMethod);
+        $paymentMethodAdd =$this->getLayout()->getBlock('PaymentMethod_Edit')->toHtml();
+        $response = [
+            'status' => 'success',
+            'content' => $paymentMethodAdd
+         ] ;
+        $this->renderJson($response);
+    }
+
     public function editAction()
     {
         $message = $this->getMessage();
@@ -26,14 +81,15 @@ class Controller_PaymentMethod extends Controller_Core_Action
                 throw new Exception("unable to load paymentMethod.");
             }
             $content = $this->getLayout()->getContent();
-            $paymentMethodEdit = Ccc::getBlock("PaymentMethod_Edit")->setData(["paymentMethod" => $paymentMethod]);
+            Ccc::register('paymentMethod' , $paymentMethod);
+            $paymentMethodEdit = Ccc::getBlock("PaymentMethod_Edit");//->setData(["paymentMethod" => $paymentMethod]);
             $content->addChild($paymentMethodEdit);
             $this->renderLayout();        
         } 
         catch (Exception $e) 
         {
             $message->addMessage($e->getMessage(),Model_Core_Message::ERROR);     
-            $this->redirect($this->getLayout()->getUrl('grid',null,null,true));
+            $this->redirect($this->getLayout()->getUrl('gridBlock',null,null,true));
         }
     }
 
@@ -41,7 +97,8 @@ class Controller_PaymentMethod extends Controller_Core_Action
     {
         $paymentMethod = Ccc::getModel('PaymentMethod');
         $content = $this->getLayout()->getContent();
-        $paymentMethodAdd = Ccc::getBlock('PaymentMethod_Edit')->setData(["paymentMethod" => $paymentMethod]);
+        Ccc::register('paymentMethod' , $paymentMethod);
+        $paymentMethodAdd = Ccc::getBlock('PaymentMethod_Edit');//->setData(["paymentMethod" => $paymentMethod]);
         $content->addChild($paymentMethodAdd);
         $this->renderLayout();
     }
@@ -80,12 +137,12 @@ class Controller_PaymentMethod extends Controller_Core_Action
                 throw new Exception("System is unable to update information.");
             }
             $message->addMessage('Data Saved Successfully'); 
-            $this->redirect($this->getLayout()->getUrl('grid',null,['id' => null],false));
+            $this->redirect($this->getLayout()->getUrl('gridBlock',null,['id' => null],false));
         }
         catch(Exception $e)
         {
             $message->addMessage($e->getMessage(),Model_Core_Message::ERROR);         
-            $this->redirect($this->getLayout()->getUrl('grid',null,['id' => null],false));
+            $this->redirect($this->getLayout()->getUrl('gridBlock',null,['id' => null],false));
         }
     }
 
@@ -107,12 +164,12 @@ class Controller_PaymentMethod extends Controller_Core_Action
                 throw new Exception("System is unable to delete record.");
             }
             $message->addMessage('Data Deleted Successfully');
-           $this->redirect($this->getLayout()->getUrl('grid',null,['id' => null],false));
+           $this->redirect($this->getLayout()->getUrl('gridBlock',null,['id' => null],false));
         }
         catch(Exception $e)
         {
             $message->addMessage($e->getMessage(),Model_Core_Message::ERROR);         
-            $this->redirect($this->getLayout()->getUrl('grid',null,['id' => null],false));
+            $this->redirect($this->getLayout()->getUrl('gridBlock',null,['id' => null],false));
         }
     }
 

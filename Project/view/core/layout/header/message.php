@@ -1,4 +1,6 @@
-<?php 
+<center>
+<?php
+ 
 $message = Ccc::getBlock('Core_Message');
 $messages = $message->getMessages();
 
@@ -10,3 +12,4 @@ if($messages)
         }
 } 
 ?>     
+</center>

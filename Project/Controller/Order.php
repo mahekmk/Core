@@ -12,6 +12,39 @@ class Controller_Order extends Controller_Core_Action
         $this->renderLayout();
     }
 
+    public function indexAction()
+    {
+        $content = $this->getLayout()->getContent();
+        $orderGrid = Ccc::getBlock('Order_Index');
+        $content->addChild($orderGrid);
+        $this->renderLayout();
+    }
+
+    public function gridBlockAction()
+    {
+        $orderGrid = Ccc::getBlock("Order_Grid")->toHtml();
+        $messageBlock = Ccc::getBlock('Core_Message')->toHtml();
+        $response = [
+            'status' => 'success',
+            'content' => $orderGrid,
+            'message' => $messageBlock,
+        ] ;
+        $this->renderJson($response);
+    }
+
+    public function addBlockAction()
+    {
+        $cartModel = Ccc::getModel('Cart');
+        $customers = $cartModel->getCustomers();
+        Ccc::register('cartCustomer' , $customers);
+        $cartAdd = $this->getLayout()->getBlock('Cart_Add')->toHtml();//->setData(['customers' => $customers]);
+         $response = [
+            'status' => 'success',
+            'content' => $cartAdd
+         ] ;
+        $this->renderJson($response);
+    }
+
     public function saveOrderAction()
     {
         $message = $this->getMessage();
@@ -88,7 +121,8 @@ class Controller_Order extends Controller_Core_Action
         $orderModel->paymentMethodId = $cartModel->paymentMethodId;
         $orderModel->shippingAmount = $cartModel->shippingAmount;
         $orderModel->createdAt = $date;
-        $orderModel->save();
+        $result = $orderModel->save();
+        $ordId = $result->orderId;
 
         $orderBillingAddress = $orderModel->getBillingAddress();
         $orderShippingAddress = $orderModel->getShippingAddress();
@@ -110,6 +144,7 @@ class Controller_Order extends Controller_Core_Action
         $orderBillingAddress->type = 1 ;
         $orderBillingAddress->createdAt = $date ;
         $orderBillingAddress->save() ;
+
 
         if(!$orderShippingAddress)
         {
@@ -162,9 +197,14 @@ class Controller_Order extends Controller_Core_Action
             $orderItemModel->createdAt = $date;
             $orderItemModel->save();
         }
-    
+
+        $orderCommentModel = Ccc::getModel('Order_Comment');
+        $orderCommentModel->orderId = $ordId;
+        $orderCommentModel->createdAt = $date;
+        $orderCommentModel->save();
+
         $message->addMessage('Order Added Successfully.');
-        $this->redirect($this->getLayout()->getUrl('grid','order',null,true));
+        $this->redirect($this->getLayout()->getUrl('gridBlock','order',null,true));
         
     }
 
@@ -186,7 +226,8 @@ class Controller_Order extends Controller_Core_Action
                 throw new Exception("Invalid Id.");
             }
             $content = $this->getLayout()->getContent();
-            $orderEdit = Ccc::getBlock('Order_Edit')->setData(['order' => $order]);
+            Ccc::register('order' , $order);
+            $orderEdit = Ccc::getBlock('Order_Edit');//->setData(['order' => $order]);
             $content->addChild($orderEdit);
             $this->renderLayout();
         }
@@ -240,17 +281,44 @@ class Controller_Order extends Controller_Core_Action
         catch (Exception $e) 
         {
             $message->addMessage($e->getMessage(), Model_Core_Message::ERROR);
-            $this->redirect($this->getLayout()->getUrl('grid', 'order', ['id' => null], false));        
+            $this->redirect($this->getLayout()->getUrl('grid', 'order', ['id' => null], false));  
         }
     }
 
     public function viewAction()
     {
-        $orderId = (int)$this->getRequest()->getRequest('id');
-        $this->setTitle('Order Grid');
-        $content = $this->getLayout()->getContent();
-        $orderGrid = Ccc::getBlock('Order_View');
-        $content->addChild($orderGrid);
-        $this->renderLayout();
+        $viewOrder = Ccc::getBlock("Order_View")->toHtml();
+        $messageBlock = Ccc::getBlock('Core_Message')->toHtml();
+        $response = [
+            'status' => 'success',
+            'content' => $viewOrder,
+            'message' => $messageBlock,
+        ] ;
+        $this->renderJson($response);
+    }
+
+    public function orderCommentAction()
+    {
+        $message = $this->getMessage();
+        date_default_timezone_set("Asia/Kolkata");
+        $date = date('Y-m-d H:i:s');
+        $orderId = $this->getRequest()->getRequest('id');
+        $row = $this->getRequest()->getPost('orderComment'); 
+        $orderCommentModel = Ccc::getModel('Order_Comment');
+        $orderCommentModel->orderId = $orderId;
+        $orderCommentModel->status = $row['status'];
+        $orderCommentModel->note = $row['note'];
+        if(array_key_exists('checkbox',$row ))
+        {
+            $orderCommentModel->customerNotified = 1;
+        }
+        else
+        {
+            $orderCommentModel->customerNotified = 0;
+        }
+        $orderCommentModel->createdAt = $date;
+        $orderCommentModel->save();
+        $message->addMessage('Order Comment Updated Successfully.');
+        $this->redirect($this->getLayout()->getUrl('gridBlock','order',null,true));
     }
 }

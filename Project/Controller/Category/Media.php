@@ -14,6 +14,19 @@ class Controller_Category_Media extends Controller_Core_Action
       $this->renderLayout();     
    }
 
+   public function gridBlockAction()
+    {
+         $adminGrid = Ccc::getBlock("Category_Media_Grid")->toHtml();
+        $messageBlock = Ccc::getBlock('Core_Message')->toHtml();
+         $response = [
+            'status' => 'success',
+            'content' => $adminGrid,
+            'message' => $messageBlock,
+         ] ;
+        $this->renderJson($response);
+
+    }
+
    public function saveAction()
    {
       $message = $this->getMessage();
@@ -127,8 +140,7 @@ class Controller_Category_Media extends Controller_Core_Action
          }
 
          $message->addMessage('Data Updated Successfully'); 
-         $this->redirect($this->getLayout()->getUrl('grid','category_media',['id'=> $categoryId]));
-
+         $this->redirect($this->getLayout()->getUrl('gridBlock','category',['id'=> $categoryId]));
       } catch (Exception $e) 
       {
          $message->addMessage($e->getMessage(),Model_Core_Message::ERROR);

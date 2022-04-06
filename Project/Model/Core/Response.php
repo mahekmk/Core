@@ -1,5 +1,4 @@
 <?php 
-
 class Model_Core_Response
 {
 	public function render($content)
@@ -13,4 +12,5 @@ class Model_Core_Response
 		return $this;
 	}
 }
+
 

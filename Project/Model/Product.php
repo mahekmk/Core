@@ -1,5 +1,5 @@
+<?php Ccc::loadClass("Model_Core_Row"); ?>
 <?php
-Ccc::loadClass('Model_Core_Row');
 class Model_Product extends Model_Core_Row
 {
     protected $medias;
@@ -7,43 +7,67 @@ class Model_Product extends Model_Core_Row
     protected $thumb;
     protected $small;
     protected $gallery;
-
-	const STATUS_ENABLED = 1;
-	const STATUS_DISABLED = 2;
-	const STATUS_DEFAULT = 1;
-	const STATUS_ENABLED_LBL = 'Active';
-	const STATUS_DISABLED_LBL = 'InActive';
+    const STATUS_ENABLED = 1;
+    const STATUS_DISABLED = 2;
+    const STATUS_DEFAULT = 1;
+    const STATUS_ENABLED_LBL = 'Active';
+    const STATUS_DISABLED_LBL = 'InActive';
 
     const DISCOUNT_MODE_PER = 1;
     const DISCOUNT_MODE_PRICE = 2;
     const DISCOUNT_MODE_DEFAULT = 1;
-    const DISCOUNT_MODE_PER_LBL = 'In Percentage';
-    const DISCOUNT_MODE_PRICE_LBL = 'In Price';
+    const DISCOUNT_MODE_PER_LBL = 'AS Percentage';
+    const DISCOUNT_MODE_PRICE_LBL = 'As Price';
 
-	public function __construct()
-	{
-		$this->setResourceClassName('Product_Resource');
-		parent::__construct();
-	}
+    public function __construct()
+    {
+        $this->setResourceClassName('Product_Resource');
+        parent::__construct();
+    }
 
-	public function getStatus($key = null)
-	{		
-		
-		$statues = [self::STATUS_ENABLED => self::STATUS_ENABLED_LBL,
-					self::STATUS_DISABLED => self::STATUS_DISABLED_LBL];
+    public function saveCategories($categoryIds , $productId = null)
+    {
 
-		if(!$key)
-		{
-			return $statues;
-		}
+        global $adapter;
+        $query = "DELETE FROM category_product WHERE productId = {$productId}";
+        $adapter->delete($query);
 
-		if(array_key_exists($key , $statues))
-		{
-			return $statues[$key];
-		}
+            foreach ($categoryIds as $categoryId) 
+                {   
+                    $categoryProduct = Ccc::getModel('Category_Product');
+                    $categoryProduct->productId = $productId;
+                    $categoryProduct->categoryId = $categoryId;
+                    $categoryProduct->save();
+                }
+        
+        /*foreach ($categoryIds as $categoryId) 
+        {       
+            $categoryProduct = Ccc::getModel('Category_Product');
+            $categoryProduct->productId = $productId;
+            $categoryProduct->categoryId = $categoryId;
+            $categoryProduct->save();
+            print_r($productId); die;
+        }*/
+       return;
+    }
+    public function getStatus($key = null)
+    {       
+        
+        $statues = [self::DISCOUNT_MODE_PER => self::STATUS_ENABLED_LBL,
+                    self::STATUS_DISABLED => self::STATUS_DISABLED_LBL];
 
-		return self::STATUS_DEFAULT;
-	}	
+        if(!$key)
+        {
+            return $statues;
+        }
+
+        if(array_key_exists($key , $statues))
+        {
+            return $statues[$key];
+        }
+
+        return self::DISCOUNT_MODE_DEFAULT;
+    }
 
     public function getDiscountMode($key = null)
     {       
@@ -63,7 +87,6 @@ class Model_Product extends Model_Core_Row
 
         return self::STATUS_DEFAULT;
     }
-
     public function getMedias($reload = false)
     {
         $mediasModel = Ccc::getModel('Product_Media');
@@ -77,13 +100,14 @@ class Model_Product extends Model_Core_Row
         { 
             return $this->medias;
         }
-        $medias = $mediasModel->fetchAll("SELECT * from product_media");
+        $medias = $mediasModel->fetchAll("SELECT * from product_media where productId = $this->productId");
+
         if(!$medias)
         {
             return $mediasModel;
         }
-        $this->setMedias($medias);
         return $medias;
+        $this->setMedias($medias);
     }
 
     public function setMedias(Model_Product_Media $medias)
@@ -207,34 +231,6 @@ class Model_Product extends Model_Core_Row
         $this->gallery = $gallery;
         return $this;
     }
-
-	public function saveCategories($categoryIds , $productId = null)
-	{
-		global $adapter;
-		$query = "DELETE FROM category_product WHERE productId = {$this->productId}";
-		$adapter->delete($query);
-
-		if($productId)
-		{
-
-			foreach ($categoryIds as $categoryId) 
-				{		
-					$categoryProduct = Ccc::getModel('Category_Product');
-					$categoryProduct->productId = $productId;
-					$categoryProduct->categoryId = $categoryId;
-					$categoryProduct->save();
-				}
-		}
-		else
-		{
-			foreach ($categoryIds as $categoryId) 
-			{		
-				$categoryProduct = Ccc::getModel('Category_Product');
-				$categoryProduct->productId = $this->productId;
-				$categoryProduct->categoryId = $categoryId;
-				$categoryProduct->save();
-			}
-		}
-	}
 }
+
 

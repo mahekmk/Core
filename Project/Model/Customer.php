@@ -1,3 +1,4 @@
+
 <?php
 
 Ccc::loadClass('Model_Core_Row');
@@ -65,12 +66,12 @@ class Model_Customer extends Model_Core_Row
         $addressModel = Ccc::getModel('Customer_Address');
         if(!$this->customerId)
         {
-            echo 22;
+            //echo 22;
             return $addressModel;
         }
         if($this->billingAddress && !$reload)
         {
-            echo 33;
+            //echo 33;
             return $this->billingAddress;
         }
 
