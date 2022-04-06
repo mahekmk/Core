@@ -3,7 +3,7 @@
 class Model_Core_Pager 
 {
 	protected $totalCount = 0;
-	protected $perPageCountOptions = [2,4,5,10,15,20,100];
+	protected $perPageCountOptions = [1,2,3,4,5,10,15,20,100];
 	protected $pageCount = 0;
 	protected $perPageCount = 10;
 	protected $start = 0;

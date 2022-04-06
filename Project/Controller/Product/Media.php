@@ -1,183 +1,247 @@
+<?php Ccc::loadClass('Controller_Core_Action'); ?>
+<?php Ccc::loadClass('Model_Product_Media'); ?>
+<?php Ccc::loadClass('Model_Core_Request'); ?>
 <?php
-
-Ccc::loadClass('Controller_Core_Action');
-Ccc::loadClass('Model_Core_Request');
 
 class Controller_Product_Media extends Controller_Core_Action
 {
    public function gridAction()
-   { 
-      $this->setTitle('Product Media Grid');
-      $content = $this->getLayout()->getContent();
-      $mediaGrid = Ccc::getBlock("Product_Media_Grid");
-      $content->addChild($mediaGrid);
-      $this->renderLayout();   
+   {
+        $this->setTitle("Media Grid");
+        $content = $this->getLayout()->getContent();
+        $mediaGrid = Ccc::getBlock("Product_Media_grid");
+        $content->addChild($mediaGrid);
+        $this->renderLayout();
    }
 
+   public function gridBlockAction()
+    {
+         $productMediaGrid = Ccc::getBlock("Product_Media_Grid")->toHtml();
+        $messageBlock = Ccc::getBlock('Core_Message')->toHtml();
+         $response = [
+            'status' => 'success',
+            'content' => $productMediaGrid,
+            'message' => $messageBlock,
+         ] ;
+        $this->renderJson($response);
+
+    }
+
    public function saveAction()
-   {
-      $message = $this->getMessage();
-      try 
-      {
+    {
+        $message = $this->getMessage();
+        $adapter = $this->getAdapter();
+        try 
+        {
+
           $productId = $this->getRequest()->getRequest('id');
 
           $mediaModel = Ccc::getModel('Product_Media');
 
-          if(!$this->getRequest()->isPost()){
+          if(!$this->getRequest()->isPost())
+          {
             throw new Exception("Invalid Request" );
           }
 
-         $rows = $this->getRequest()->getPost();
-         $media = $rows['media'];
-      
-       if(array_key_exists('remove',$media))
-         {
-            $message = $this->getMessage();
-            $removeArr = $rows['media']['remove'];
-            $removeIds = [];
-            foreach($removeArr as $key => $value)
+          $rows = $this->getRequest()->getPost();
+         
+         if(!$rows)
             {
-               array_push($removeIds ,$value);
-            }
-           
-            $removeIdsImplode = implode(",",$removeIds);
-            $query1 = "SELECT imageId , image FROM `product_media` WHERE imageId IN($removeIdsImplode) ";
-            $result1 = $this->getAdapter()->fetchPairs($query1);
-            $query="DELETE FROM `product_media` WHERE imageId IN($removeIdsImplode)";
-            $result = $this->getAdapter()->delete($query);
-            if(!$result)
-            {
-               throw new Exception("Unable to delete record." );
+                throw new Exception("Id not valid.");
             }
 
-            foreach($result1 as $key => $value)
+            $media = $rows['media'];
+            $removeArr = $rows['media']['remove'];
+
+            if(array_key_exists('remove',$media))
             {
+                 
+                $removeIds = [];
+                foreach($removeArr as $key => $value)
+                {
+                   array_push($removeIds ,$value);
+                }
+                $removeIdsImplode = implode(",",$removeIds);
+
+                $query1 = "SELECT imageId , image FROM `product_media` WHERE `imageId` IN($removeIdsImplode) ";
+                $result1 = $adapter->fetchPairs($query1);
+                
+                $query="DELETE FROM `product_media` WHERE `imageId` IN($removeIdsImplode)";
+                $result = $adapter->delete($query);
+                if(!$result)
+                {
+                    throw new Exception("System is unable to delete record.");
+                }
+                $message->addMessage('Delete Successfully.');   
+                foreach($result1 as $key => $value){
                if($result)
                {
-                  unlink( $mediaModel->getImagePath() . $value);
+                  unlink($mediaModel->getImagePath() . $value);
                }
             }
-         }
+                    
+            }
 
-         $query = "SELECT imageId,productId FROM `product_media` WHERE productId = $productId";
-         $result = $this->getAdapter()->fetchPairs($query);
-         $ids = array_keys($result);
-         $implodeIds = implode(",",$ids);
-         $query = "UPDATE `product_media` SET status = 0, thumb = 0, base = 0, small = 0 , gallery = 0 WHERE imageId IN ($implodeIds)";
-         $result = $this->getAdapter()->update($query);      
+            
+            $query = "SELECT imageId,productId FROM `product_media` WHERE `productId` = $productId";
+            $result = $adapter->fetchPairs($query);
 
-         if(array_key_exists('status',$media))
-         {
-            $statusArr = $rows['media']['status'];
-            $statusIds = [];
-            foreach($statusArr as $key => $value)
-            {
-               array_push($statusIds,$value);
-            } 
-            $statusIdsImplode = implode(",",$statusIds);
-            $query = "UPDATE `product_media` SET `status` = 1 WHERE `imageId` IN ($statusIdsImplode)";
-            $result = $this->getAdapter()->update($query);
             if(!$result)
             {
-               throw new Exception("Unable to update status" );
+                throw new Exception("System is unable to fetch Pairs.");
             }
-         }
+            $ids = array_keys($result);
+            $implodeIds = implode(",",$ids);
+            
+            $query = "UPDATE `product_media` SET status = 0, thumb = 0, base = 0, small = 0 , gallery = 0 WHERE imageId IN ($implodeIds)";
+           
+            $result = $adapter->update($query);
 
-         if(array_key_exists('gallery',$media))
-         {
-            $galleryArr = $rows['media']['gallery'];
-            $galleryIds = [];
-            foreach($galleryArr as $key => $value)
+            if(!$result)
+                {
+                throw new Exception("Update Unsuccessfully.");
+                }
+                $message->addMessage('Update Successfully.');
+
+
+            $status = $rows['media']['status'];
+            if(array_key_exists('status',$media))
             {
-               array_push($galleryIds,$value);
-            } 
-            $galleryIdsImplode = implode(",",$galleryIds);
-            $query = "UPDATE `product_media` SET gallery = 1 WHERE imageId IN ($galleryIdsImplode)";
-            $result = $this->getAdapter()->update($query);
-             if(!$result){
-               throw new Exception("Unable to update gallary." );
+                $statusIds = [];
+                foreach($status as $key => $value)
+                {
+                   array_push($statusIds ,$value);
+                }
+                $statusIdsImplode = implode(",",$statusIds);
+               
+                $query="UPDATE `product_media` SET `status`= 1 WHERE `imageId` IN($statusIdsImplode)";
+                $result = $adapter->update($query);
+                 
+                 if(!$result)
+                {
+                    throw new Exception("Update Unsuccessfully.");
+                }
+                $message->addMessage('Update Successfully.');
             }
-         }  
 
-         if(array_key_exists('base',$media))
-         {
-            $baseId = $rows['media']['base'];
-            $query = "UPDATE `product_media` SET base = 1 WHERE imageId = {$baseId}";
-            $result = $this->getAdapter()->update($query);
-            if(!$result){
-               throw new Exception("Unable to update base image." );
+
+            $gallery = $rows['media']['gallery'];
+            if(array_key_exists('gallery',$media))
+            {
+                $galleryIds = [];
+                foreach($gallery as $key => $value)
+                {
+                   array_push($galleryIds ,$value);
+                }
+                print_r($galleryIds);
+                $galleryIdsImplode = implode(",",$galleryIds);
+                $query="UPDATE `product_media` SET `gallery`= 1 WHERE `imageId` IN($galleryIdsImplode)";
+               
+         
+                $result = $adapter->update($query);
+                 
+                 if(!$result)
+                {
+                    throw new Exception("Update Unsuccessfully.");
+                }
+                $message->addMessage('Update Successfully.');
             }
-         }
 
-         if(array_key_exists('small',$media))
-         {
-            $smallId = $rows['media']['small'];
-            $query = "UPDATE `product_media` SET small = 1 WHERE imageId = {$smallId}";
-            $result = $this->getAdapter()->update($query);
-            if(!$result){
-               throw new Exception("Unable to update small image." );
+
+
+             $base = $rows['media']['base'];
+            if(array_key_exists('base',$media))
+            {
+                $query="UPDATE `product_media` SET `base`= 1 WHERE `imageId` = {$base}";
+                $result = $adapter->update($query);
+                 
+                 if(!$result)
+                {
+                    throw new Exception("Update Unsuccessfully.");
+                }
+                $message->addMessage('Update Successfully.');
             }
-         }
 
-         if(array_key_exists('thumb',$media))
-         {
-            $thumbId = $rows['media']['thumb'];
-            $query = "UPDATE `product_media` SET thumb = 1 WHERE imageId = {$thumbId}";
-           $result = $this->getAdapter()->update($query);
-           if(!$result){
-               throw new Exception("Unable to update thumb image." );
+            $thumb = $rows['media']['thumb'];
+            if(array_key_exists('thumb',$media))
+            {
+                $query="UPDATE `product_media` SET `thumb`= 1 WHERE `imageId` = {$thumb}";
+                $result = $adapter->update($query);
+                 
+                 if(!$result)
+                {
+                    throw new Exception("Update Unsuccessfully.");
+                }
+                $message->addMessage('Update Successfully.');
             }
-         }
 
-         $message->addMessage('Data Updated Successfully'); 
-         $this->redirect($this->getLayout()->getUrl('grid','product_media',['id'=> $productId]));
+            $small = $rows['media']['small'];
+            if(array_key_exists('small',$media))
+            {
+                $query="UPDATE `product_media` SET `small`= 1 WHERE `imageId` = {$small}";
+                $result = $adapter->update($query);
+                 
+                 if(!$result)
+                {
+                    throw new Exception("Update Unsuccessfully.");
+                }
+                $message->addMessage('Update Successfully.');
+            }
+
+          $this->redirect($this->getLayout()->getUrl('gridBlock','product',['id'=> $productId]));
 
       } catch (Exception $e) 
       {
-         $message->addMessage($e->getMessage(),Model_Core_Message::ERROR);         
-         $this->redirect($this->getLayout()->getUrl('grid','product_media',['id'=> $productId]));
+          $message->addMessage($e->getMessage(),Model_Core_Message::ERROR);
+            $this->redirect($this->getLayout()->getUrl('grid',null,null,true));
       }
    }
 
-   public function addAction()
-   {
-      try 
-      {
-         $message = $this->getMessage();  
-         $productId = $_GET['id'];
-         $imageName1 = $_FILES['image']['name'];
-         $imageAddress1 = $_FILES['image']['tmp_name'];
-         $imageName = implode("", $imageName1);
-         $imageName = date("mjYhis")."-".$imageName;
-         $imageAddress = implode("", $imageAddress1);
-         $mediaModel = Ccc::getModel('Product_Media');
-     
-         if(move_uploaded_file($imageAddress , $mediaModel->getImagePath() . $imageName))
+       public function addAction()
+       {
+
+        try {
+              $message = $this->getMessage();
+              $productId = $this->getRequest()->getRequest('id');
+              $mediaModel = Ccc::getModel('Product_Media');
+              $imageName1 = $_FILES['image']['name'];
+              $imageAddress1 = $_FILES['image']['tmp_name'];
+              $imageName = implode("", $imageName1);
+              $imageName = date("mjYhis")."-".$imageName;
+              $imageAddress = implode("", $imageAddress1);
+    
+      if(move_uploaded_file($imageAddress , $mediaModel->getImagePath() . $imageName))
          {
-            $query =  "INSERT INTO `product_media`( `productId`, `image`, `base`, `thumb`, `small`, `gallery`, `status`) VALUES ($productId,'$imageName',0,0,0,0,0)";
-            $result = $this->getAdapter()->insert($query);
+            $adapter = $this->getAdapter();
+            $query =  "INSERT INTO `product_media`( `productId`, `image`, `base`, `thumb`, `small`, `gallery`, `status`) VALUES ({$productId},'$imageName',0,0,0,0,0)";
+          
+            $result = $adapter->insert($query);
+           
             if(!$result)
-            {
-               throw new Exception("Image not added." );
-            }
-            $message->addMessage('Image added Successfully.');
-            $this->redirect($this->getLayout()->getUrl('grid','product_media',['id'=> $productId]));
+                {
+                    throw new Exception("Insert Unsuccessfully.");
+                }
+                    $message->addMessage('Insert Successfully.');
+
+        $this->redirect($this->getLayout()->getUrl('grid','product_media',['id'=> $productId]));
          }
          else
          {
-            $message->addMessage('Image not selected.',Model_Core_Message::ERROR);
             $this->redirect($this->getLayout()->getUrl('grid','product_media',['id' =>  $productId],true));
-         }
+         } 
+            
+        } 
+        catch (Exception $e) 
+        {
+           $message->addMessage($e->getMessage(),Model_Core_Message::ERROR);
+            $this->redirect($this->getLayout()->getUrl('grid',null,null,true));   
+        }
+             
 
-      } catch (Exception $e) 
-      {
-         $message->addMessage($e->getMessage(),Model_Core_Message::ERROR);         
-         $this->redirect($this->getLayout()->getUrl('grid','product_media',['id'=> $productId]));
-      } 
-   }
+       }
+       
 }
 
 
-
-
+?>
 

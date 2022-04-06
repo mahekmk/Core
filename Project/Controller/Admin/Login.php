@@ -8,7 +8,7 @@ class Controller_Admin_Login extends Controller_Core_Action
 	{
 		if(Ccc::getModel('Admin_Login')->isLoggedIn())
 		{
-			$this->redirect($this->getLayout()->getUrl('grid','product',null,true));
+			$this->redirect($this->getLayout()->getUrl('index','product',null,true));
 		}
 		echo Ccc::getBlock('Admin_Login')->toHtml();
 	}
@@ -30,7 +30,7 @@ class Controller_Admin_Login extends Controller_Core_Action
 				throw new Exception("Email Address or Password Incorrect.");
 			}
 			$message->addMessage("Logged In successfully.");
-			$this->redirect($this->getLayout()->getUrl('grid','product',null,true));
+			$this->redirect($this->getLayout()->getUrl('index','product',null,true));
 		} 
 		catch (Exception $e) 
 		{

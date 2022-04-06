@@ -3,7 +3,7 @@ $id= $_GET['id'];?>
 <?php $mediaModel = Ccc::getModel('Category_Media')?>
 	<form action="<?php echo $this->getUrl('save','category_media',['id' =>  $id],true) ?>" method="POST" align="center">
 		<input type="submit" name="update" value="UPDATE"> 
-	<button ><a href="<?php echo $this->getUrl('grid','category',null,true) ?>">Cancel</a></button>
+	<button  class="btn btn-danger"><a href="<?php echo $this->getUrl('grid','category',null,true) ?>">Cancel</a></button>
 
 		<table border=1 width=100%>
 			<tr>

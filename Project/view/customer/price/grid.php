@@ -37,7 +37,7 @@
 		<tr>
 			<td colspan="6">
 				<input type="submit" name="save" value="Save">
-				<button type="button"><a href="<?php echo $this->getUrl('grid','salesman_customer',['id'=>Ccc::getFront()->getRequest()->getRequest('id')],true) ?>">Cancel</a></button>
+				<button class="btn btn-danger" type="button"><a href="<?php echo $this->getUrl('grid','salesman_customer',['id'=>Ccc::getFront()->getRequest()->getRequest('id')],true) ?>">Cancel</a></button>
 			</td>
 		</tr>
 	</form>

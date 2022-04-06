@@ -1,4 +1,6 @@
 <?php 
+
+
 class Controller_Core_Front
 {
 	protected $request = NULL;
@@ -8,7 +10,7 @@ class Controller_Core_Front
 	{
 		if(!$this->request)
 		{
-			$request = new Model_Core_Request();
+			$request = Ccc::getModel('Core_Request');
 			$this->setRequest($request);
 		}
 		return $this->request;
@@ -30,10 +32,10 @@ class Controller_Core_Front
     {
         if(!$this->response)
         {
-            $response = new Model_Core_Response();
+            $response = Ccc::getModel('Core_Response');
             $this->setResponse($response);
         }
-        return$this->response();
+        return $this->response;
     }
 	
 	public function init()

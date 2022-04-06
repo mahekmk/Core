@@ -2,7 +2,7 @@
 Ccc::loadClass('Model_Core_Row');
 class Model_Order extends Model_Core_Row
 {	
-    const STATUS_PENDING = 1;
+    /*const STATUS_PENDING = 1;
     const STATUS_PROCESSING = 2;
     const STATUS_COMPLETED = 3;
     const STATUS_CANCELLED = 4;
@@ -18,7 +18,7 @@ class Model_Order extends Model_Core_Row
     const STATUS_PACKAGING_LBL = 'PACKAGING'; 
     const STATUS_SHIPPED_LBL = 'SHIPPED'; 
     const STATUS_OUT_OF_DELIVERY_LBL = 'OUT_OF_DELIVERY'; 
-    const STATUS_DISPATCHED_LBL = 'DISPATCHED';  
+    const STATUS_DISPATCHED_LBL = 'DISPATCHED'; */ 
 
 	protected $billingAddress = Null;
 	protected $shippingAddress = Null;
@@ -263,7 +263,7 @@ class Model_Order extends Model_Core_Row
         return $this;
     }
 
-    public function getState($key = null)
+    /*public function getState($key = null)
     {       
         
         $states = [self::STATUS_PENDING => self::STATUS_PENDING_LBL,
@@ -305,7 +305,7 @@ class Model_Order extends Model_Core_Row
         }
 
         return self::STATUS_DEFAULT;
-    }
+    }*/
 
 }
 

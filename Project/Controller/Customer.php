@@ -12,6 +12,72 @@ class Controller_Customer extends Controller_Core_Action
         $this->renderLayout();
 	}
 
+	 public function indexAction()
+    {
+        $content = $this->getLayout()->getContent();
+
+        $customerGrid = Ccc::getBlock('Customer_Index');
+        $content->addChild($customerGrid);
+
+        $this->renderLayout();
+    }
+
+    public function gridBlockAction()
+    {
+    	 $customerGrid = Ccc::getBlock("Customer_Grid")->toHtml();
+    	 $messageBlock = Ccc::getBlock('Core_Message')->toHtml();
+    	 //$messageBlock->addMessage('hiiiiiiii');
+    	 $response = [
+    	 	'status' => 'success',
+    	 	'content' => $customerGrid,
+    	 	'message' => $messageBlock,
+    	 ] ;
+        $this->renderJson($response);
+
+    }
+
+    public function addBlockAction()
+	{
+		$customer = Ccc::getModel('Customer');
+        Ccc::register('customer',$customer);
+		$customerBillingAddress = $customer->getBillingAddress();
+        $customerShippingAddress = $customer->getShippingAddress();
+        Ccc::register('customerBillingAddress',$customerBillingAddress);
+        Ccc::register('customerShippingAddress',$customerShippingAddress);
+        $customerAdd =$this->getLayout()->getBlock('Customer_Edit')->toHtml();
+       	$response = [
+    	 	'status' => 'success',
+    	 	'content' => $customerAdd
+    	 ] ;
+        $this->renderJson($response);
+	}
+
+	public function editBlockAction()
+	{
+		$id = (int) $this->getRequest()->getRequest('id');
+		if(!$id)
+		{
+			throw new Exception("Id not valid.");
+		}
+		$customerModel = Ccc::getModel('Customer')->load($id);
+		$customer = $customerModel->fetchRow("SELECT * FROM `customer` WHERE `customerId` = {$id}");
+		$billing = $customerModel->getBillingAddress();
+		$shipping = $customerModel->getShippingAddress();
+		if(!$customer)
+		{
+			throw new Exception("unable to load customer.");
+		}
+		$content = $this->getLayout()->getContent();
+		Ccc::register('customer',$customer);
+		Ccc::register('customerBillingAddress',$billing);
+		Ccc::register('customerShippingAddress',$shipping);
+		$customerEdit = Ccc::getBlock("Customer_Edit")->toHtml();
+		$response = [
+			'status' => 'success',
+			'content' => $customerEdit
+		] ;
+		$this->renderJson($response);          
+	}
 	public function editAction()
 	{
 		$this->setTitle('Customer Edit');
@@ -33,7 +99,10 @@ class Controller_Customer extends Controller_Core_Action
 				throw new Exception("unable to load customer.");
 			}
 			$content = $this->getLayout()->getContent();
-            $customerEdit = Ccc::getBlock("Customer_Edit")->setData(['customer' => $customer , 'billing' => $billing , 'shipping' => $shipping]);
+			 Ccc::register('customer',$customer);
+            Ccc::register('customerBillingAddress',$billing);
+            Ccc::register('customerShippingAddress',$shipping);
+            $customerEdit = Ccc::getBlock("Customer_Edit");//->setData(['customer' => $customer , 'billing' => $billing , 'shipping' => $shipping]);
             $content->addChild($customerEdit);
             $this->renderLayout();		
 		} 
@@ -48,40 +117,60 @@ class Controller_Customer extends Controller_Core_Action
 	{
 		$this->setTitle('Customer Add');
 		$customer = Ccc::getModel('Customer');
-		$billing = Ccc::getModel('Customer_Address');
-		$shipping = Ccc::getModel('Customer_Address');
         $content = $this->getLayout()->getContent();
-        $customerAdd = Ccc::getBlock('Customer_Edit')->setData(['customer' => $customer , 'billing' => $billing , 'shipping' => $shipping]);
+        Ccc::register('customer',$customer);
+		$customerBillingAddress = $customer->getBillingAddress();
+        $customerShippingAddress = $customer->getShippingAddress();
+        Ccc::register('customerBillingAddress',$customerBillingAddress);
+        Ccc::register('customerShippingAddress',$customerShippingAddress);
+        $customerAdd = Ccc::getBlock('Customer_Edit');
         $content->addChild($customerAdd);
         $this->renderLayout();
 	}
 
 	protected function saveCustomer()
-	{
-		$message = $this->getMessage();
-		$customer = Ccc::getModel('Customer');
-		date_default_timezone_set("Asia/Kolkata");
-		$date = date('Y-m-d H:i:s');
-		$row = $this->getRequest()->getRequest('customer');
-		$customerId = (int)$this->getRequest()->getRequest('id');
+    {
+        $customer = Ccc::getModel('Customer');
+        $getSaveData = $this->getRequest()->getRequest('customer');
+        $date = date('Y-m-d H:i:s');
+        $message = $this->getMessage();
+
+        if (!$getSaveData)
+        {
+            return;
+        }
+
+        $customerId = (int)$this->getRequest()->getRequest('id');
         $customer = Ccc::getModel('Customer')->load($customerId);
+
         if(!$customer)
         {
             $customer = Ccc::getModel('Customer');
-            $customer->setData($row);
+            $customer->setData($getSaveData);
             $customer->createdAt = $date;
         }
         else
         {
-            $customer->setData($row);
+            $customer->setData($getSaveData);
             $customer->updatedAt = $date;
         }
         $result = $customer->save();
-        return $result->customerId;	
-	}
+        //return $result->id;
 
-	protected function saveAddress($customerId)	
+        if (!$result) 
+        {
+            throw new Exception("You can not update data in customer.");
+        } 
+        else 
+        {
+            $message->addMessage('Updated Successfully.');
+            $this->redirect($this->getLayout()->getUrl('addBlock','customer',['id' => $result->customerId , 'tab' => 'address'],true));
+        }
+    }
+
+	protected function saveAddress()	
 	{
+		$customerId = $this->getRequest()->getRequest('id');
 		$message = $this->getMessage();
 		$address = Ccc::getModel('Customer_Address');
 		date_default_timezone_set("Asia/Kolkata");
@@ -123,15 +212,15 @@ class Controller_Customer extends Controller_Core_Action
 		try
 		{
 			$customerId = $this->saveCustomer();
-			$this->saveAddress($customerId);
+			$this->saveAddress();
 			
-			$this->redirect($this->getLayout()->getUrl('grid',null,['id' => null],false));
+			$this->redirect($this->getLayout()->getUrl('gridBlock',null,['id' => null],false));
 		} 
 		
 		catch (Exception $e) 
 		{
 			$message->addMessage($e->getMessage(),Model_Core_Message::ERROR);         
-            $this->redirect($this->getLayout()->getUrl('grid',null,['id' => null],false));
+            $this->redirect($this->getLayout()->getUrl('gridBlock',null,['id' => null],false));
 		}
 	}
 
@@ -152,13 +241,17 @@ class Controller_Customer extends Controller_Core_Action
 			{
 				throw new Exception("System is unable to delete record.");	
 			}
-			$message->addMessage('Data Deleted Successfully');
-			$this->redirect($this->getLayout()->getUrl('grid',null,['id' => null],false));
+			$customerGrid = Ccc::getBlock("Customer_Grid")->toHtml();
+    	 	$messageBlock = $this->getMessage();
+			$messageBlock->addMessage('Data Deleted Successfully');
+
+
+			$this->redirect($this->getLayout()->getUrl('gridBlock',null,['id' => null],false));
 		}
 		catch (Exception $e)
 		{
 			$message->addMessage($e->getMessage(),Model_Core_Message::ERROR);         
-            $this->redirect($this->getLayout()->getUrl('grid',null,['id' => null],false));
+            $this->redirect($this->getLayout()->getUrl('gridBlock',null,['id' => null],false));
 		}
 	}
 

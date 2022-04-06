@@ -1,11 +1,12 @@
 <?php 
 
-Ccc::loadClass('Block_Core_Template');
-class Block_Category_Edit extends Block_Core_Template
+Ccc::loadClass('Block_Core_Edit');
+Ccc::loadClass('Block_Category_Edit_Tab');
+class Block_Category_Edit extends Block_Core_Edit
 {
 	public function __construct()
 	{
-		$this->setTemplate('view/category/edit.php');
+		parent::__construct();
 	}
 
 	public function getCategory()
@@ -20,5 +21,10 @@ class Block_Category_Edit extends Block_Core_Template
 		$categoryModel = new Controller_Category();
 		$categoryPath = $categoryModel->getCategoryWithPath();
 		return $categoryPath;
+	}
+
+	public function getSaveUrl()
+	{
+		return $this->getUrl('save',null,['tab' => null]);
 	}
 }

@@ -52,7 +52,7 @@ class Model_Core_Row_Resource
         $value = '\''.implode("','", array_values($queryInsert)).'\'';
 
         $sqlResult = "INSERT INTO `{$this->getTableName()}` ({$key}) VALUES ({$value});";
-        //print_r($sqlResult); //die;
+       // print_r($sqlResult); //die;
         $result = $this->getAdapter()->insert($sqlResult);
         return $result;
     }

@@ -3,14 +3,14 @@
 
 <form action="<?php echo $this->getUrl('save','product_media',null,false) ?>" method="POST" align="center">
 	<input type="submit" name="update" value="UPDATE"> 
-<button ><a href="<?php echo $this->getUrl('grid','product',null,false) ?>">Cancel</a>
+<button class="btn btn-danger"><a href="<?php echo $this->getUrl('grid','product',null,false) ?>">Cancel</a>
 </button>
 <br>
 <br>
 	<table border=1 width=100%>
 		<tr>
 			<th>Image Id</th>
-				<th>Image</th>
+				<th>Imageeee</th>
 				<th>Base</th>
 				<th>Thumb</th>
 				<th>Small</th>

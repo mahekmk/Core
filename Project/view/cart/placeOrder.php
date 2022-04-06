@@ -11,7 +11,7 @@
 <?php endif;?>
 
 <h2>Order Details</h2>
-<form  action="<?php echo $this->getUrl('saveOrder','order') ?>" method="POST">
+<!-- <form  action="<?php //echo $this->getUrl('saveOrder','order') ?>" method="POST"> -->
 <table border="1" width="50%" cellspacing="0">
 
 
@@ -81,7 +81,19 @@
 <?php endif; ?>
 	<td></td>
 	<td>
-		<button type="submit" name="submit" class="Registerbtn">Place Order</button>
+		<button  class="btn btn-success" type="button" onclick="placeOrder()">Place Order</button>
 	</td>
 </table>
-</form>
+<!-- </form> -->
+
+
+<script type="text/javascript">
+	function placeOrder() 
+	{
+		//alert('button clicked');
+		admin.setForm(jQuery('#indexForm'));
+		admin.setUrl("<?php echo $this->getUrl('saveOrder','order') ?>");
+		admin.load();
+	}
+</script>
+

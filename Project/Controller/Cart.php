@@ -55,8 +55,9 @@ class Controller_Cart extends Controller_Core_Action
 			$session = $this->getMessage()->getSession();
 			$session->cartId = $cartModel->cartId;
 			print_r($this->getMessage()->getSession()->cartId); 
-			
 
+			//echo 21126; 
+			
 			$message->addMessage('Load Successfully'); 
             $this->redirect($this->getLayout()->getUrl('cartShow','cart',['id' => null],false));
 		} 
@@ -65,48 +66,20 @@ class Controller_Cart extends Controller_Core_Action
 			$message->addMessage($e->getMessage(),Model_Core_Message::ERROR);
 			$this->redirect($this->getLayout()->getUrl('cartShow','cart',null,false));
 		}
-		
-
 	}
 
 	public function cartShowAction()
-	{
-		try 
-		{
-			$message = $this->getMessage();
-			$cartId = $this->getMessage()->getSession()->cartId;
-			$cartModel = Ccc::getModel('Cart')->load($cartId);
-			$customerId = $cartModel->customerId;
-
-			if(!$customerId)
-			{
-				throw new Exception("Invalid Request");
-			}
-			$this->setTitle("Cart");
-			$content = $this->getLayout()->getContent();
-			$customer = Ccc::getModel('Customer');
-	    	$customerInfo = Ccc::getBlock("Cart_CustomerInfo");
-	    	$shippingMethod = Ccc::getBlock("Cart_ShippingMethod");
-	    	$paymentMethod = Ccc::getBlock("Cart_PaymentMethod");
-	    	$address = Ccc::getBlock("Cart_Address");
-	    	$cartItem = Ccc::getBlock("Cart_Item");
-	    	$PlaceOrder = Ccc::getBlock("Cart_PlaceOrder");
-	      	$content->addChild($customerInfo);
-	      	$content->addChild($shippingMethod);
-	      	$content->addChild($paymentMethod);
-	      	$content->addChild($address);
-	      	$content->addChild($cartItem);
-	      	$content->addChild($PlaceOrder);
-	      	//$content->addChild($shippingAddress);
-	      	$this->renderLayout();	
-		} 
-		catch (Exception $e) 
-		{
-			$message->addMessage($e->getMessage(),Model_Core_Message::ERROR);
-			$this->redirect($this->getLayout()->getUrl('cartShow','cart',null,false));
-		}
-		
-	}
+    {
+        $cartModel = Ccc::getModel('Cart');
+        $customers = $cartModel->getCustomers();
+        Ccc::register('cartCustomer' , $customers);
+        $cartAdd = $this->getLayout()->getBlock('Cart_CartShow')->toHtml();//->setData(['customers' => $customers]);
+         $response = [
+            'status' => 'success',
+            'content' => $cartAdd
+         ] ;
+        $this->renderJson($response);
+    }
 
 	public function updatePaymentMethodAction()
 	{
@@ -372,7 +345,7 @@ class Controller_Cart extends Controller_Core_Action
 			$cartModel = Ccc::getModel('Cart')->load($cartId);
 			$customerId = $cartModel->customerId;
 			//$customerId = $this->getRequest()->getRequest('id');
-			$itemIds = $this->getRequest()->getPost('quantity');
+			$itemIds = $this->getRequest()->getPost('quan');
 
 			foreach ($itemIds as $itemId => $quantity) 
 			{
@@ -380,7 +353,6 @@ class Controller_Cart extends Controller_Core_Action
 				$cartItemModel->quantity = $quantity;
 				$cartItemModel->save();
 			}
-
 			$message->addMessage('Update Successfully.');
 			$this->redirect($this->getLayout()->getUrl('cartShow','cart',null,false));
 		} 

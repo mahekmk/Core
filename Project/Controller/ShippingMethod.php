@@ -12,6 +12,62 @@ class Controller_ShippingMethod extends Controller_Core_Action
         $this->renderLayout();         
     }
 
+         public function indexAction()
+    {
+        $content = $this->getLayout()->getContent();
+        $shippingMethodGrid = Ccc::getBlock('ShippingMethod_Index');
+        $content->addChild($shippingMethodGrid);
+        $this->renderLayout();
+    }
+
+    public function gridBlockAction()
+    {
+        $shippingMethodGrid = Ccc::getBlock("ShippingMethod_Grid")->toHtml();
+        $messageBlock = Ccc::getBlock('Core_Message')->toHtml();
+        $response = [
+            'status' => 'success',
+            'content' => $shippingMethodGrid,
+            'message' => $messageBlock,
+        ] ;
+        $this->renderJson($response);
+
+    }
+
+    public function editBlockAction()
+    {
+        $id = (int) $this->getRequest()->getRequest('id');
+        if(!$id)
+        {
+            throw new Exception("Id not valid.");
+        }
+        $shippingMethod = Ccc::getModel('shippingMethod')->load($id);
+        if(!$shippingMethod)
+        {
+            throw new Exception("unable to load shippingMethod.");
+        }
+        $content = $this->getLayout()->getContent();
+        Ccc::register('shippingMethod',$shippingMethod);
+        $shippingMethodEdit = Ccc::getBlock("ShippingMethod_Edit")->toHtml();
+        $response = [
+            'status' => 'success',
+            'content' => $shippingMethodEdit
+        ] ;
+        $this->renderJson($response);          
+    }
+
+    public function addBlockAction()
+    {
+        $shippingMethod = Ccc::getModel('ShippingMethod');
+        Ccc::register('shippingMethod',$shippingMethod);
+        $shippingMethodAdd =$this->getLayout()->getBlock('ShippingMethod_Edit')->toHtml();
+        $response = [
+            'status' => 'success',
+            'content' => $shippingMethodAdd
+         ] ;
+        $this->renderJson($response);
+    }
+
+
     public function editAction()
     {
         $message = $this->getMessage();
@@ -26,14 +82,15 @@ class Controller_ShippingMethod extends Controller_Core_Action
                 throw new Exception("unable to load shippingMethod.");
             }
             $content = $this->getLayout()->getContent();
-            $shippingMethodEdit = Ccc::getBlock("ShippingMethod_Edit")->setData(["shippingMethod" => $shippingMethod]);
+            Ccc::register('shippingMethod' , $shippingMethod);
+            $shippingMethodEdit = Ccc::getBlock("ShippingMethod_Edit");//->setData(["shippingMethod" => $shippingMethod]);
             $content->addChild($shippingMethodEdit);
             $this->renderLayout();        
         } 
         catch (Exception $e) 
         {
             $message->addMessage($e->getMessage(),Model_Core_Message::ERROR);     
-            $this->redirect($this->getLayout()->getUrl('grid',null,null,true));
+            $this->redirect($this->getLayout()->getUrl('gridBlock',null,null,true));
         }
     }
 
@@ -41,7 +98,8 @@ class Controller_ShippingMethod extends Controller_Core_Action
     {
         $shippingMethod = Ccc::getModel('ShippingMethod');
         $content = $this->getLayout()->getContent();
-        $shippingMethodAdd = Ccc::getBlock('ShippingMethod_Edit')->setData(["shippingMethod" => $shippingMethod]);
+        Ccc::register('shippingMethod' , $shippingMethod);
+        $shippingMethodAdd = Ccc::getBlock('ShippingMethod_Edit');//->setData(["shippingMethod" => $shippingMethod]);
         $content->addChild($shippingMethodAdd);
         $this->renderLayout();
     }
@@ -80,12 +138,12 @@ class Controller_ShippingMethod extends Controller_Core_Action
                 throw new Exception("System is unable to update information.");
             }
             $message->addMessage('Data Saved Successfully'); 
-            $this->redirect($this->getLayout()->getUrl('grid',null,['id' => null],false));
+            $this->redirect($this->getLayout()->getUrl('gridBlock',null,['id' => null],false));
         }
         catch(Exception $e)
         {
             $message->addMessage($e->getMessage(),Model_Core_Message::ERROR);         
-            $this->redirect($this->getLayout()->getUrl('grid',null,['id' => null],false));
+            $this->redirect($this->getLayout()->getUrl('gridBlock',null,['id' => null],false));
         }
     }
 
@@ -107,12 +165,12 @@ class Controller_ShippingMethod extends Controller_Core_Action
                 throw new Exception("System is unable to delete record.");
             }
             $message->addMessage('Data Deleted Successfully');
-           $this->redirect($this->getLayout()->getUrl('grid',null,['id' => null],false));
+           $this->redirect($this->getLayout()->getUrl('gridBlock',null,['id' => null],false));
         }
         catch(Exception $e)
         {
             $message->addMessage($e->getMessage(),Model_Core_Message::ERROR);         
-            $this->redirect($this->getLayout()->getUrl('grid',null,['id' => null],false));
+            $this->redirect($this->getLayout()->getUrl('gridBlock',null,['id' => null],false));
         }
     }
 

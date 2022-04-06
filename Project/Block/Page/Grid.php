@@ -1,13 +1,77 @@
+<?php Ccc::loadClass('Block_Core_Grid'); ?>
+
 <?php 
-
-Ccc::loadClass('Block_Core_Template');
-class Block_Page_Grid extends Block_Core_Template
+class Block_Page_Grid extends Block_Core_Grid
 {
-	public $pager;
-
 	public function __construct()
 	{
-		$this->setTemplate('view/page/grid.php');
+		parent::__construct();
+	}
+
+	public function getEditUrl($page)
+	{
+		return $this->getUrl('edit',null,['id'=>$page->pageId]);
+	}
+	
+	public function getDeleteUrl($page)
+	{
+		return $this->getUrl('delete',null,['id'=>$page->pageId]);
+	}
+
+	public function prepareActions()
+	{
+		$this->setActions([
+			['title'=>'Edit','method'=>'getEditUrl'],
+			['title'=>'Delete','method'=>'getDeleteUrl']
+			]);
+		return $this;
+	}
+
+	public function prepareCollections()
+	{
+		$this->setCollections($this->getPages());
+	}
+
+	public function prepareColumns()
+	{
+		parent::prepareColumns();
+
+		$this->addColumn('pageId', [
+			'title' => 'Page Id',
+			'type' => 'int',
+		]);
+
+		$this->addColumn('name',[
+			'title' => 'Name',
+			'type' => 'varchar',
+		]);
+
+		$this->addColumn('code',[
+			'title' => 'Code',
+			'type' => 'varchar',
+		]);
+
+		$this->addColumn('content',[
+			'title' => 'Content',
+			'type' => 'varchar',
+		]);
+
+		$this->addColumn('status',[
+			'title' => 'Status',
+			'type' => 'int',
+		]);
+
+		$this->addColumn('createdAt',[
+			'title' => 'Created At',
+			'type' => 'datetime',
+		]);
+
+		$this->addColumn('updatedAt',[
+			'title' => 'UpdatedAt',
+			'type' => 'datetime',
+		]);
+
+		return $this;
 	}
 
 	public function getPages()
@@ -23,15 +87,5 @@ class Block_Page_Grid extends Block_Core_Template
 		return $pages;
 	}
 
-	public function getPager()
-	{
-		return $this->pager;
-	}
-
-	public function setPager($pager)
-	{
-		$this->pager = $pager;
-		return $this->pager;
-	}
 }
 

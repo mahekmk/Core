@@ -1,16 +1,170 @@
-<?php // $controllerCoreAction = new Controller_Core_Action(); ?>
+<head>
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="skin/admin/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <!-- overlayScrollbars -->
+  <link rel="stylesheet" href="skin/admin/css/OverlayScrollbars.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="skin/admin/css/admin.css">
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+<!-- Site wrapper -->
+<div class="wrapper">
+  <!-- Navbar -->
 
-<button name='Admin'><a href="<?php echo $this->getUrl('grid','admin',null,true) ?>">Admin</a></button>
-<button name='Category'><a href="<?php echo $this->getUrl('grid','category',null,true) ?>">Category</a></button>
-<button name='Config'><a href="<?php echo $this->getUrl('grid','config',null,true) ?>">Config</a></button>
-<button name='Customer'><a href="<?php echo $this->getUrl('grid','customer',null,true) ?>">Customer</a></button>
-<button name='Order'><a href="<?php echo $this->getUrl('grid','order',null,true) ?>">Order</a></button>
-<button name='PaymentMethod'><a href="<?php echo $this->getUrl('grid','paymentMethod',null,true) ?>">Payment Method</a></button>
-<button name='Page'><a href="<?php echo $this->getUrl('grid','page',null,true) ?>">Page</a></button>
-<button name='Product'><a href="<?php echo $this->getUrl('grid','product',null,true) ?>">Product</a></button>
-<button name='Salesman'><a href="<?php echo $this->getUrl('grid','salesman',null,true) ?>">Salesman</a></button>
-<button name='ShippingMethod'><a href="<?php echo $this->getUrl('grid','shippingMethod',null,true) ?>">Shipping Method</a></button>
-<button name='Vendor'><a href="<?php echo $this->getUrl('grid','vendor',null,true) ?>">Vendor</a></button>
-<button name='Logout'><a href="<?php echo $this->getUrl('logout','admin_login',null,true) ?>">Logout</a></button>
-<br>
-<br>
+
+  <!-- Main Sidebar Container -->
+  <aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <!-- Brand Logo -->
+    <a href="../../index3.html" class="brand-link">
+      <img src="http://localhost/Cybercom/Core/Project/skin/admin/dummy.jpg" class="brand-image img-circle elevation-3" style="opacity: .8">
+      <span class="brand-text font-weight-light">AdminLTE 3</span>
+    </a>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <!-- Sidebar user (optional) -->
+      <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+        <div class="image">
+          <img src="http://localhost/Cybercom/Core/Project/skin/admin/dummy.jpg" class="img-circle elevation-2" alt="User Image">
+        </div>
+        <div class="info">
+          <a href="#" class="d-block">CCC-MK</a>
+        </div>
+      </div>
+
+      <!-- SidebarSearch Form -->
+      <div class="form-inline">
+        <div class="input-group" data-widget="sidebar-search">
+          <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search">
+          <div class="input-group-append">
+            <button class="btn btn-sidebar">
+              <i class="fas fa-search fa-fw"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar Menu -->
+      <nav class="mt-2">
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+          <!-- Add icons to the links using the .nav-icon class
+               with font-awesome or any other icon font library -->
+          <li class="nav-item">
+                <a href="<?php echo $this->getUrl('index','admin',null,true) ?>" class="nav-link">
+                  <i class="fas fa-user-cog "></i>
+                  <p>Admin</p>
+              </a>
+            </li>
+
+            <li class="nav-item">
+                <a href="<?php echo $this->getUrl('index','category',null,true) ?>" class="nav-link">
+                  <i class="fa fa-table fa-spin"></i>
+                  <p>Category</p>
+              </a>
+            </li>
+
+            <li class="nav-item">
+                <a href="<?php echo $this->getUrl('index','config',null,true) ?>" class="nav-link">
+                  <i class="fa fa-table fa-spin"></i>
+                  <p>Config</p>
+              </a>
+            </li>
+
+            <li class="nav-item">
+                <a href="<?php echo $this->getUrl('index','customer',null,true) ?>" class="nav-link">
+                  <i class="fa fa-table fa-spin"></i>
+                  <p>Customer</p>
+              </a>
+            </li>
+
+            <li class="nav-item">
+                <a href="<?php echo $this->getUrl('index','order',null,true) ?>" class="nav-link">
+                  <i class="fa fa-table fa-spin"></i>
+                  <p>Order</p>
+              </a>
+            </li>
+            
+            <li class="nav-item">
+                <a href="<?php echo $this->getUrl('index','page',null,true) ?>" class="nav-link">
+                  <i class="fa fa-table fa-spin"></i>
+                  <p>Page</p>
+              </a>
+            </li>
+
+            <li class="nav-item">
+                <a href="<?php echo $this->getUrl('index','paymentMethod',null,true) ?>" class="nav-link">
+                  <i class="fa fa-table fa-spin"></i>
+                  <p>Payment Method</p>
+              </a>
+            </li>
+
+            <li class="nav-item">
+                <a href="<?php echo $this->getUrl('index','product',null,true) ?>" class="nav-link">
+                  <i class="fa fa-table fa-spin"></i>
+                  <p>Product</p>
+              </a>
+            </li>
+
+
+            <li class="nav-item">
+                <a href="<?php echo $this->getUrl('index','salesman',null,true) ?>" class="nav-link">
+                  <i class="fa fa-table fa-spin"></i>
+                  <p>Salesman</p>
+              </a>
+            </li>
+
+            <li class="nav-item">
+                <a href="<?php echo $this->getUrl('index','shippingMethod',null,true) ?>" class="nav-link">
+                  <i class="fa fa-table fa-spin"></i>
+                  <p>Shipping Method</p>
+              </a>
+            </li>
+
+
+            <li class="nav-item">
+                <a href="<?php echo $this->getUrl('index','vendor',null,true) ?>" class="nav-link">
+                  <i class="fa fa-table fa-spin"></i>
+                  <p>Vendor</p>
+              </a>
+            </li>
+
+
+            <li class="nav-item">
+                <a href="<?php echo $this->getUrl('logout','admin_login',null,true) ?>" class="nav-link">
+                  <i class="fas fa-sign-out-alt fa-spin"></i>
+                  <p>Logout</p>
+              </a>
+            </li>
+        </ul>
+      </nav>
+      <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+  </aside>
+
+  <!-- Content Wrapper. Contains page content -->
+  
+  <!-- /.content-wrapper -->
+
+  <!-- Control Sidebar -->
+  <aside class="control-sidebar control-sidebar-dark">
+    <!-- Control sidebar content goes here -->
+  </aside>
+  <!-- /.control-sidebar -->
+</div>
+<!-- ./wrapper -->
+
+<!-- jQuery -->
+<script src="skin/admin/js/jquery.min.js"></script>
+<!-- Bootstrap 4 -->
+<script src="skin/admin/js/bootstrap.bundle.min.js"></script>
+<!-- overlayScrollbars -->
+<script src="skin/admin/js/jquery.overlayScrollbars.min.js"></script>
+<!-- AdminLTE App -->
+<script src="skin/admin/js/adminlte.min.js"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="skin/admin/js/demo.js"></script>
+</body>
